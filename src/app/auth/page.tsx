@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useEffect, useState, useRef } // Added useRef
+import { useEffect, useState, useRef }
 from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useForm } from 'react-hook-form';
@@ -71,7 +71,7 @@ export default function AuthPage() {
   const [showSignUpPassword, setShowSignUpPassword] = useState(false);
   const [showSignUpConfirmPassword, setShowSignUpConfirmPassword] = useState(false);
 
-  const isCheckingAuthRef = useRef(isCheckingAuth); // Ref to track current state for logging
+  const isCheckingAuthRef = useRef(isCheckingAuth);
   useEffect(() => {
     isCheckingAuthRef.current = isCheckingAuth;
   }, [isCheckingAuth]);
@@ -88,7 +88,7 @@ export default function AuthPage() {
 
   useEffect(() => {
     console.log('[AuthPage useEffect] Hook started. Pathname:', pathname, 'Window hash:', window.location.hash, 'Search:', window.location.search);
-    setIsCheckingAuth(true); // Start with loader active
+    setIsCheckingAuth(true);
     console.log('[AuthPage useEffect] isCheckingAuth set to true.');
 
     const currentSearchParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
@@ -113,7 +113,6 @@ export default function AuthPage() {
         if (session) {
           console.log('[AuthPage checkSession] Session found, redirecting to /');
           router.replace('/');
-          // No explicit setIsCheckingAuth(false) here, as redirection will unmount or onAuthStateChange handles it.
         } else {
           console.log('[AuthPage checkSession] No active session.');
           setIsCheckingAuth(false);
@@ -139,18 +138,13 @@ export default function AuthPage() {
         if (session) {
           console.log('[AuthPage onAuthStateChange] INITIAL_SESSION: Session found, redirecting to /');
           router.replace('/');
-          setIsCheckingAuth(false); // Session found, safe to turn off loader
+          setIsCheckingAuth(false);
         } else {
-          // No session on initial load.
-          if (hasAuthCodeInQuery) {
-            // Code is present, Supabase client is expected to process it and fire SIGNED_IN.
-            // So, KEEP isCheckingAuth = true to show loader.
-            console.log('[AuthPage onAuthStateChange] INITIAL_SESSION: No session, but code in URL. Loader remains active.');
-            // DO NOT set setIsCheckingAuth(false) here.
+          if (hasAuthCodeInQuery || hasAccessTokenInHash) {
+            console.log('[AuthPage onAuthStateChange] INITIAL_SESSION: No session, but code/token in URL. Loader remains active for Supabase client to process.');
           } else {
-            // No session, NO code. Safe to show form.
             setIsCheckingAuth(false);
-            console.log('[AuthPage onAuthStateChange] INITIAL_SESSION: No session, no code. Loader disabled.');
+            console.log('[AuthPage onAuthStateChange] INITIAL_SESSION: No session, no code/token. Loader disabled.');
           }
         }
         console.log('[AuthPage onAuthStateChange] INITIAL_SESSION processing complete. isCheckingAuth after processing:', isCheckingAuthRef.current);
@@ -168,11 +162,8 @@ export default function AuthPage() {
     });
 
     if (hasAuthCodeInQuery || hasAccessTokenInHash) {
-      // Code/token in URL, rely on onAuthStateChange.
-      // isCheckingAuth remains true until onAuthStateChange resolves the session or determines no session.
       console.log('[AuthPage useEffect] Auth code or hash token detected. Relying on onAuthStateChange. Loader remains active initially.');
     } else {
-      // No code/token in URL, check for an existing session.
       console.log('[AuthPage useEffect] No auth code or hash token in URL. Calling checkSession.');
       checkSession();
     }
@@ -197,7 +188,6 @@ export default function AuthPage() {
         toast({ title: 'Sign In Failed', description: error.message, variant: 'destructive' });
       } else {
         toast({ title: 'Signed In Successfully!'});
-        // Redirect is handled by onAuthStateChange
       }
     } catch (error: any) {
       setAuthError(error.message || 'An unexpected error occurred.');
@@ -210,10 +200,36 @@ export default function AuthPage() {
     setIsLoading(true);
     setAuthError(null);
     setShowConfirmationMessage(false);
+
+    const siteURL = process.env.NEXT_PUBLIC_SITE_URL || (typeof window !== 'undefined' ? window.location.origin : '');
+    if (!siteURL) {
+      toast({ title: 'Configuration Error', description: 'Site URL is not configured. Cannot proceed with sign up.', variant: 'destructive' });
+      setIsLoading(false);
+      return;
+    }
+
+    let signUpRedirectURL = '';
+    try {
+        const url = new URL(siteURL);
+        url.pathname = '/auth'; // Ensure the path is set to /auth
+        signUpRedirectURL = url.toString();
+    } catch (e) {
+        toast({ title: 'Configuration Error', description: 'Invalid Site URL configured. Cannot proceed with sign up.', variant: 'destructive' });
+        setIsLoading(false);
+        return;
+    }
+    
+    console.log('[AuthPage handleSignUp] Using Email Confirmation Redirect URL:', signUpRedirectURL);
+    console.log('[AuthPage handleSignUp] IMPORTANT: Ensure this exact URL is in your Supabase Redirect URL Allowlist (Authentication -> URL Configuration).');
+
+
     try {
       const { data, error } = await supabase.auth.signUp({
         email: values.email,
         password: values.password,
+        options: {
+          emailRedirectTo: signUpRedirectURL,
+        },
       });
 
       if (error) {
@@ -221,7 +237,6 @@ export default function AuthPage() {
         toast({ title: 'Sign Up Failed', description: error.message, variant: 'destructive' });
       } else if (data.session) {
         toast({ title: 'Account Created & Signed In!' });
-        // Redirect is handled by onAuthStateChange
       } else if (data.user && !data.session) {
         setShowConfirmationMessage(true);
         toast({ title: 'Account Created!', description: 'Please check your email to confirm your account.' });
@@ -249,13 +264,24 @@ export default function AuthPage() {
       setIsGoogleLoading(false);
       return;
     }
-    const redirectURL = `${siteURL}${pathname}`;
-    console.log('[AuthPage handleGoogleSignIn] Redirect URL for Google OAuth:', redirectURL);
+    
+    let googleRedirectURL = '';
+    try {
+        const url = new URL(siteURL);
+        url.pathname = pathname; // pathname here will be /auth
+        googleRedirectURL = url.toString();
+    } catch (e) {
+        toast({ title: 'Configuration Error', description: 'Invalid Site URL for Google Sign-In.', variant: 'destructive' });
+        setIsGoogleLoading(false);
+        return;
+    }
+    console.log('[AuthPage handleGoogleSignIn] Redirect URL for Google OAuth:', googleRedirectURL);
+    console.log('[AuthPage handleGoogleSignIn] IMPORTANT: Ensure this exact URL is in your Supabase Redirect URL Allowlist.');
 
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: redirectURL,
+        redirectTo: googleRedirectURL,
       },
     });
     if (error) {
