@@ -92,13 +92,17 @@ function getAuthRedirectUrl(): string | undefined {
 
     try {
         const baseUrl = new URL(siteURL);
+        // Normalize pathname: remove trailing slash if it's not the root, then append /auth
         let path = baseUrl.pathname;
-        if (path === '/' || path === '') {
-            path = '/auth';
+        if (path.endsWith('/auth') || path.endsWith('/auth/')) {
+            // Already ends with /auth or /auth/, normalize to /auth
+            baseUrl.pathname = path.replace(/\/+$/, '').replace(/\/auth\/?$/, '/auth');
+        } else if (path === '/' || path === '') {
+            baseUrl.pathname = '/auth';
         } else {
-            path = path.replace(/\/$/, '') + '/auth';
+            // Remove potential trailing slash from original path, then add /auth
+            baseUrl.pathname = path.replace(/\/$/, '') + '/auth';
         }
-        baseUrl.pathname = path;
         return baseUrl.toString();
     } catch (e) {
         console.error(
@@ -196,7 +200,7 @@ export default function AuthPage() {
           setIsPasswordRecoveryMode(true);
           toast({ title: "Set New Password", description: "Please enter and confirm your new password below." });
           setIsCheckingAuth(false);
-        } else if (!isPasswordRecoveryMode) { // Ensure not already in recovery mode from hash check
+        } else if (!isPasswordRecoveryMode) { 
           router.replace('/');
           setIsCheckingAuth(false);
         }
@@ -205,7 +209,7 @@ export default function AuthPage() {
           setIsPasswordRecoveryMode(true);
           toast({ title: "Set New Password", description: "Please enter and confirm your new password below." });
           setIsCheckingAuth(false);
-        } else if (!isPasswordRecoveryMode) { // Ensure not already in recovery mode from hash check
+        } else if (!isPasswordRecoveryMode) { 
           router.replace('/');
           setIsCheckingAuth(false);
         }
@@ -214,7 +218,6 @@ export default function AuthPage() {
         setIsPasswordRecoveryMode(false);
       }
 
-      // Fallback if no specific event handled it, and we need to stop loading
       if (isCheckingAuthRef.current && (
             (event === 'INITIAL_SESSION' && !session && !hasAuthCodeInQuery && !hasAccessTokenInHash && !isPasswordRecoveryMode) ||
             (event !== 'PASSWORD_RECOVERY' && event !== 'SIGNED_IN' && event !== 'INITIAL_SESSION')
@@ -226,11 +229,6 @@ export default function AuthPage() {
 
 
     if (hashParams.get('type') === 'recovery') {
-       // isPasswordRecoveryMode is already set, onAuthStateChange will handle session
-       // but we need to ensure loader stops if no auth event fires immediately.
-       // If user is already signed in and clicks recovery, an event should fire.
-       // If user is signed out, and clicks recovery, an event should fire.
-       // This setTimeout is a fallback.
        setTimeout(() => {
          if (isCheckingAuthRef.current) setIsCheckingAuth(false);
        }, 1000);
@@ -244,7 +242,7 @@ export default function AuthPage() {
     return () => {
       authSubscription?.unsubscribe();
     };
-  }, [router, toast, pathname]); // isPasswordRecoveryMode removed as it's managed internally
+  }, [router, toast, pathname]);
 
 
   const handleSignIn = async (values: SignInFormValues) => {
@@ -259,7 +257,6 @@ export default function AuthPage() {
         setAuthError(error.message);
         toast({ title: 'Sign In Failed', description: error.message, variant: 'destructive' });
       } else {
-        // onAuthStateChange will handle redirect
         toast({ title: 'Signed In Successfully!'});
       }
     } catch (error: any) {
@@ -275,6 +272,8 @@ export default function AuthPage() {
     setShowConfirmationMessage(false);
 
     const signUpRedirectURL = getAuthRedirectUrl();
+    console.log(`[AuthPage handleSignUp] Constructed redirectTo for email confirmation: ${signUpRedirectURL}`);
+
 
     if (!signUpRedirectURL && process.env.NEXT_PUBLIC_SITE_URL) {
         toast({ title: 'Configuration Error', description: 'Site URL is improperly configured. Cannot proceed with sign up.', variant: 'destructive' });
@@ -295,7 +294,6 @@ export default function AuthPage() {
         setAuthError(error.message);
         toast({ title: 'Sign Up Failed', description: error.message, variant: 'destructive' });
       } else if (data.session) {
-        // onAuthStateChange will handle redirect
         toast({ title: 'Account Created & Signed In!' });
       } else if (data.user && !data.session) {
         setShowConfirmationMessage(true);
@@ -337,7 +335,6 @@ export default function AuthPage() {
       toast({ title: 'Google Sign-In Failed', description: error.message, variant: 'destructive' });
       setIsGoogleLoading(false);
     }
-    // onAuthStateChange will handle redirect if successful
   };
 
   const handleForgotPasswordRequest = async (values: ForgotPasswordFormValues) => {
@@ -384,10 +381,9 @@ export default function AuthPage() {
         toast({ title: 'Password Reset Successful!', description: 'You can now sign in with your new password.' });
         setIsPasswordRecoveryMode(false); 
         setDefaultTab('signin'); 
-        // Attempt to get current user's email for prefill, might be null if session cleared abruptly
         const { data: { user } } = await supabase.auth.getUser();
         signInForm.setValue('email', user?.email || '');
-        router.replace('/auth', { scroll: false }); // Clear hash and query params
+        router.replace('/auth', { scroll: false });
       }
     } catch (error: any) {
       setAuthError(error.message || 'An unexpected error occurred.');
