@@ -1,4 +1,5 @@
 {
+  "/_not-found/page": "app/_not-found/page.js",
   "/auth/page": "app/auth/page.js",
   "/favicon.ico/route": "app/favicon.ico/route.js",
   "/landing/page": "app/landing/page.js",
