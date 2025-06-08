@@ -62,8 +62,13 @@ export function AskForNameDialog({ isOpen, onOpenChange, onSubmitName, currentEm
           <DialogTitle className="font-headline">Enter Your Name for the Invoice</DialogTitle>
           <DialogDescription>
             Please provide your full name. This will be used on the invoice and saved to your profile.
-            {currentEmail && (<div className="text-xs mt-1 text-muted-foreground">For account: {currentEmail}</div>)}
           </DialogDescription>
+          {/* Conditional div moved here, sibling to DialogDescription */}
+          {currentEmail && (
+            <div className="text-xs text-muted-foreground pt-1 text-center sm:text-left"> 
+              For account: {currentEmail}
+            </div>
+          )}
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4 py-2">
