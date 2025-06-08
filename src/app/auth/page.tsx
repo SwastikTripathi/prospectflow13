@@ -58,6 +58,8 @@ const GoogleIcon = () => (
 );
 
 export default function AuthPage() {
+  console.log('[AuthPage] Component rendering. Pathname:', usePathname()); // Top-level log
+
   const router = useRouter();
   const pathname = usePathname();
   const { toast } = useToast();
@@ -81,7 +83,7 @@ export default function AuthPage() {
   });
 
   useEffect(() => {
-    console.log('[AuthPage useEffect] Hook started. Pathname:', pathname, 'Window hash:', window.location.hash);
+    console.log('[AuthPage useEffect] Hook started. Pathname:', pathname, 'Window hash:', window.location.hash, 'Search:', window.location.search);
     setIsCheckingAuth(true);
     console.log('[AuthPage useEffect] isCheckingAuth set to true.');
 
@@ -101,8 +103,7 @@ export default function AuthPage() {
         if (session) {
           console.log('[AuthPage checkSession] Session found, redirecting to /');
           router.replace('/');
-          setIsCheckingAuth(false); // Also set to false if redirecting
-          console.log('[AuthPage checkSession] isCheckingAuth set to false after redirect.');
+          // No need to set isCheckingAuth(false) here, as redirection will unmount or onAuthStateChange handles it.
         } else {
           console.log('[AuthPage checkSession] No active session.');
           setIsCheckingAuth(false);
@@ -116,53 +117,53 @@ export default function AuthPage() {
       }
     };
 
-    if (typeof window !== 'undefined' && window.location.hash.includes('access_token')) {
-      console.log('[AuthPage useEffect] Hash contains access_token. Relying on onAuthStateChange.');
-      setIsCheckingAuth(false); // Let onAuthStateChange handle session from hash
-      console.log('[AuthPage useEffect] isCheckingAuth set to false (hash contains access_token).');
-    } else if (typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('code')) {
-        console.log('[AuthPage useEffect] URL has "code" query parameter. Relying on onAuthStateChange to process it.');
-        // Supabase client library handles 'code' exchange via onAuthStateChange or getSession.
-        // No need to set isCheckingAuth to false immediately here, let onAuthStateChange determine.
-    } else {
-      console.log('[AuthPage useEffect] No access_token in hash and no code in query. Calling checkSession.');
-      checkSession();
-    }
-
     const { data: { subscription: authSubscription } } = supabase.auth.onAuthStateChange((event, session) => {
       console.log('[AuthPage onAuthStateChange] Event:', event, 'Session:', session);
       if (event === 'SIGNED_IN' && session) {
         console.log('[AuthPage onAuthStateChange] SIGNED_IN event, redirecting to /');
         router.replace('/');
-        setIsCheckingAuth(false);
+        setIsCheckingAuth(false); // Set to false after redirect instruction
         console.log('[AuthPage onAuthStateChange] isCheckingAuth set to false (SIGNED_IN).');
       } else if (event === 'INITIAL_SESSION') {
         console.log('[AuthPage onAuthStateChange] INITIAL_SESSION event.');
         if (session) {
           console.log('[AuthPage onAuthStateChange] INITIAL_SESSION: Session found, redirecting to /');
           router.replace('/');
-          setIsCheckingAuth(false);
-          console.log('[AuthPage onAuthStateChange] isCheckingAuth set to false (INITIAL_SESSION with session).');
         } else {
           console.log('[AuthPage onAuthStateChange] INITIAL_SESSION: No session.');
-          setIsCheckingAuth(false);
-          console.log('[AuthPage onAuthStateChange] isCheckingAuth set to false (INITIAL_SESSION no session).');
         }
+        setIsCheckingAuth(false);
+        console.log('[AuthPage onAuthStateChange] isCheckingAuth set to false (INITIAL_SESSION processed).');
       } else if (event === 'SIGNED_OUT') {
         console.log('[AuthPage onAuthStateChange] SIGNED_OUT event.');
-        setIsCheckingAuth(false);
+        setIsCheckingAuth(false); // Important for re-rendering the form
         console.log('[AuthPage onAuthStateChange] isCheckingAuth set to false (SIGNED_OUT).');
       } else if (event === 'PASSWORD_RECOVERY') {
         console.log('[AuthPage onAuthStateChange] PASSWORD_RECOVERY event. User might be signed in.');
-        // Often, after password recovery, the user is signed in.
-        // Let the next getSession or INITIAL_SESSION event handle it if already signed in.
-        // If not signed in, isCheckingAuth should eventually become false.
+        // No direct change to isCheckingAuth here, let subsequent events handle it.
       } else if (event === 'USER_UPDATED') {
         console.log('[AuthPage onAuthStateChange] USER_UPDATED event.');
       } else if (event === 'TOKEN_REFRESHED') {
          console.log('[AuthPage onAuthStateChange] TOKEN_REFRESHED event.');
       }
     });
+
+    const hasAuthCodeInQuery = typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('code');
+    const hasAccessTokenInHash = typeof window !== 'undefined' && window.location.hash.includes('access_token');
+
+    console.log('[AuthPage useEffect] URL Check: hasAuthCodeInQuery:', hasAuthCodeInQuery, 'hasAccessTokenInHash:', hasAccessTokenInHash);
+
+    if (hasAuthCodeInQuery || hasAccessTokenInHash) {
+      // If there's a code in query or access_token in hash,
+      // Supabase client will handle it, and onAuthStateChange should fire.
+      // We don't need to call checkSession manually.
+      // isCheckingAuth will be set to false by the onAuthStateChange listener.
+      console.log('[AuthPage useEffect] Auth code or hash token detected. Relying on onAuthStateChange. Not calling checkSession manually.');
+    } else {
+      // No active auth event in URL, so check for an existing session.
+      console.log('[AuthPage useEffect] No auth code or hash token in URL. Calling checkSession.');
+      checkSession();
+    }
 
     return () => {
       console.log('[AuthPage useEffect] Cleanup: Unsubscribing auth listener.');
@@ -206,14 +207,14 @@ export default function AuthPage() {
       if (error) {
         setAuthError(error.message);
         toast({ title: 'Sign Up Failed', description: error.message, variant: 'destructive' });
-      } else if (data.session) { // User is immediately signed in (e.g. autoConfirm is on)
+      } else if (data.session) { 
         toast({ title: 'Account Created & Signed In!' });
         // Redirect is handled by onAuthStateChange
-      } else if (data.user && !data.session) { // Email confirmation required
+      } else if (data.user && !data.session) { 
         setShowConfirmationMessage(true);
         toast({ title: 'Account Created!', description: 'Please check your email to confirm your account.' });
         signUpForm.reset();
-        signInForm.setValue('email', values.email); // Pre-fill email on sign-in tab
+        signInForm.setValue('email', values.email); 
         setDefaultTab('signin');
       } else {
          setAuthError('An unexpected outcome occurred during sign up.');
@@ -237,8 +238,12 @@ export default function AuthPage() {
       return;
     }
 
-    const redirectURL = `${siteURL}${pathname}`;
-    console.log('[AuthPage handleGoogleSignIn] Redirect URL for Google:', redirectURL);
+    // Supabase internally appends `/auth` to this redirectTo URL for its own callback processing,
+    // then redirects back to this original `redirectTo` URL after handling the OAuth flow.
+    // For email confirmation, the redirectTo in signUp options should be the final destination after confirmation.
+    // Here, for OAuth, Supabase expects the page that *initiates* the OAuth to also *receive* the callback.
+    const redirectURL = `${siteURL}${pathname}`; 
+    console.log('[AuthPage handleGoogleSignIn] Redirect URL for Google OAuth:', redirectURL);
 
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
@@ -457,5 +462,3 @@ export default function AuthPage() {
     </div>
   );
 }
-
-    
