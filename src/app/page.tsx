@@ -12,8 +12,9 @@ import { isToday, isThisWeek, format, subDays, eachDayOfInterval, isEqual, start
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartConfig } from "@/components/ui/chart";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer } from 'recharts';
 import { supabase } from '@/lib/supabaseClient';
-import type { User, Session } from '@supabase/supabase-js';
+import type { User, Session, AuthChangeEvent } from '@supabase/supabase-js';
 import { useToast } from '@/hooks/use-toast';
+import { Skeleton } from "@/components/ui/skeleton"; // Added import
 
 const initialEmailSentStatuses: JobOpening['status'][] = [
   'Emailed',
@@ -62,97 +63,112 @@ export default function DashboardPage() {
   const previousUserIdRef = useRef<string | null | undefined>(null);
 
   const { toast } = useToast();
-  console.log(`[DashboardPage] Component RENDERED. isLoadingUser: ${isLoadingUser} loadingStats: ${loadingStats} loadingCharts: ${loadingCharts} hasFetchedData: ${hasFetchedData} currentUser ID: ${currentUser?.id}`);
+  // console.log(`[DashboardPage] Component RENDERED. isLoadingUser: ${isLoadingUser} loadingStats: ${loadingStats} loadingCharts: ${loadingCharts} hasFetchedData: ${hasFetchedData} currentUser ID: ${currentUser?.id}`);
 
   const handleAuthStateChanged = useCallback((event: string, session: Session | null) => {
-    console.log(`[DashboardPage] handleAuthStateChanged EVENT: ${event} Session User ID: ${session?.user?.id}`);
+    // console.log(`[DashboardPage] handleAuthStateChanged EVENT: ${event} Session User ID: ${session?.user?.id}`);
     const newUser = session?.user ?? null;
 
     if (newUser?.id !== previousUserIdRef.current) {
-      console.log(`[DashboardPage] User CHANGED or first load with user. Old ID: ${previousUserIdRef.current} New ID: ${newUser?.id}`);
-      setHasFetchedData(false); // Reset fetch status for new user
-    } else {
-      console.log(`[DashboardPage] User ID SAME or no new user. Old ID: ${previousUserIdRef.current} New ID: ${newUser?.id}`);
+      // console.log(`[DashboardPage] User CHANGED or first load with user. Old ID: ${previousUserIdRef.current} New ID: ${newUser?.id}`);
+      setHasFetchedData(false); // Reset fetch status for new user/logout
+      if (!newUser) { // If logging out, clear stats immediately
+        setStats({ followUpsToday: 0, followUpsThisWeek: 0, activeOpenings: 0, totalContacts: 0, totalCompanies: 0 });
+        setEmailsSentData([]);
+        setOpeningsAddedData([]);
+      }
     }
     setCurrentUser(newUser);
     previousUserIdRef.current = newUser?.id;
-    console.log(`[DashboardPage] handleAuthStateChanged FINISHED. isLoadingUser set to false. CurrentUser ID: ${currentUser?.id}`);
-    setIsLoadingUser(false);
-  }, [currentUser?.id]); // Added currentUser?.id to dependencies of useCallback
+    // console.log(`[DashboardPage] handleAuthStateChanged FINISHED. isLoadingUser set to false. CurrentUser ID: ${currentUser?.id}`);
+    setIsLoadingUser(false); // Set loading to false once auth state is known
+  }, []); // No dependencies, ensures stability
 
   useEffect(() => {
-    console.log(`[DashboardPage] Auth useEffect RUNNING. Setting isLoadingUser to true.`);
+    // console.log(`[DashboardPage] Auth useEffect RUNNING. Setting isLoadingUser to true.`);
     setIsLoadingUser(true);
-    // No explicit getSession needed, onAuthStateChange handles INITIAL_SESSION
     const { data: authListener } = supabase.auth.onAuthStateChange(handleAuthStateChanged);
+    // No need for explicit getSession() as onAuthStateChange handles INITIAL_SESSION
     return () => {
-      console.log("[DashboardPage] Auth useEffect CLEANUP. Unsubscribing.");
+      // console.log("[DashboardPage] Auth useEffect CLEANUP. Unsubscribing.");
       authListener.subscription.unsubscribe();
     };
   }, [handleAuthStateChanged]);
 
 
   const fetchDashboardData = useCallback(async (userForFetch: User | null) => {
-    console.log(`[DashboardPage] fetchDashboardData ENTERED. User param ID: ${userForFetch?.id}`);
+    // console.log(`[DashboardPage] fetchDashboardData ENTERED. User param ID: ${userForFetch?.id}`);
     if (!userForFetch) {
-      console.log('[DashboardPage] fetchDashboardData SKIPPED - no user provided.');
+      // console.log('[DashboardPage] fetchDashboardData SKIPPED - no user provided.');
       setLoadingStats(false);
       setLoadingCharts(false);
-      // setHasFetchedData(true); // Consider if an attempt without user means "fetched"
+      setHasFetchedData(true); // Mark attempt as made
       return;
     }
-    console.log(`[DashboardPage] fetchDashboardData - Proceeding with user: ${userForFetch.id} . Setting loading true.`);
+    // console.log(`[DashboardPage] fetchDashboardData - Proceeding with user: ${userForFetch.id} . Setting loading true.`);
     setLoadingStats(true);
     setLoadingCharts(true);
 
     try {
-      console.log('[DB_FETCH] Entering try block...');
+      // console.log('[DB_FETCH] Entering try block...');
       let jobOpeningsResponse, followUpsResponse, contactsCountResponse, companiesCountResponse;
 
-      console.log('[DB_FETCH] Starting fetch for job_openings...');
-      jobOpeningsResponse = await supabase.from('job_openings').select('*').eq('user_id', userForFetch.id);
-      console.log('[DB_FETCH] Completed fetch for job_openings.');
-      if (jobOpeningsResponse.error) { console.error('[DB_FETCH] Error job_openings:', jobOpeningsResponse.error); throw jobOpeningsResponse.error; }
+      // console.log('[DB_FETCH] Starting fetch for job_openings...');
+      jobOpeningsResponse = await supabase.from('job_openings').select('*').eq('user_id', userForFetch.id)
+        .catch(err => { console.error('[DB_FETCH] Error in job_openings fetch:', err); return { data: [], error: err }; });
+      // console.log('[DB_FETCH] Completed fetch for job_openings.');
+      if (jobOpeningsResponse.error && !Array.isArray(jobOpeningsResponse.data)) {
+        console.error('[DB_FETCH] Error job_openings:', jobOpeningsResponse.error); throw jobOpeningsResponse.error;
+      }
 
-      console.log('[DB_FETCH] Starting fetch for follow_ups...');
-      followUpsResponse = await supabase.from('follow_ups').select('*').eq('user_id', userForFetch.id);
-      console.log('[DB_FETCH] Completed fetch for follow_ups.');
-      if (followUpsResponse.error) { console.error('[DB_FETCH] Error follow_ups:', followUpsResponse.error); throw followUpsResponse.error; }
+      // console.log('[DB_FETCH] Starting fetch for follow_ups...');
+      followUpsResponse = await supabase.from('follow_ups').select('*').eq('user_id', userForFetch.id)
+        .catch(err => { console.error('[DB_FETCH] Error in follow_ups fetch:', err); return { data: [], error: err }; });
+      // console.log('[DB_FETCH] Completed fetch for follow_ups.');
+      if (followUpsResponse.error && !Array.isArray(followUpsResponse.data)) {
+        console.error('[DB_FETCH] Error follow_ups:', followUpsResponse.error); throw followUpsResponse.error;
+      }
 
-      console.log('[DB_FETCH] Starting fetch for contacts count...');
-      contactsCountResponse = await supabase.from('contacts').select('id', { count: 'exact', head: true }).eq('user_id', userForFetch.id);
-      console.log('[DB_FETCH] Completed fetch for contacts count.');
-      if (contactsCountResponse.error) { console.error('[DB_FETCH] Error contacts count:', contactsCountResponse.error); throw contactsCountResponse.error; }
+      // console.log('[DB_FETCH] Starting fetch for contacts count...');
+      contactsCountResponse = await supabase.from('contacts').select('id', { count: 'exact', head: true }).eq('user_id', userForFetch.id)
+        .catch(err => { console.error('[DB_FETCH] Error in contacts count fetch:', err); return { count: 0, error: err }; });
+      // console.log('[DB_FETCH] Completed fetch for contacts count.');
+      if (contactsCountResponse.error && typeof contactsCountResponse.count !== 'number') {
+        console.error('[DB_FETCH] Error contacts count:', contactsCountResponse.error); throw contactsCountResponse.error;
+      }
 
-      console.log('[DB_FETCH] Starting fetch for companies count...');
-      companiesCountResponse = await supabase.from('companies').select('id', { count: 'exact', head: true }).eq('user_id', userForFetch.id);
-      console.log('[DB_FETCH] Completed fetch for companies count.');
-      if (companiesCountResponse.error) { console.error('[DB_FETCH] Error companies count:', companiesCountResponse.error); throw companiesCountResponse.error; }
-
-      console.log('[DB_FETCH] All fetches completed successfully.');
+      // console.log('[DB_FETCH] Starting fetch for companies count...');
+      companiesCountResponse = await supabase.from('companies').select('id', { count: 'exact', head: true }).eq('user_id', userForFetch.id)
+        .catch(err => { console.error('[DB_FETCH] Error in companies count fetch:', err); return { count: 0, error: err }; });
+      // console.log('[DB_FETCH] Completed fetch for companies count.');
+      if (companiesCountResponse.error && typeof companiesCountResponse.count !== 'number') {
+        console.error('[DB_FETCH] Error companies count:', companiesCountResponse.error); throw companiesCountResponse.error;
+      }
+      // console.log('[DB_FETCH] Promise.all resolved successfully.');
 
       const rawJobOpenings = jobOpeningsResponse.data || [];
-      const allFollowUps = followUpsResponse.data || [];
+      const allFollowUps = (followUpsResponse && Array.isArray(followUpsResponse.data)) ? followUpsResponse.data : [];
       const contactsCount = contactsCountResponse.count ?? 0;
       const companiesCount = companiesCountResponse.count ?? 0;
+
 
       const openingsWithFollowUps: JobOpening[] = rawJobOpenings.map(jo => ({
         ...jo,
         initial_email_date: new Date(jo.initial_email_date),
-        followUps: (allFollowUps || [])
+        followUps: allFollowUps // Already guaranteed to be an array
           .filter(fu => fu.job_opening_id === jo.id)
           .map(fuDb => ({
-            ...fuDb,
             id: fuDb.id,
             job_opening_id: fuDb.job_opening_id,
             follow_up_date: new Date(fuDb.follow_up_date),
             original_due_date: fuDb.original_due_date ? new Date(fuDb.original_due_date) : null,
-            email_content: fuDb.email_content, // This field might not exist based on your types
+            email_subject: fuDb.email_subject,
+            email_body: fuDb.email_body,
             status: fuDb.status as FollowUp['status'],
-            created_at: fuDb.created_at
+            created_at: fuDb.created_at,
           }))
           .sort((a,b) => new Date(a.follow_up_date).getTime() - new Date(b.follow_up_date).getTime()),
-         associated_contacts: jo.associated_contacts || [] // Assuming this comes from DB or is processed elsewhere
+         associated_contacts: jo.associated_contacts || []
       }));
 
       let todayCount = 0;
@@ -185,8 +201,7 @@ export default function DashboardPage() {
         totalCompanies: companiesCount,
       };
       setStats(calculatedStats);
-      console.log("[DashboardPage] fetchDashboardData - Calculated Stats:", calculatedStats);
-
+      // console.log("[DashboardPage] fetchDashboardData - Calculated Stats:", calculatedStats);
 
       const today = startOfDay(new Date());
       const last30DaysInterval = {
@@ -243,30 +258,30 @@ export default function DashboardPage() {
 
       setEmailsSentData(processedEmailsData);
       setOpeningsAddedData(processedOpeningsData);
-      console.log("[DashboardPage] fetchDashboardData - Processed Chart Data.");
+      // console.log("[DashboardPage] fetchDashboardData - Processed Chart Data.");
       
     } catch (error: any) {
-      console.error('[DB_FETCH] Error in try block of fetchDashboardData:', error);
+      // console.error('[DB_FETCH] Error in try block of fetchDashboardData:', error);
       toast({
         title: 'Error Fetching Dashboard Data',
         description: error.message || 'Could not retrieve dashboard information.',
         variant: 'destructive',
       });
     } finally {
-      console.log('[DB_FETCH] FINALLY block reached in fetchDashboardData.');
+      // console.log('[DB_FETCH] FINALLY block reached in fetchDashboardData.');
       setLoadingStats(false);
       setLoadingCharts(false);
       setHasFetchedData(true); // Indicate fetch attempt completed, regardless of success
     }
-  }, [toast]); // Removed currentUser from here, as it's passed as param
+  }, [toast]);
 
   useEffect(() => {
-    console.log(`[DashboardPage] Data Fetch useEffect RUNNING. currentUser ID: ${currentUser?.id} isLoadingUser: ${isLoadingUser} hasFetchedData: ${hasFetchedData}`);
+    // console.log(`[DashboardPage] Data Fetch useEffect RUNNING. currentUser ID: ${currentUser?.id} isLoadingUser: ${isLoadingUser} hasFetchedData: ${hasFetchedData}`);
     if (currentUser && !isLoadingUser && !hasFetchedData) {
-      console.log(`[DashboardPage] Data Fetch useEffect - CONDITIONS MET, calling fetchDashboardData with currentUser: ${currentUser.id}`);
+      // console.log(`[DashboardPage] Data Fetch useEffect - CONDITIONS MET, calling fetchDashboardData with currentUser: ${currentUser.id}`);
       fetchDashboardData(currentUser);
     } else {
-      console.log(`[DashboardPage] Data Fetch useEffect - Conditions NOT MET for fetch or already fetched.`);
+      // console.log(`[DashboardPage] Data Fetch useEffect - Conditions NOT MET for fetch or already fetched.`);
       if (!currentUser || isLoadingUser) {
         setLoadingStats(false); // Ensure loaders are off if no user or auth is still loading
         setLoadingCharts(false);
@@ -278,7 +293,7 @@ export default function DashboardPage() {
   const isStillLoadingContent = loadingStats || loadingCharts;
 
   if (isLoadingUser) {
-    console.log("[DashboardPage] RENDER - isLoadingUser is TRUE. Showing AppLayout loader via its internal logic.");
+    // console.log("[DashboardPage] RENDER - isLoadingUser is TRUE. Showing AppLayout loader via its internal logic.");
     return (
       <AppLayout>
         <div className="flex justify-center items-center h-64">
@@ -289,7 +304,7 @@ export default function DashboardPage() {
   }
 
   if (!currentUser) {
-     console.log("[DashboardPage] RENDER - No currentUser. Showing sign-in prompt.");
+    //  console.log("[DashboardPage] RENDER - No currentUser. Showing sign-in prompt.");
     return (
       <AppLayout>
         <Card>
@@ -307,7 +322,7 @@ export default function DashboardPage() {
     );
   }
 
-  console.log(`[DashboardPage] RENDER - Rendering dashboard content. isStillLoadingContent: ${isStillLoadingContent}`);
+  // console.log(`[DashboardPage] RENDER - Rendering dashboard content. isStillLoadingContent: ${isStillLoadingContent}`);
   return (
     <AppLayout>
       <div className="space-y-6">
@@ -472,7 +487,11 @@ export default function DashboardPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                {emailsSentData.filter(d => d.count > 0).length === 0 ? (
+                {isStillLoadingContent ? (
+                  <Skeleton className="h-[300px] w-full" />
+                ) : !currentUser ? (
+                  <p className="text-sm text-muted-foreground h-[300px] flex items-center justify-center">Please sign in to see email data.</p>
+                ) : (!Array.isArray(emailsSentData) || emailsSentData.filter(d => d.count > 0).length === 0) ? (
                   <p className="text-sm text-muted-foreground h-[300px] flex items-center justify-center">No email data to display for the last 30 days.</p>
                 ) : (
                   <ChartContainer config={emailsSentChartConfig} className="h-[300px] w-full">
@@ -508,7 +527,11 @@ export default function DashboardPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                {openingsAddedData.filter(d => d.count > 0).length === 0 ? (
+                 {isStillLoadingContent ? (
+                  <Skeleton className="h-[300px] w-full" />
+                ) : !currentUser ? (
+                  <p className="text-sm text-muted-foreground h-[300px] flex items-center justify-center">Please sign in to see openings data.</p>
+                ): (!Array.isArray(openingsAddedData) || openingsAddedData.filter(d => d.count > 0).length === 0) ? (
                    <p className="text-sm text-muted-foreground h-[300px] flex items-center justify-center">No new openings data to display for the last 30 days.</p>
                 ): (
                   <ChartContainer config={openingsAddedChartConfig} className="h-[300px] w-full">
@@ -542,3 +565,4 @@ export default function DashboardPage() {
   );
 }
     
+
