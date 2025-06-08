@@ -14,7 +14,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Eye, EyeOff } from 'lucide-react';
 import { PublicNavbar } from '@/components/layout/PublicNavbar';
 
 const signInSchema = z.object({
@@ -25,6 +25,10 @@ const signInSchema = z.object({
 const signUpSchema = z.object({
   email: z.string().email({ message: 'Invalid email address.' }),
   password: z.string().min(6, { message: 'Password must be at least 6 characters.' }),
+  confirmPassword: z.string().min(1, { message: 'Please confirm your password.' })
+}).refine(data => data.password === data.confirmPassword, {
+  message: "Passwords don't match.",
+  path: ["confirmPassword"],
 });
 
 type SignInFormValues = z.infer<typeof signInSchema>;
@@ -63,6 +67,8 @@ export default function AuthPage() {
   const [authError, setAuthError] = useState<string | null>(null);
   const [showConfirmationMessage, setShowConfirmationMessage] = useState(false);
   const [defaultTab, setDefaultTab] = useState<'signin' | 'signup'>('signin');
+  const [showSignUpPassword, setShowSignUpPassword] = useState(false);
+  const [showSignUpConfirmPassword, setShowSignUpConfirmPassword] = useState(false);
 
   const signInForm = useForm<SignInFormValues>({
     resolver: zodResolver(signInSchema),
@@ -71,7 +77,7 @@ export default function AuthPage() {
 
   const signUpForm = useForm<SignUpFormValues>({
     resolver: zodResolver(signUpSchema),
-    defaultValues: { email: '', password: '' },
+    defaultValues: { email: '', password: '', confirmPassword: '' },
   });
 
   useEffect(() => {
@@ -303,9 +309,58 @@ export default function AuthPage() {
                         render={({ field }) => (
                         <FormItem>
                             <FormLabel>Password</FormLabel>
-                            <FormControl>
-                            <Input type="password" placeholder="Must be at least 6 characters" {...field} />
-                            </FormControl>
+                            <div className="relative">
+                                <FormControl>
+                                <Input
+                                    type={showSignUpPassword ? 'text' : 'password'}
+                                    placeholder="Must be at least 6 characters"
+                                    {...field}
+                                    className="pr-10" 
+                                />
+                                </FormControl>
+                                <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 text-muted-foreground hover:text-primary"
+                                onClick={() => setShowSignUpPassword(!showSignUpPassword)}
+                                tabIndex={-1}
+                                >
+                                {showSignUpPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                <span className="sr-only">{showSignUpPassword ? 'Hide password' : 'Show password'}</span>
+                                </Button>
+                            </div>
+                            <FormMessage />
+                        </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={signUpForm.control}
+                        name="confirmPassword"
+                        render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Confirm Password</FormLabel>
+                            <div className="relative">
+                                <FormControl>
+                                <Input
+                                    type={showSignUpConfirmPassword ? 'text' : 'password'}
+                                    placeholder="Confirm your password"
+                                    {...field}
+                                    className="pr-10"
+                                />
+                                </FormControl>
+                                <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 text-muted-foreground hover:text-primary"
+                                onClick={() => setShowSignUpConfirmPassword(!showSignUpConfirmPassword)}
+                                tabIndex={-1}
+                                >
+                                {showSignUpConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                <span className="sr-only">{showSignUpConfirmPassword ? 'Hide password' : 'Show password'}</span>
+                                </Button>
+                            </div>
                             <FormMessage />
                         </FormItem>
                         )}
