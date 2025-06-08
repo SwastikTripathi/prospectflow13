@@ -1793,6 +1793,10 @@ body {
   height: 100svh;
 }
 
+.h-20 {
+  height: 5rem;
+}
+
 .max-h-96 {
   max-height: 24rem;
 }

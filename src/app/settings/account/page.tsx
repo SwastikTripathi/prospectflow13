@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { AppLayout } from "@/components/layout/AppLayout";
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -86,10 +86,28 @@ const passwordChangeSchema = z.object({
 
 type PasswordChangeFormValues = z.infer<typeof passwordChangeSchema>;
 
+const defaultFormValues: AccountSettingsFormValues = {
+  displayName: '',
+  usagePreference: 'job_hunt',
+  cadenceFu1: defaultCadence[0],
+  cadenceFu2: defaultCadence[1],
+  cadenceFu3: defaultCadence[2],
+  defaultEmailTemplates: defaultAllTemplates,
+  ageRange: '',
+  country: '',
+  annualIncome: '',
+  incomeCurrency: '',
+  currentRole: '',
+};
+
 export default function AccountSettingsPage() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [userSettings, setUserSettings] = useState<UserSettings | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingAuth, setIsLoadingAuth] = useState(true);
+  const [isFetchingSettings, setIsFetchingSettings] = useState(false);
+  const [hasFetchedData, setHasFetchedData] = useState(false);
+  const previousUserIdRef = useRef<string | null | undefined>(null);
+
   const [isPasswordUpdating, setIsPasswordUpdating] = useState(false);
   const [isDeleteStep1Open, setIsDeleteStep1Open] = useState(false);
   const [isDeleteStep2Open, setIsDeleteStep2Open] = useState(false);
@@ -100,19 +118,7 @@ export default function AccountSettingsPage() {
 
   const settingsForm = useForm<AccountSettingsFormValues>({
     resolver: zodResolver(accountSettingsSchema),
-    defaultValues: {
-      displayName: '',
-      usagePreference: 'job_hunt',
-      cadenceFu1: defaultCadence[0],
-      cadenceFu2: defaultCadence[1],
-      cadenceFu3: defaultCadence[2],
-      defaultEmailTemplates: defaultAllTemplates,
-      ageRange: '',
-      country: '',
-      annualIncome: '',
-      incomeCurrency: '',
-      currentRole: '',
-    },
+    defaultValues: defaultFormValues,
   });
 
   const passwordForm = useForm<PasswordChangeFormValues>({
@@ -124,7 +130,7 @@ export default function AccountSettingsPage() {
   });
 
   const fetchAccountData = useCallback(async (user: User) => {
-    setIsLoading(true);
+    setIsFetchingSettings(true);
     try {
       const { data: settingsData, error: settingsError } = await supabase
         .from('user_settings')
@@ -142,7 +148,7 @@ export default function AccountSettingsPage() {
         : defaultAllTemplates;
 
       settingsForm.reset({
-        displayName: fetchedSettings?.full_name || '',
+        displayName: fetchedSettings?.full_name || user.user_metadata?.full_name || '',
         usagePreference: fetchedSettings?.usage_preference || 'job_hunt',
         cadenceFu1: (fetchedSettings?.follow_up_cadence_days as [number,number,number])?.[0] ?? defaultCadence[0],
         cadenceFu2: (fetchedSettings?.follow_up_cadence_days as [number,number,number])?.[1] ?? defaultCadence[1],
@@ -172,51 +178,55 @@ export default function AccountSettingsPage() {
     } catch (error: any) {
       toast({ title: 'Error Fetching Settings', description: error.message, variant: 'destructive' });
     } finally {
-      setIsLoading(false);
+      setIsFetchingSettings(false);
+      setHasFetchedData(true);
     }
   }, [toast, settingsForm]);
 
   useEffect(() => {
+    setIsLoadingAuth(true);
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       const user = session?.user ?? null;
-      setCurrentUser(user);
-      if (user) {
-        fetchAccountData(user);
-      } else {
-        setIsLoading(false);
-        settingsForm.reset({
-            displayName: '',
-            usagePreference: 'job_hunt',
-            cadenceFu1: defaultCadence[0],
-            cadenceFu2: defaultCadence[1],
-            cadenceFu3: defaultCadence[2],
-            defaultEmailTemplates: defaultAllTemplates,
-            ageRange: '',
-            country: '',
-            annualIncome: '',
-            incomeCurrency: '',
-            currentRole: '',
-        });
+      if (user?.id !== previousUserIdRef.current) {
+        setHasFetchedData(false);
+        setUserSettings(null);
+        settingsForm.reset(defaultFormValues);
       }
+      setCurrentUser(user);
+      previousUserIdRef.current = user?.id;
+      setIsLoadingAuth(false);
     });
 
     supabase.auth.getUser().then(({ data: { user } }) => {
-      setCurrentUser(user);
-      if (user) {
-        fetchAccountData(user);
-      } else {
-        setIsLoading(false);
+      if (user?.id !== previousUserIdRef.current) {
+        setHasFetchedData(false);
+        setUserSettings(null);
+        settingsForm.reset(defaultFormValues);
       }
+      setCurrentUser(user);
+      previousUserIdRef.current = user?.id;
+      setIsLoadingAuth(false);
     });
     return () => authListener.subscription.unsubscribe();
-  }, [fetchAccountData, settingsForm]);
+  }, [settingsForm]);
+
+  useEffect(() => {
+    if (currentUser && !isLoadingAuth && !hasFetchedData) {
+      fetchAccountData(currentUser);
+    } else if (!currentUser && !isLoadingAuth) {
+      setUserSettings(null);
+      settingsForm.reset(defaultFormValues);
+      setHasFetchedData(true); // Mark as "fetched" as there's nothing to fetch for a null user
+    }
+  }, [currentUser, isLoadingAuth, hasFetchedData, fetchAccountData, settingsForm]);
+
 
   const onSettingsSubmit = async (values: AccountSettingsFormValues) => {
     if (!currentUser) {
       toast({ title: 'Not Authenticated', description: 'Please log in.', variant: 'destructive' });
       return;
     }
-    setIsLoading(true);
+    setIsFetchingSettings(true); // Use this for the submit operation as well
     try {
       const settingsDataToUpsert = {
         user_id: currentUser.id,
@@ -229,7 +239,7 @@ export default function AccountSettingsPage() {
         annual_income: values.annualIncome ? Number(values.annualIncome) : null,
         income_currency: values.incomeCurrency || null,
         current_role: values.currentRole,
-        onboarding_complete: userSettings?.onboarding_complete ?? true, // Preserve existing or assume true if settings page is reached
+        onboarding_complete: userSettings?.onboarding_complete ?? true,
       };
       const { error: settingsUpsertError } = await supabase
         .from('user_settings')
@@ -246,11 +256,14 @@ export default function AccountSettingsPage() {
       }
 
       toast({ title: 'Settings Updated', description: 'Your account settings have been saved.' });
-      await fetchAccountData(currentUser);
+      // Optionally re-fetch or update local state if needed, though upsert should mean data is fresh
+      // await fetchAccountData(currentUser); // Re-fetch to confirm and update form with potentially processed values
+      setUserSettings(prev => ({...(prev || {} as UserSettings), ...settingsDataToUpsert, user_id: currentUser.id}));
+      
     } catch (error: any) {
       toast({ title: 'Error Saving Settings', description: error.message, variant: 'destructive' });
     } finally {
-      setIsLoading(false);
+      setIsFetchingSettings(false);
     }
   };
 
@@ -325,12 +338,16 @@ export default function AccountSettingsPage() {
     }
   };
 
-  if (isLoading && !currentUser && !settingsForm.formState.isDirty) {
+  if (isLoadingAuth) {
     return <AppLayout><div className="flex justify-center items-center h-64"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div></AppLayout>;
   }
   if (!currentUser) {
-     return <AppLayout><Card><CardHeader><CardTitle>Access Denied</CardTitle></CardHeader><CardContent><p>Please log in to access account settings.</p></CardContent></Card></AppLayout>;
+     return <AppLayout><Card><CardHeader><CardTitle>Access Denied</CardTitle></CardHeader><CardContent><p>Please log in to access account settings.</p><Button asChild className="mt-4"><Link href="/auth">Sign In</Link></Button></CardContent></Card></AppLayout>;
   }
+
+  // Show skeletons or disabled form while fetching initial settings for this user
+  const showSettingsLoader = isFetchingSettings && !hasFetchedData;
+
 
   return (
     <AppLayout>
@@ -351,6 +368,21 @@ export default function AccountSettingsPage() {
                 <CardDescription>Update your display name and general profile information.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
+                 {showSettingsLoader ? (
+                  <>
+                    <SkeletonItem label="Display Name" />
+                    <SkeletonItem label="Current Role/Profession" />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <SkeletonItem label="Age Range" type="select" />
+                      <SkeletonItem label="Country of Residence" />
+                    </div>
+                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <SkeletonItem label="Annual Income (Optional)" />
+                      <SkeletonItem label="Income Currency (Optional)" type="select" />
+                    </div>
+                  </>
+                ) : (
+                <>
                 <FormField
                   control={settingsForm.control}
                   name="displayName"
@@ -358,7 +390,7 @@ export default function AccountSettingsPage() {
                     <FormItem>
                       <FormLabel>Display Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="Your Name" {...field} disabled={isLoading || settingsForm.formState.isSubmitting} />
+                        <Input placeholder="Your Name" {...field} disabled={isFetchingSettings || settingsForm.formState.isSubmitting} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -370,7 +402,7 @@ export default function AccountSettingsPage() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Current Role/Profession</FormLabel>
-                      <FormControl><Input placeholder="e.g., Software Engineer" {...field} disabled={isLoading || settingsForm.formState.isSubmitting} /></FormControl>
+                      <FormControl><Input placeholder="e.g., Software Engineer" {...field} disabled={isFetchingSettings || settingsForm.formState.isSubmitting} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -382,7 +414,7 @@ export default function AccountSettingsPage() {
                         render={({ field }) => (
                         <FormItem>
                             <FormLabel>Age Range</FormLabel>
-                            <Select onValueChange={field.onChange} value={field.value} disabled={isLoading || settingsForm.formState.isSubmitting}>
+                            <Select onValueChange={field.onChange} value={field.value} disabled={isFetchingSettings || settingsForm.formState.isSubmitting}>
                             <FormControl><SelectTrigger><SelectValue placeholder="Select your age range" /></SelectTrigger></FormControl>
                             <SelectContent>
                                 {AGE_RANGES.map(range => <SelectItem key={range} value={range}>{range}</SelectItem>)}
@@ -398,7 +430,7 @@ export default function AccountSettingsPage() {
                         render={({ field }) => (
                         <FormItem>
                             <FormLabel>Country of Residence</FormLabel>
-                            <FormControl><Input placeholder="e.g., United States" {...field} disabled={isLoading || settingsForm.formState.isSubmitting} /></FormControl>
+                            <FormControl><Input placeholder="e.g., United States" {...field} disabled={isFetchingSettings || settingsForm.formState.isSubmitting} /></FormControl>
                             <FormMessage />
                         </FormItem>
                         )}
@@ -411,7 +443,7 @@ export default function AccountSettingsPage() {
                         render={({ field }) => (
                         <FormItem>
                             <FormLabel>Annual Income (Optional)</FormLabel>
-                            <FormControl><Input type="number" placeholder="e.g., 50000" {...field} onChange={e => field.onChange(e.target.value === '' ? '' : parseFloat(e.target.value))} disabled={isLoading || settingsForm.formState.isSubmitting} /></FormControl>
+                            <FormControl><Input type="number" placeholder="e.g., 50000" {...field} onChange={e => field.onChange(e.target.value === '' ? '' : parseFloat(e.target.value))} disabled={isFetchingSettings || settingsForm.formState.isSubmitting} /></FormControl>
                             <FormMessage />
                         </FormItem>
                         )}
@@ -422,7 +454,7 @@ export default function AccountSettingsPage() {
                         render={({ field }) => (
                         <FormItem>
                             <FormLabel>Income Currency (Optional)</FormLabel>
-                            <Select onValueChange={field.onChange} value={field.value || ''} disabled={isLoading || settingsForm.formState.isSubmitting}>
+                            <Select onValueChange={field.onChange} value={field.value || ''} disabled={isFetchingSettings || settingsForm.formState.isSubmitting}>
                             <FormControl><SelectTrigger><SelectValue placeholder="Select currency" /></SelectTrigger></FormControl>
                             <SelectContent>
                                 {CURRENCIES.map(currency => <SelectItem key={currency} value={currency}>{currency}</SelectItem>)}
@@ -433,6 +465,8 @@ export default function AccountSettingsPage() {
                         )}
                     />
                 </div>
+                </>
+                )}
               </CardContent>
             </Card>
 
@@ -442,6 +476,7 @@ export default function AccountSettingsPage() {
                 <CardDescription>This feature is coming soon. Your selection here will help tailor your experience in the future.</CardDescription>
               </CardHeader>
               <CardContent>
+                 {showSettingsLoader ? <SkeletonItem label="Primary Usage" type="select" /> : (
                 <FormField
                   control={settingsForm.control}
                   name="usagePreference"
@@ -451,7 +486,7 @@ export default function AccountSettingsPage() {
                       <Select
                         onValueChange={field.onChange}
                         value={field.value}
-                        disabled={true}
+                        disabled={true || isFetchingSettings} // Always disabled, or also when fetching
                       >
                         <FormControl>
                           <SelectTrigger><SelectValue placeholder="Select your primary goal" /></SelectTrigger>
@@ -466,6 +501,7 @@ export default function AccountSettingsPage() {
                     </FormItem>
                   )}
                 />
+                 )}
               </CardContent>
             </Card>
 
@@ -475,13 +511,15 @@ export default function AccountSettingsPage() {
                 <CardDescription>Set the default number of days after the initial email for each follow-up. Must be sequential.</CardDescription>
               </CardHeader>
               <CardContent className="grid md:grid-cols-3 gap-4">
+                {showSettingsLoader ? <> <SkeletonItem label="Follow-up 1 (days)" /> <SkeletonItem label="Follow-up 2 (days)" /> <SkeletonItem label="Follow-up 3 (days)" /> </> : (
+                <>
                 <FormField
                   control={settingsForm.control}
                   name="cadenceFu1"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Follow-up 1 (days after initial)</FormLabel>
-                      <FormControl><Input type="number" min="1" max="90" {...field} disabled={isLoading || settingsForm.formState.isSubmitting} /></FormControl>
+                      <FormControl><Input type="number" min="1" max="90" {...field} disabled={isFetchingSettings || settingsForm.formState.isSubmitting} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -492,7 +530,7 @@ export default function AccountSettingsPage() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Follow-up 2 (days after initial)</FormLabel>
-                      <FormControl><Input type="number" min="1" max="90" {...field} disabled={isLoading || settingsForm.formState.isSubmitting} /></FormControl>
+                      <FormControl><Input type="number" min="1" max="90" {...field} disabled={isFetchingSettings || settingsForm.formState.isSubmitting} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -503,11 +541,13 @@ export default function AccountSettingsPage() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Follow-up 3 (days after initial)</FormLabel>
-                      <FormControl><Input type="number" min="1" max="90" {...field} disabled={isLoading || settingsForm.formState.isSubmitting} /></FormControl>
+                      <FormControl><Input type="number" min="1" max="90" {...field} disabled={isFetchingSettings || settingsForm.formState.isSubmitting} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+                </>
+                )}
               </CardContent>
                {settingsForm.formState.errors?.cadenceFu2?.type === 'manual' && (
                   <CardFooter><p className="text-sm font-medium text-destructive">{settingsForm.formState.errors.cadenceFu2.message}</p></CardFooter>
@@ -520,6 +560,7 @@ export default function AccountSettingsPage() {
                 <CardDescription>Set default content for your follow-up emails. These will pre-fill when creating a new job opening.</CardDescription>
               </CardHeader>
               <CardContent>
+                {showSettingsLoader ? <div className="space-y-2"><Skeleton className="h-8 w-full" /><Skeleton className="h-20 w-full" /></div> : (
                 <Accordion type="multiple" className="w-full mb-6">
                   {(['followUp1', 'followUp2', 'followUp3'] as const).map((fuKey, index) => (
                     <AccordionItem value={`item-${index + 1}`} key={fuKey}>
@@ -531,7 +572,7 @@ export default function AccountSettingsPage() {
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>Subject Line</FormLabel>
-                              <FormControl><Input placeholder={`Subject for Follow-up ${index + 1}`} {...field} value={field.value || ''} disabled={isLoading || settingsForm.formState.isSubmitting} /></FormControl>
+                              <FormControl><Input placeholder={`Subject for Follow-up ${index + 1}`} {...field} value={field.value || ''} disabled={isFetchingSettings || settingsForm.formState.isSubmitting} /></FormControl>
                               <FormMessage />
                             </FormItem>
                           )}
@@ -542,7 +583,7 @@ export default function AccountSettingsPage() {
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>Opening Line / Main Content</FormLabel>
-                              <FormControl><Textarea placeholder={`Opening line/body for Follow-up ${index + 1}`} {...field} value={field.value || ''} rows={3} disabled={isLoading || settingsForm.formState.isSubmitting} /></FormControl>
+                              <FormControl><Textarea placeholder={`Opening line/body for Follow-up ${index + 1}`} {...field} value={field.value || ''} rows={3} disabled={isFetchingSettings || settingsForm.formState.isSubmitting} /></FormControl>
                               <FormMessage />
                             </FormItem>
                           )}
@@ -551,7 +592,9 @@ export default function AccountSettingsPage() {
                     </AccordionItem>
                   ))}
                 </Accordion>
+                )}
 
+                {showSettingsLoader ? <SkeletonItem label="Shared Email Signature" type="textarea" /> : (
                 <FormField
                   control={settingsForm.control}
                   name="defaultEmailTemplates.sharedSignature"
@@ -559,17 +602,18 @@ export default function AccountSettingsPage() {
                     <FormItem>
                       <FormLabel className="text-base font-semibold flex items-center"><Edit3 className="mr-2 h-4 w-4 text-muted-foreground" /> Shared Email Signature</FormLabel>
                        <CardDescription className="text-xs mb-2">This signature will be appended to all default follow-up email templates.</CardDescription>
-                      <FormControl><Textarea placeholder="Your default signature (e.g., Best regards, Your Name)" {...field} value={field.value || ''} rows={3} disabled={isLoading || settingsForm.formState.isSubmitting}/></FormControl>
+                      <FormControl><Textarea placeholder="Your default signature (e.g., Best regards, Your Name)" {...field} value={field.value || ''} rows={3} disabled={isFetchingSettings || settingsForm.formState.isSubmitting}/></FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+                )}
               </CardContent>
             </Card>
 
             <div className="flex justify-end pt-4">
-              <Button type="submit" size="lg" disabled={isLoading || settingsForm.formState.isSubmitting}>
-                { (isLoading || settingsForm.formState.isSubmitting) && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              <Button type="submit" size="lg" disabled={isFetchingSettings || settingsForm.formState.isSubmitting}>
+                { (isFetchingSettings || settingsForm.formState.isSubmitting) && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Save All Settings
               </Button>
             </div>
@@ -584,6 +628,8 @@ export default function AccountSettingsPage() {
                 <CardDescription>Update your account password. Choose a strong, unique password.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
+                 {showSettingsLoader ? <> <SkeletonItem label="New Password" /> <SkeletonItem label="Confirm New Password" /> </> : (
+                <>
                 <FormField
                   control={passwordForm.control}
                   name="newPassword"
@@ -591,7 +637,7 @@ export default function AccountSettingsPage() {
                     <FormItem>
                       <FormLabel>New Password</FormLabel>
                       <FormControl>
-                        <Input type="password" placeholder="Enter new password" {...field} disabled={isPasswordUpdating} />
+                        <Input type="password" placeholder="Enter new password" {...field} disabled={isPasswordUpdating || isFetchingSettings} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -604,15 +650,17 @@ export default function AccountSettingsPage() {
                     <FormItem>
                       <FormLabel>Confirm New Password</FormLabel>
                       <FormControl>
-                        <Input type="password" placeholder="Confirm new password" {...field} disabled={isPasswordUpdating} />
+                        <Input type="password" placeholder="Confirm new password" {...field} disabled={isPasswordUpdating || isFetchingSettings} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+                </>
+                 )}
               </CardContent>
               <CardFooter>
-                <Button type="submit" disabled={isPasswordUpdating}>
+                <Button type="submit" disabled={isPasswordUpdating || isFetchingSettings}>
                   {isPasswordUpdating && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   Update Password
                 </Button>
@@ -632,7 +680,7 @@ export default function AccountSettingsPage() {
               job openings, contacts, companies, follow-up schedules, email templates, user settings, and subscription information.
               Your authentication record will remain but will no longer be associated with any application data.
             </p>
-            <Button variant="destructive" onClick={() => setIsDeleteStep1Open(true)} disabled={isDeletingAccount}>
+            <Button variant="destructive" onClick={() => setIsDeleteStep1Open(true)} disabled={isDeletingAccount || isFetchingSettings}>
               {isDeletingAccount ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Trash2 className="mr-2 h-4 w-4" />}
               Delete My Account
             </Button>
@@ -696,3 +744,13 @@ export default function AccountSettingsPage() {
     </AppLayout>
   );
 }
+
+// Helper for skeleton UI
+const SkeletonItem: React.FC<{label: string, type?: 'input' | 'select' | 'textarea'}> = ({label, type = 'input'}) => (
+  <FormItem>
+    <FormLabel><Label>{label}</Label></FormLabel>
+    <Skeleton className={type === 'textarea' ? "h-20 w-full" : "h-10 w-full"} />
+  </FormItem>
+);
+
+    
