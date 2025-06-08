@@ -2,6 +2,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import Link from 'next/link'; // Added Link import
 import { AppLayout } from "@/components/layout/AppLayout";
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -132,28 +133,22 @@ export default function AccountSettingsPage() {
 
   const fetchAccountData = useCallback(async (user: User) => {
     setIsFetchingSettings(true);
-    console.log(`[AccountSettingsPage fetchAccountData] ENTERED. User param ID: ${user.id}. isFetchingSettings set to true.`);
     try {
-      console.log(`[AccountSettingsPage fetchAccountData] Fetching settings from Supabase for user ${user.id}`);
       const { data: settingsData, error: settingsError } = await supabase
         .from('user_settings')
         .select('*')
         .eq('user_id', user.id)
         .single();
-      console.log(`[AccountSettingsPage fetchAccountData] Supabase settings fetch complete. Error:`, settingsError, "Data:", !!settingsData);
 
-
-      if (settingsError && settingsError.code !== 'PGRST116') { // PGRST116 means no rows found, which is fine
-        console.error("[AccountSettingsPage fetchAccountData] Error fetching user_settings:", settingsError);
+      if (settingsError && settingsError.code !== 'PGRST116') {
         throw settingsError;
       }
 
       const fetchedSettings = settingsData as UserSettings | null;
-      setUserSettings(fetchedSettings); // Update state
+      setUserSettings(fetchedSettings);
 
-      // Prepare values for form reset, ensuring all fields have fallbacks to defaultFormValues
       const resetData: AccountSettingsFormValues = {
-        ...defaultFormValues, // Start with all defaults
+        ...defaultFormValues,
         displayName: fetchedSettings?.full_name ?? user.user_metadata?.full_name ?? defaultFormValues.displayName,
         usagePreference: fetchedSettings?.usage_preference ?? defaultFormValues.usagePreference,
         cadenceFu1: (fetchedSettings?.follow_up_cadence_days as [number,number,number] | null)?.[0] ?? defaultFormValues.cadenceFu1,
@@ -180,8 +175,7 @@ export default function AccountSettingsPage() {
         incomeCurrency: fetchedSettings?.income_currency ?? defaultFormValues.incomeCurrency,
         currentRole: fetchedSettings?.current_role ?? defaultFormValues.currentRole,
       };
-      
-      // Ensure annualIncome is a number or empty string for the form control, not null
+
       if (resetData.annualIncome === null) {
           resetData.annualIncome = '';
       }
@@ -189,17 +183,12 @@ export default function AccountSettingsPage() {
           resetData.incomeCurrency = '';
       }
 
-
-      console.log("[AccountSettingsPage fetchAccountData] Resetting form with values:", resetData);
       settingsForm.reset(resetData);
 
     } catch (error: any) {
-      console.error("[AccountSettingsPage fetchAccountData] CATCH block error:", error);
       toast({ title: 'Error Fetching Settings', description: error.message || "Could not load your settings.", variant: 'destructive' });
-      // Fallback to default form values if fetch fails catastrophically
       settingsForm.reset(defaultFormValues);
     } finally {
-      console.log("[AccountSettingsPage fetchAccountData] FINALLY block. Setting isFetchingSettings: false, hasFetchedData: true");
       setIsFetchingSettings(false);
       setHasFetchedData(true);
     }
@@ -207,26 +196,20 @@ export default function AccountSettingsPage() {
 
 
   useEffect(() => {
-    console.log(`[AccountSettingsPage] Auth useEffect RUNNING. Initial isLoadingAuth: ${isLoadingAuth}`);
     setIsLoadingAuth(true);
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log(`[AccountSettingsPage] onAuthStateChange EVENT: ${event} Session User ID: ${session?.user?.id}`);
       const user = session?.user ?? null;
       if (user?.id !== previousUserIdRef.current) {
-        console.log(`[AccountSettingsPage] Auth useEffect - User updated. Previous: ${previousUserIdRef.current}, New: ${user?.id}. Resetting hasFetchedData.`);
         setHasFetchedData(false);
-        setUserSettings(null); // Reset settings if user changes
-        settingsForm.reset(defaultFormValues); // Reset form to defaults if user changes or logs out
+        setUserSettings(null);
+        settingsForm.reset(defaultFormValues);
       }
       setCurrentUser(user);
       previousUserIdRef.current = user?.id;
       setIsLoadingAuth(false);
-      console.log(`[AccountSettingsPage] Auth useEffect FINISHED. isLoadingAuth set to false. currentUser ID: ${user?.id}`);
     });
 
-    // Initial check
     supabase.auth.getUser().then(({ data: { user } }) => {
-      console.log(`[AccountSettingsPage] Initial getUser() processed. Session User ID: ${user?.id}`);
        if (user?.id !== previousUserIdRef.current) {
         setHasFetchedData(false);
         setUserSettings(null);
@@ -234,18 +217,17 @@ export default function AccountSettingsPage() {
       }
       setCurrentUser(user);
       previousUserIdRef.current = user?.id;
-      setIsLoadingAuth(false); // Ensure this is set after initial check too
+      setIsLoadingAuth(false);
     });
     return () => authListener.subscription.unsubscribe();
-  }, [settingsForm]); // Added settingsForm to deps as it's used in the effect
+  }, [settingsForm]);
 
   useEffect(() => {
-    console.log(`[AccountSettingsPage] Data Fetch useEffect RUNNING. currentUser ID: ${currentUser?.id}, isLoadingAuth: ${isLoadingAuth}, hasFetchedData: ${hasFetchedData}`);
     if (currentUser && !isLoadingAuth && !hasFetchedData) {
-      console.log(`[AccountSettingsPage] Data Fetch useEffect - CONDITIONS MET, calling fetchAccountData with currentUser: ${currentUser.id}`);
       fetchAccountData(currentUser);
-    } else {
-      console.log(`[AccountSettingsPage] Data Fetch useEffect - Conditions NOT MET (isLoadingAuth is ${isLoadingAuth}, currentUser is ${currentUser ? 'defined' : 'null'}, hasFetchedData is ${hasFetchedData}).`);
+    } else if (!currentUser && !isLoadingAuth) {
+        setIsFetchingSettings(false); // Ensure this is false if no user
+        setHasFetchedData(true); // Mark as "attempted" for no user
     }
   }, [currentUser, isLoadingAuth, hasFetchedData, fetchAccountData]);
 
