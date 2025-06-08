@@ -81,39 +81,55 @@ export default function AuthPage() {
   });
 
   useEffect(() => {
+    setIsCheckingAuth(true); // Explicitly set checking state at the start of the effect
+
     const checkSession = async () => {
-      setIsCheckingAuth(true);
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        router.replace('/'); 
-      } else {
-        setIsCheckingAuth(false); 
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+          router.replace('/');
+          setIsCheckingAuth(false); // Also set to false if redirecting
+        } else {
+          setIsCheckingAuth(false);
+        }
+      } catch (error: any) {
+        console.error("Error in checkSession:", error);
+        toast({ title: 'Auth Check Error', description: 'Could not check session.', variant: 'destructive' });
+        setIsCheckingAuth(false); // Ensure loader stops on error
       }
     };
-    
-    if(typeof window !== 'undefined' && !window.location.hash.includes('access_token')) { 
-        checkSession();
+
+    // This condition primarily handles OAuth redirects with access_token in hash.
+    // For email confirmations, onAuthStateChange is usually the main handler.
+    if (typeof window !== 'undefined' && window.location.hash.includes('access_token')) {
+      setIsCheckingAuth(false); // Let onAuthStateChange handle session from hash
     } else {
-        setIsCheckingAuth(false); 
+      checkSession(); // Check for existing session or process other URL params like `code` (if applicable)
     }
 
     const { data: { subscription: authSubscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_IN' && session) {
-        setIsCheckingAuth(false); 
         router.replace('/');
+        setIsCheckingAuth(false); // Also set to false if redirecting
       } else if (event === 'INITIAL_SESSION') {
-        if (!session) {
-          setIsCheckingAuth(false);
+        if (session) {
+          router.replace('/');
+          setIsCheckingAuth(false); // Also set to false if redirecting
         } else {
-           router.replace('/');
+          setIsCheckingAuth(false);
         }
+      } else if (event === 'SIGNED_OUT') {
+        setIsCheckingAuth(false);
       }
+      // Other events like TOKEN_REFRESHED, USER_UPDATED, PASSWORD_RECOVERY are not explicitly
+      // setting isCheckingAuth to false here, relying on INITIAL_SESSION or SIGNED_IN
+      // to have already determined the auth state and loading status.
     });
 
     return () => {
       authSubscription?.unsubscribe();
     };
-  }, [router]);
+  }, [router, toast]);
 
 
   const handleSignIn = async (values: SignInFormValues) => {
@@ -129,6 +145,7 @@ export default function AuthPage() {
         toast({ title: 'Sign In Failed', description: error.message, variant: 'destructive' });
       } else {
         toast({ title: 'Signed In Successfully!'});
+        // Redirect is handled by onAuthStateChange
       }
     } catch (error: any) {
       setAuthError(error.message || 'An unexpected error occurred.');
@@ -150,13 +167,14 @@ export default function AuthPage() {
       if (error) {
         setAuthError(error.message);
         toast({ title: 'Sign Up Failed', description: error.message, variant: 'destructive' });
-      } else if (data.session) {
+      } else if (data.session) { // User is immediately signed in (e.g. autoConfirm is on)
         toast({ title: 'Account Created & Signed In!' });
-      } else if (data.user && !data.session) {
+        // Redirect is handled by onAuthStateChange
+      } else if (data.user && !data.session) { // Email confirmation required
         setShowConfirmationMessage(true);
         toast({ title: 'Account Created!', description: 'Please check your email to confirm your account.' });
         signUpForm.reset();
-        signInForm.setValue('email', values.email);
+        signInForm.setValue('email', values.email); // Pre-fill email on sign-in tab
         setDefaultTab('signin');
       } else {
          setAuthError('An unexpected outcome occurred during sign up.');
@@ -172,15 +190,15 @@ export default function AuthPage() {
   const handleGoogleSignIn = async () => {
     setIsGoogleLoading(true);
     setAuthError(null);
-    
+
     const siteURL = process.env.NEXT_PUBLIC_SITE_URL || (typeof window !== 'undefined' ? window.location.origin : '');
     if (!siteURL) {
       toast({ title: 'Configuration Error', description: 'Could not determine site URL. Google Sign-In aborted.', variant: 'destructive' });
       setIsGoogleLoading(false);
       return;
     }
-    
-    const redirectURL = `${siteURL}${pathname}`; 
+
+    const redirectURL = `${siteURL}${pathname}`;
 
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
@@ -193,6 +211,7 @@ export default function AuthPage() {
       toast({ title: 'Google Sign-In Failed', description: error.message, variant: 'destructive' });
       setIsGoogleLoading(false);
     }
+    // On success, Supabase redirects, and onAuthStateChange will handle the session.
   };
 
   if (isCheckingAuth) {
@@ -315,7 +334,7 @@ export default function AuthPage() {
                                     type={showSignUpPassword ? 'text' : 'password'}
                                     placeholder="Must be at least 6 characters"
                                     {...field}
-                                    className="pr-10" 
+                                    className="pr-10"
                                 />
                                 </FormControl>
                                 <Button
