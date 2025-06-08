@@ -80,8 +80,6 @@ const GoogleIcon = () => (
   </svg>
 );
 
-// Helper function to construct the redirect URL for /auth path
-// This function is designed to be used in Server Actions where process.env is reliable.
 function getAuthRedirectUrl(): string | undefined {
     const siteURL = process.env.NEXT_PUBLIC_SITE_URL;
 
@@ -89,19 +87,16 @@ function getAuthRedirectUrl(): string | undefined {
         console.warn(
             '[AuthPage getAuthRedirectUrl] NEXT_PUBLIC_SITE_URL is not set. Email links might not point to /auth. Supabase will use its dashboard default Site URL.'
         );
-        return undefined; // Let Supabase use its default
+        return undefined;
     }
 
     try {
-        const baseUrl = new URL(siteURL); // Throws if siteURL is not a valid absolute URL
-        
-        // Correctly append /auth to the existing path or root
+        const baseUrl = new URL(siteURL);
         let path = baseUrl.pathname;
-        if (path === '/' || path === '') { // If root or empty path
+        if (path === '/' || path === '') {
             path = '/auth';
         } else {
-            // Remove trailing slash if exists, then append /auth
-            path = path.replace(/\/$/, '') + '/auth'; 
+            path = path.replace(/\/$/, '') + '/auth';
         }
         baseUrl.pathname = path;
         return baseUrl.toString();
@@ -109,7 +104,7 @@ function getAuthRedirectUrl(): string | undefined {
         console.error(
             `[AuthPage getAuthRedirectUrl] Invalid NEXT_PUBLIC_SITE_URL ('${siteURL}'). Email links will use Supabase defaults. Error:`, e
         );
-        return undefined; // Let Supabase use its default
+        return undefined;
     }
 }
 
@@ -160,7 +155,7 @@ export default function AuthPage() {
   });
 
   useEffect(() => {
-    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    const hashParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.hash.substring(1) : '');
     if (hashParams.get('type') === 'recovery') {
       setIsPasswordRecoveryMode(true);
       toast({ title: "Set New Password", description: "Please enter and confirm your new password below."});
@@ -179,7 +174,7 @@ export default function AuthPage() {
           setIsCheckingAuth(false);
           return;
         }
-        if (session && !isPasswordRecoveryMode) { 
+        if (session && !isPasswordRecoveryMode) {
           router.replace('/');
         } else {
           setIsCheckingAuth(false);
@@ -190,36 +185,66 @@ export default function AuthPage() {
     };
 
     const { data: { subscription: authSubscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN' && session && !isPasswordRecoveryMode) {
-        router.replace('/');
+      const isRecoveryMethod = session?.amr?.some(entry => entry.method === 'recovery');
+
+      if (event === 'PASSWORD_RECOVERY') {
+        setIsPasswordRecoveryMode(true);
+        toast({ title: "Set New Password", description: "Please enter and confirm your new password below."});
         setIsCheckingAuth(false);
-      } else if (event === 'INITIAL_SESSION') {
-        if (session && !isPasswordRecoveryMode) {
+      } else if (event === 'SIGNED_IN' && session) {
+        if (isRecoveryMethod) {
+          setIsPasswordRecoveryMode(true);
+          toast({ title: "Set New Password", description: "Please enter and confirm your new password below." });
+          setIsCheckingAuth(false);
+        } else if (!isPasswordRecoveryMode) { // Ensure not already in recovery mode from hash check
           router.replace('/');
           setIsCheckingAuth(false);
-        } else if (!session && !hasAuthCodeInQuery && !hasAccessTokenInHash && !isPasswordRecoveryMode) {
+        }
+      } else if (event === 'INITIAL_SESSION' && session) {
+        if (isRecoveryMethod) {
+          setIsPasswordRecoveryMode(true);
+          toast({ title: "Set New Password", description: "Please enter and confirm your new password below." });
+          setIsCheckingAuth(false);
+        } else if (!isPasswordRecoveryMode) { // Ensure not already in recovery mode from hash check
+          router.replace('/');
           setIsCheckingAuth(false);
         }
       } else if (event === 'SIGNED_OUT') {
         setIsCheckingAuth(false);
-        setIsPasswordRecoveryMode(false); 
-      } else if (event === 'PASSWORD_RECOVERY') {
-        setIsPasswordRecoveryMode(true);
-        toast({ title: "Set New Password", description: "Please enter and confirm your new password below."});
+        setIsPasswordRecoveryMode(false);
+      }
+
+      // Fallback if no specific event handled it, and we need to stop loading
+      if (isCheckingAuthRef.current && (
+            (event === 'INITIAL_SESSION' && !session && !hasAuthCodeInQuery && !hasAccessTokenInHash && !isPasswordRecoveryMode) ||
+            (event !== 'PASSWORD_RECOVERY' && event !== 'SIGNED_IN' && event !== 'INITIAL_SESSION')
+         )
+      ) {
         setIsCheckingAuth(false);
       }
     });
 
-    if (hasAuthCodeInQuery || hasAccessTokenInHash || isPasswordRecoveryMode) {
-      // Rely on onAuthStateChange or specific recovery mode logic
-    } else {
+
+    if (hashParams.get('type') === 'recovery') {
+       // isPasswordRecoveryMode is already set, onAuthStateChange will handle session
+       // but we need to ensure loader stops if no auth event fires immediately.
+       // If user is already signed in and clicks recovery, an event should fire.
+       // If user is signed out, and clicks recovery, an event should fire.
+       // This setTimeout is a fallback.
+       setTimeout(() => {
+         if (isCheckingAuthRef.current) setIsCheckingAuth(false);
+       }, 1000);
+    } else if (hasAuthCodeInQuery || hasAccessTokenInHash) {
+      // Rely on onAuthStateChange
+    }
+     else {
       checkSession();
     }
 
     return () => {
       authSubscription?.unsubscribe();
     };
-  }, [router, toast, pathname, isPasswordRecoveryMode]);
+  }, [router, toast, pathname]); // isPasswordRecoveryMode removed as it's managed internally
 
 
   const handleSignIn = async (values: SignInFormValues) => {
@@ -234,6 +259,7 @@ export default function AuthPage() {
         setAuthError(error.message);
         toast({ title: 'Sign In Failed', description: error.message, variant: 'destructive' });
       } else {
+        // onAuthStateChange will handle redirect
         toast({ title: 'Signed In Successfully!'});
       }
     } catch (error: any) {
@@ -251,20 +277,17 @@ export default function AuthPage() {
     const signUpRedirectURL = getAuthRedirectUrl();
 
     if (!signUpRedirectURL && process.env.NEXT_PUBLIC_SITE_URL) {
-        // This case means NEXT_PUBLIC_SITE_URL was invalid, getAuthRedirectUrl logged an error.
-        // We shouldn't proceed if we can't form a valid redirect URL and SITE_URL was intended.
         toast({ title: 'Configuration Error', description: 'Site URL is improperly configured. Cannot proceed with sign up.', variant: 'destructive' });
         setIsLoading(false);
         return;
     }
-    // If signUpRedirectURL is undefined, Supabase will use its dashboard default.
     
     try {
       const { data, error } = await supabase.auth.signUp({
         email: values.email,
         password: values.password,
         options: {
-          emailRedirectTo: signUpRedirectURL, // Will be undefined if getAuthRedirectUrl returned undefined
+          emailRedirectTo: signUpRedirectURL,
         },
       });
 
@@ -272,6 +295,7 @@ export default function AuthPage() {
         setAuthError(error.message);
         toast({ title: 'Sign Up Failed', description: error.message, variant: 'destructive' });
       } else if (data.session) {
+        // onAuthStateChange will handle redirect
         toast({ title: 'Account Created & Signed In!' });
       } else if (data.user && !data.session) {
         setShowConfirmationMessage(true);
@@ -294,9 +318,6 @@ export default function AuthPage() {
     setIsGoogleLoading(true);
     setAuthError(null);
     
-    // For OAuth, redirectTo should be where the user lands after Google auth.
-    // This could be the current page, or a specific post-auth processing page.
-    // Using getAuthRedirectUrl() might be appropriate if you want them on /auth page.
     const googleRedirectURL = getAuthRedirectUrl(); 
     
     if (!googleRedirectURL && process.env.NEXT_PUBLIC_SITE_URL) {
@@ -308,7 +329,7 @@ export default function AuthPage() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: googleRedirectURL, // if undefined, Supabase uses default.
+        redirectTo: googleRedirectURL,
       },
     });
     if (error) {
@@ -316,6 +337,7 @@ export default function AuthPage() {
       toast({ title: 'Google Sign-In Failed', description: error.message, variant: 'destructive' });
       setIsGoogleLoading(false);
     }
+    // onAuthStateChange will handle redirect if successful
   };
 
   const handleForgotPasswordRequest = async (values: ForgotPasswordFormValues) => {
@@ -325,18 +347,15 @@ export default function AuthPage() {
     const resetLinkRedirectTo = getAuthRedirectUrl();
     console.log(`[AuthPage handleForgotPasswordRequest] Constructed redirectTo for password reset: ${resetLinkRedirectTo}`);
 
-
     if (!resetLinkRedirectTo && process.env.NEXT_PUBLIC_SITE_URL) {
-        // This implies NEXT_PUBLIC_SITE_URL was invalid.
         toast({ title: 'Configuration Error', description: 'Site URL for password reset is improperly configured.', variant: 'destructive' });
         setIsSendingResetLink(false);
         return;
     }
-    // If resetLinkRedirectTo is undefined, Supabase will use its dashboard default for the link's base path.
 
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(values.email, {
-        redirectTo: resetLinkRedirectTo // Pass undefined if not properly constructed
+        redirectTo: resetLinkRedirectTo 
       });
       if (error) {
         setAuthError(error.message);
@@ -363,9 +382,12 @@ export default function AuthPage() {
         toast({ title: 'Password Reset Failed', description: error.message, variant: 'destructive' });
       } else {
         toast({ title: 'Password Reset Successful!', description: 'You can now sign in with your new password.' });
-        setIsPasswordRecoveryMode(false);
+        setIsPasswordRecoveryMode(false); 
         setDefaultTab('signin'); 
-        signInForm.setValue('email', supabase.auth.currentUser?.email || ''); 
+        // Attempt to get current user's email for prefill, might be null if session cleared abruptly
+        const { data: { user } } = await supabase.auth.getUser();
+        signInForm.setValue('email', user?.email || '');
+        router.replace('/auth', { scroll: false }); // Clear hash and query params
       }
     } catch (error: any) {
       setAuthError(error.message || 'An unexpected error occurred.');
@@ -727,5 +749,3 @@ export default function AuthPage() {
     </div>
   );
 }
-
-    
