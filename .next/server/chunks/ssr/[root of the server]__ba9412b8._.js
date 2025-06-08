@@ -4892,24 +4892,22 @@ function AskForNameDialog({ isOpen, onOpenChange, onSubmitName, currentEmail }) 
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["DialogDescription"], {
-                            children: [
-                                "Please provide your full name. This will be used on the invoice and saved to your profile.",
-                                currentEmail && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                    className: "text-xs mt-1 text-muted-foreground",
-                                    children: [
-                                        "For account: ",
-                                        currentEmail
-                                    ]
-                                }, void 0, true, {
-                                    fileName: "[project]/src/components/AskForNameDialog.tsx",
-                                    lineNumber: 65,
-                                    columnNumber: 31
-                                }, this)
-                            ]
-                        }, void 0, true, {
+                            children: "Please provide your full name. This will be used on the invoice and saved to your profile."
+                        }, void 0, false, {
                             fileName: "[project]/src/components/AskForNameDialog.tsx",
                             lineNumber: 63,
                             columnNumber: 11
+                        }, this),
+                        currentEmail && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            className: "text-xs text-muted-foreground pt-1 text-center sm:text-left",
+                            children: [
+                                "For account: ",
+                                currentEmail
+                            ]
+                        }, void 0, true, {
+                            fileName: "[project]/src/components/AskForNameDialog.tsx",
+                            lineNumber: 68,
+                            columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
@@ -4932,7 +4930,7 @@ function AskForNameDialog({ isOpen, onOpenChange, onSubmitName, currentEmail }) 
                                                 children: "Full Name"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/AskForNameDialog.tsx",
-                                                lineNumber: 75,
+                                                lineNumber: 80,
                                                 columnNumber: 19
                                             }, void 0),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["FormControl"], {
@@ -4942,28 +4940,28 @@ function AskForNameDialog({ isOpen, onOpenChange, onSubmitName, currentEmail }) 
                                                     autoComplete: "name"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/AskForNameDialog.tsx",
-                                                    lineNumber: 77,
+                                                    lineNumber: 82,
                                                     columnNumber: 21
                                                 }, void 0)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/AskForNameDialog.tsx",
-                                                lineNumber: 76,
+                                                lineNumber: 81,
                                                 columnNumber: 19
                                             }, void 0),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["FormMessage"], {}, void 0, false, {
                                                 fileName: "[project]/src/components/AskForNameDialog.tsx",
-                                                lineNumber: 79,
+                                                lineNumber: 84,
                                                 columnNumber: 19
                                             }, void 0)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/AskForNameDialog.tsx",
-                                        lineNumber: 74,
+                                        lineNumber: 79,
                                         columnNumber: 17
                                     }, void 0)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/AskForNameDialog.tsx",
-                                lineNumber: 70,
+                                lineNumber: 75,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["DialogFooter"], {
@@ -4976,30 +4974,30 @@ function AskForNameDialog({ isOpen, onOpenChange, onSubmitName, currentEmail }) 
                                             className: "mr-2 h-4 w-4 animate-spin"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/AskForNameDialog.tsx",
-                                            lineNumber: 85,
+                                            lineNumber: 90,
                                             columnNumber: 49
                                         }, this),
                                         "Save Name & Generate Invoice"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/AskForNameDialog.tsx",
-                                    lineNumber: 84,
+                                    lineNumber: 89,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/AskForNameDialog.tsx",
-                                lineNumber: 83,
+                                lineNumber: 88,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/AskForNameDialog.tsx",
-                        lineNumber: 69,
+                        lineNumber: 74,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/components/AskForNameDialog.tsx",
-                    lineNumber: 68,
+                    lineNumber: 73,
                     columnNumber: 9
                 }, this)
             ]
