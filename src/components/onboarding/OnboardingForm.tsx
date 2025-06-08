@@ -34,7 +34,7 @@ const onboardingSchema = z.object({
 type OnboardingFormValues = z.infer<typeof onboardingSchema>;
 
 interface OnboardingFormProps {
-  user: User; // Full user object passed down
+  user: User;
   userId: string;
   userEmail?: string | null;
   initialFullName?: string | null;
@@ -43,8 +43,8 @@ interface OnboardingFormProps {
 }
 
 export function OnboardingForm({
-  user, // The full user object
-  userId, // Specifically passed userId
+  user,
+  userId,
   userEmail,
   initialFullName,
   existingSettings,
@@ -69,56 +69,92 @@ export function OnboardingForm({
       return;
     }
 
+    const settingsData: Omit<TablesInsert<'user_settings'>, 'user_id' | 'onboarding_complete'> & { onboarding_complete: boolean, user_id: string } = {
+      user_id: userId,
+      full_name: values.fullName,
+      age_range: values.ageRange,
+      country: values.country,
+      annual_income: values.annualIncome ? Number(values.annualIncome) : null,
+      income_currency: values.incomeCurrency || null,
+      current_role: values.currentRole,
+      onboarding_complete: true,
+      usage_preference: existingSettings?.usage_preference || 'job_hunt',
+      follow_up_cadence_days: existingSettings?.follow_up_cadence_days || DEFAULT_FOLLOW_UP_CADENCE_DAYS,
+      default_email_templates: existingSettings?.default_email_templates || {
+        followUp1: { subject: '', openingLine: '' },
+        followUp2: { subject: '', openingLine: '' },
+        followUp3: { subject: '', openingLine: '' },
+        sharedSignature: '',
+      },
+    };
+
     try {
-      const settingsToUpsert: TablesInsert<'user_settings'> = {
-        user_id: userId, // Use the passed userId
-        full_name: values.fullName,
-        age_range: values.ageRange,
-        country: values.country,
-        annual_income: values.annualIncome ? Number(values.annualIncome) : null,
-        income_currency: values.incomeCurrency || null,
-        current_role: values.currentRole,
-        onboarding_complete: true,
-        usage_preference: existingSettings?.usage_preference || 'job_hunt',
-        follow_up_cadence_days: existingSettings?.follow_up_cadence_days || DEFAULT_FOLLOW_UP_CADENCE_DAYS,
-        default_email_templates: existingSettings?.default_email_templates || {
-          followUp1: { subject: '', openingLine: '' },
-          followUp2: { subject: '', openingLine: '' },
-          followUp3: { subject: '', openingLine: '' },
-          sharedSignature: '',
-        },
-      };
+      // Attempt to INSERT first
+      const { error: insertError } = await supabase
+        .from('user_settings')
+        .insert(settingsData);
 
-      const { error: settingsError } = await supabase.from('user_settings').upsert(settingsToUpsert, {
-        onConflict: 'user_id',
-      });
+      if (insertError) {
+        if (insertError.code === '23505') { // Unique violation: row for user_id already exists
+          // Try to UPDATE
+          const { error: updateError } = await supabase
+            .from('user_settings')
+            .update(settingsData) // Supabase client's update will only update provided fields
+            .eq('user_id', userId);
 
-      if (settingsError) {
-        console.error("Error saving user_settings:", settingsError);
-        // Check for foreign key violation specifically
-        if (settingsError.code === '23503') { // PostgreSQL foreign key violation error code
+          if (updateError) {
+            console.error("Error updating user_settings after insert failed:", updateError);
+            toast({
+              title: 'Onboarding Save Failed',
+              description: `Could not update existing settings. ${updateError.message || 'Please try again.'}`,
+              variant: 'destructive',
+              duration: 7000,
+            });
+            return; // Stop if update fails
+          }
+          // Update successful
+        } else if (insertError.code === '23503') { // Foreign key violation
+          console.error("Foreign key violation on insert user_settings:", insertError);
           toast({
             title: 'Data Sync Error',
-            description: 'Could not save settings due to a data synchronization issue. Please try again in a moment. If the problem persists, contact support.',
+            description: 'Could not save settings due to a data synchronization issue with your new account. This can happen occasionally. Please try submitting again in a few moments. (Error code: 23503)',
             variant: 'destructive',
-            duration: 7000,
+            duration: 10000,
           });
+          return; // Stop if it's the FK violation
         } else {
-          throw settingsError; // Re-throw other errors to be caught by the generic catch block
+          // Other INSERT error
+          console.error("Error inserting user_settings:", insertError);
+          throw insertError; // Let the generic catch block handle it
         }
-        return; // Stop execution if there was a settings error
       }
 
-      // If settings save was successful, proceed
+      // If INSERT was successful OR (INSERT failed with 23505 AND UPDATE was successful)
       toast({ title: 'Onboarding Complete!', description: 'Welcome to ProspectFlow!' });
       onOnboardingComplete();
 
     } catch (error: any) {
-      // This catch block now handles errors not specifically caught above (e.g., network issues)
+      // Generic catch for errors not specifically handled above
+      console.error("Full error object in onboarding (generic catch):", error);
+      let errorMessage = "An unexpected error occurred during onboarding.";
+      let errorDetails = "";
+
+      if (error && typeof error === 'object') {
+        if ('message' in error && typeof error.message === 'string' && error.message) {
+          errorMessage = `Error: ${error.message}`;
+        }
+        if ('details' in error && typeof error.details === 'string') errorDetails = error.details;
+        if ('hint' in error && typeof error.hint === 'string') errorDetails += ` Hint: ${error.hint}`;
+        if (!error.message && !error.details && !error.hint) {
+             try { errorDetails = JSON.stringify(error); } catch (e) { errorDetails = "Could not stringify error object."}
+        }
+      }
+
       toast({
-        title: 'Error Saving Onboarding Data',
-        description: error.message || 'An unexpected error occurred. Please try again.',
+        title: 'Onboarding Save Failed',
+        description: `${errorMessage}${errorDetails ? ` Details: ${errorDetails}` : ''}`,
         variant: 'destructive',
+        duration: 10000,
       });
     }
   };
