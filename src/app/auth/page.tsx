@@ -81,55 +81,94 @@ export default function AuthPage() {
   });
 
   useEffect(() => {
-    setIsCheckingAuth(true); // Explicitly set checking state at the start of the effect
+    console.log('[AuthPage useEffect] Hook started. Pathname:', pathname, 'Window hash:', window.location.hash);
+    setIsCheckingAuth(true);
+    console.log('[AuthPage useEffect] isCheckingAuth set to true.');
 
     const checkSession = async () => {
+      console.log('[AuthPage checkSession] Starting session check.');
       try {
-        const { data: { session } } = await supabase.auth.getSession();
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (error) {
+          console.error('[AuthPage checkSession] Error getting session:', error);
+          toast({ title: 'Auth Check Error', description: `Error getting session: ${error.message}`, variant: 'destructive' });
+          setIsCheckingAuth(false);
+          console.log('[AuthPage checkSession] isCheckingAuth set to false due to error.');
+          return;
+        }
+
+        console.log('[AuthPage checkSession] Session data:', session);
         if (session) {
+          console.log('[AuthPage checkSession] Session found, redirecting to /');
           router.replace('/');
           setIsCheckingAuth(false); // Also set to false if redirecting
+          console.log('[AuthPage checkSession] isCheckingAuth set to false after redirect.');
         } else {
+          console.log('[AuthPage checkSession] No active session.');
           setIsCheckingAuth(false);
+          console.log('[AuthPage checkSession] isCheckingAuth set to false (no session).');
         }
       } catch (error: any) {
-        console.error("Error in checkSession:", error);
-        toast({ title: 'Auth Check Error', description: 'Could not check session.', variant: 'destructive' });
-        setIsCheckingAuth(false); // Ensure loader stops on error
+        console.error("[AuthPage checkSession] Exception during session check:", error);
+        toast({ title: 'Auth Check Error', description: 'Could not check session due to an exception.', variant: 'destructive' });
+        setIsCheckingAuth(false);
+        console.log('[AuthPage checkSession] isCheckingAuth set to false due to exception.');
       }
     };
 
-    // This condition primarily handles OAuth redirects with access_token in hash.
-    // For email confirmations, onAuthStateChange is usually the main handler.
     if (typeof window !== 'undefined' && window.location.hash.includes('access_token')) {
+      console.log('[AuthPage useEffect] Hash contains access_token. Relying on onAuthStateChange.');
       setIsCheckingAuth(false); // Let onAuthStateChange handle session from hash
+      console.log('[AuthPage useEffect] isCheckingAuth set to false (hash contains access_token).');
+    } else if (typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('code')) {
+        console.log('[AuthPage useEffect] URL has "code" query parameter. Relying on onAuthStateChange to process it.');
+        // Supabase client library handles 'code' exchange via onAuthStateChange or getSession.
+        // No need to set isCheckingAuth to false immediately here, let onAuthStateChange determine.
     } else {
-      checkSession(); // Check for existing session or process other URL params like `code` (if applicable)
+      console.log('[AuthPage useEffect] No access_token in hash and no code in query. Calling checkSession.');
+      checkSession();
     }
 
     const { data: { subscription: authSubscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('[AuthPage onAuthStateChange] Event:', event, 'Session:', session);
       if (event === 'SIGNED_IN' && session) {
+        console.log('[AuthPage onAuthStateChange] SIGNED_IN event, redirecting to /');
         router.replace('/');
-        setIsCheckingAuth(false); // Also set to false if redirecting
+        setIsCheckingAuth(false);
+        console.log('[AuthPage onAuthStateChange] isCheckingAuth set to false (SIGNED_IN).');
       } else if (event === 'INITIAL_SESSION') {
+        console.log('[AuthPage onAuthStateChange] INITIAL_SESSION event.');
         if (session) {
+          console.log('[AuthPage onAuthStateChange] INITIAL_SESSION: Session found, redirecting to /');
           router.replace('/');
-          setIsCheckingAuth(false); // Also set to false if redirecting
-        } else {
           setIsCheckingAuth(false);
+          console.log('[AuthPage onAuthStateChange] isCheckingAuth set to false (INITIAL_SESSION with session).');
+        } else {
+          console.log('[AuthPage onAuthStateChange] INITIAL_SESSION: No session.');
+          setIsCheckingAuth(false);
+          console.log('[AuthPage onAuthStateChange] isCheckingAuth set to false (INITIAL_SESSION no session).');
         }
       } else if (event === 'SIGNED_OUT') {
+        console.log('[AuthPage onAuthStateChange] SIGNED_OUT event.');
         setIsCheckingAuth(false);
+        console.log('[AuthPage onAuthStateChange] isCheckingAuth set to false (SIGNED_OUT).');
+      } else if (event === 'PASSWORD_RECOVERY') {
+        console.log('[AuthPage onAuthStateChange] PASSWORD_RECOVERY event. User might be signed in.');
+        // Often, after password recovery, the user is signed in.
+        // Let the next getSession or INITIAL_SESSION event handle it if already signed in.
+        // If not signed in, isCheckingAuth should eventually become false.
+      } else if (event === 'USER_UPDATED') {
+        console.log('[AuthPage onAuthStateChange] USER_UPDATED event.');
+      } else if (event === 'TOKEN_REFRESHED') {
+         console.log('[AuthPage onAuthStateChange] TOKEN_REFRESHED event.');
       }
-      // Other events like TOKEN_REFRESHED, USER_UPDATED, PASSWORD_RECOVERY are not explicitly
-      // setting isCheckingAuth to false here, relying on INITIAL_SESSION or SIGNED_IN
-      // to have already determined the auth state and loading status.
     });
 
     return () => {
+      console.log('[AuthPage useEffect] Cleanup: Unsubscribing auth listener.');
       authSubscription?.unsubscribe();
     };
-  }, [router, toast]);
+  }, [router, toast, pathname]);
 
 
   const handleSignIn = async (values: SignInFormValues) => {
@@ -199,6 +238,7 @@ export default function AuthPage() {
     }
 
     const redirectURL = `${siteURL}${pathname}`;
+    console.log('[AuthPage handleGoogleSignIn] Redirect URL for Google:', redirectURL);
 
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
@@ -215,6 +255,7 @@ export default function AuthPage() {
   };
 
   if (isCheckingAuth) {
+    console.log('[AuthPage render] isCheckingAuth is true, rendering loader.');
     return (
       <div className="flex min-h-screen flex-col bg-background">
         <PublicNavbar />
@@ -224,6 +265,7 @@ export default function AuthPage() {
       </div>
     );
   }
+  console.log('[AuthPage render] isCheckingAuth is false, rendering auth form.');
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -415,3 +457,5 @@ export default function AuthPage() {
     </div>
   );
 }
+
+    
