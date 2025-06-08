@@ -4285,8 +4285,8 @@ function AppLayout({ children }) {
     const [onboardingCheckComplete, setOnboardingCheckComplete] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const previousUserIdRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])();
     const isPublicPath = PUBLIC_PATHS.includes(pathname) || BLOG_PATHS_REGEX.test(pathname);
-    console.log(`[AppLayout] Render. Path: ${pathname}, IsPublic: ${isPublicPath}`);
-    console.log(`[AppLayout] Current states: isLoadingAuth: ${isLoadingAuth}, isLoadingSettings: ${isLoadingSettings}, user: ${user?.id}, userSettings: ${!!userSettings}, showOnboardingForm: ${showOnboardingForm}, onboardingCheckComplete: ${onboardingCheckComplete}`);
+    // console.log(`[AppLayout] Render. Path: ${pathname}, IsPublic: ${isPublicPath}`);
+    // console.log(`[AppLayout] Current states: isLoadingAuth: ${isLoadingAuth}, isLoadingSettings: ${isLoadingSettings}, user: ${user?.id}, userSettings: ${!!userSettings}, showOnboardingForm: ${showOnboardingForm}, onboardingCheckComplete: ${onboardingCheckComplete}`);
     const fetchUserDataAndSettings = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useCallback"])({
         "AppLayout.useCallback[fetchUserDataAndSettings]": async (userId)=>{
             console.log(`[AppLayout fetchUserDataAndSettings] Called for user: ${userId}. Setting isLoadingSettings: true, setOnboardingCheckComplete: false`);
@@ -4351,7 +4351,7 @@ function AppLayout({ children }) {
                         description: 'Your session is invalid. Please sign in again.',
                         variant: 'destructive'
                     });
-                    await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].auth.signOut();
+                    await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].auth.signOut(); // Ensure signout completes
                 } else {
                     toast({
                         title: 'Error fetching user data',
@@ -4372,49 +4372,50 @@ function AppLayout({ children }) {
         toast
     ]);
     const processUserSession = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useCallback"])({
-        "AppLayout.useCallback[processUserSession]": async (sessionUser)=>{
+        "AppLayout.useCallback[processUserSession]": (sessionUser)=>{
             const currentPreviousUserId = previousUserIdRef.current;
             const newUserId = sessionUser?.id;
             console.log(`[AppLayout processUserSession] Called. newUserId: ${newUserId}, currentPreviousUserId: ${currentPreviousUserId}`);
-            setUser(sessionUser); // Update user state first
+            setUser(sessionUser);
+            console.log(`[AppLayout processUserSession] setUser called with user: ${sessionUser?.id}`);
             if (newUserId !== currentPreviousUserId) {
                 console.log(`[AppLayout processUserSession] User ID changed or first load. Old: ${currentPreviousUserId}, New: ${newUserId}. Resetting related states.`);
                 previousUserIdRef.current = newUserId;
                 setFavoriteJobOpenings([]);
                 setUserSettings(null);
                 setShowOnboardingForm(false);
-                setOnboardingCheckComplete(false);
-                setIsLoadingSettings(true); // Set loading true before potential fetch
+                setOnboardingCheckComplete(false); // Reset this
+                setIsLoadingSettings(true);
                 if (sessionUser) {
-                    console.log(`[AppLayout processUserSession] New user session. Calling fetchUserDataAndSettings for ${newUserId}`);
-                    await fetchUserDataAndSettings(sessionUser.id);
+                    console.log(`[AppLayout processUserSession] New user session. Triggering fetchUserDataAndSettings for ${newUserId} (not awaiting).`);
+                    fetchUserDataAndSettings(sessionUser.id); // Call but DON'T await
                 } else {
-                    console.log(`[AppLayout processUserSession] No user session (user is null). Setting loading states to false.`);
+                    console.log(`[AppLayout processUserSession] No user session (user is null after change/first load). Setting loading settings false, onboarding complete true.`);
                     setIsLoadingSettings(false);
                     setOnboardingCheckComplete(true);
                 }
             } else if (!sessionUser) {
-                console.log(`[AppLayout processUserSession] No user session (user is null and was already null or unchanged). Setting loading states to false.`);
+                console.log(`[AppLayout processUserSession] No user session (user is null and was already null or unchanged). Setting loading states to false, onboarding complete true.`);
                 setIsLoadingSettings(false);
                 setOnboardingCheckComplete(true);
             } else {
-                console.log(`[AppLayout processUserSession] User ID did not change (${newUserId}). No state reset needed. isLoadingSettings: ${isLoadingSettings}, onboardingCheckComplete: ${onboardingCheckComplete}`);
-                // If user is the same and settings haven't been loaded (e.g., due to a fast reload interrupting previous fetch),
-                // and we are not already loading settings, then fetch them.
-                if (sessionUser && !userSettings && !isLoadingSettings && !onboardingCheckComplete) {
-                    console.log(`[AppLayout processUserSession] User same, but settings not loaded and not currently loading. Re-initiating fetch for ${newUserId}.`);
-                    await fetchUserDataAndSettings(sessionUser.id);
+                // User ID is the same, user is not null
+                if (!userSettings && !isLoadingSettings && !onboardingCheckComplete) {
+                    console.log(`[AppLayout processUserSession] User same (${newUserId}), but settings not loaded and not currently loading. Triggering fetchUserDataAndSettings (not awaiting).`);
+                    fetchUserDataAndSettings(sessionUser.id); // Call but DON'T await
+                } else {
+                    console.log(`[AppLayout processUserSession] User same (${newUserId}). Settings already loaded or being loaded. onboardingCheckComplete: ${onboardingCheckComplete}, isLoadingSettings: ${isLoadingSettings}`);
                 }
             }
-            console.log(`[AppLayout processUserSession] Setting isLoadingAuth: false`);
-            setIsLoadingAuth(false);
+            console.log(`[AppLayout processUserSession] Setting isLoadingAuth: false. User ID processed: ${sessionUser?.id}`);
+            setIsLoadingAuth(false); // This will now run much sooner.
         }
     }["AppLayout.useCallback[processUserSession]"], [
         fetchUserDataAndSettings,
         userSettings,
         isLoadingSettings,
         onboardingCheckComplete
-    ]); // Added userSettings, isLoadingSettings, onboardingCheckComplete
+    ]);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "AppLayout.useEffect": ()=>{
             console.log("[AppLayout Main Auth useEffect] Running.");
@@ -4424,9 +4425,9 @@ function AppLayout({ children }) {
             setTheme(initialTheme);
             document.documentElement.classList.toggle('dark', initialTheme === 'dark');
             console.log(`[AppLayout Main Auth useEffect] Initial theme set to: ${initialTheme}`);
-            setIsLoadingAuth(true); // Set loading true at the start of effect
+            setIsLoadingAuth(true);
             const handleSessionResult = {
-                "AppLayout.useEffect.handleSessionResult": async (session, error)=>{
+                "AppLayout.useEffect.handleSessionResult": (session, error)=>{
                     console.log(`[AppLayout Main Auth useEffect - handleSessionResult] Session: ${!!session}, Error:`, error);
                     if (error) {
                         console.error("[AppLayout handleSessionResult] Error processing session:", error);
@@ -4436,26 +4437,19 @@ function AppLayout({ children }) {
                                 description: 'Your session is invalid. Please sign in again.',
                                 variant: 'destructive'
                             });
-                            await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].auth.signOut();
+                            __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].auth.signOut().finally({
+                                "AppLayout.useEffect.handleSessionResult": ()=>processUserSession(null)
+                            }["AppLayout.useEffect.handleSessionResult"]); // Process null user after signout attempt
                             return;
                         }
                     }
-                    await processUserSession(session?.user ?? null);
+                    processUserSession(session?.user ?? null);
                 }
             }["AppLayout.useEffect.handleSessionResult"];
-            __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].auth.getSession().then({
-                "AppLayout.useEffect": ({ data: { session }, error })=>{
-                    console.log("[AppLayout Main Auth useEffect] getSession() promise resolved.");
-                    handleSessionResult(session, error);
-                }
-            }["AppLayout.useEffect"]).catch({
-                "AppLayout.useEffect": (catchError)=>{
-                    console.error("[AppLayout Main Auth useEffect] getSession() promise REJECTED:", catchError);
-                    handleSessionResult(null, catchError);
-                }
-            }["AppLayout.useEffect"]);
+            // No explicit getSession() call here, relying on onAuthStateChange for INITIAL_SESSION
+            // console.log("[AppLayout Main Auth useEffect] Relying on onAuthStateChange for initial session.");
             const { data: { subscription } } = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].auth.onAuthStateChange({
-                "AppLayout.useEffect": async (event, session)=>{
+                "AppLayout.useEffect": (event, session)=>{
                     console.log(`[AppLayout onAuthStateChange] Event: ${event}, Session User ID: ${session?.user?.id}`);
                     if (event === 'TOKEN_REFRESHED' && !session) {
                         console.warn("[AppLayout onAuthStateChange] TOKEN_REFRESHED but no session. Potential invalid session.");
@@ -4466,7 +4460,7 @@ function AppLayout({ children }) {
                         });
                     } else if (event === 'SIGNED_OUT') {
                         console.log("[AppLayout onAuthStateChange] SIGNED_OUT event.");
-                        const activeToasts = toast.toasts || [];
+                        const activeToasts = toast.toasts || []; // Type assertion if toasts property isn't directly on useToast return
                         if (!activeToasts.some({
                             "AppLayout.useEffect": (t)=>t.title === 'Session Expired' || t.title === 'Session Invalid'
                         }["AppLayout.useEffect"])) {
@@ -4476,7 +4470,7 @@ function AppLayout({ children }) {
                             });
                         }
                     }
-                    await processUserSession(session?.user ?? null);
+                    processUserSession(session?.user ?? null);
                 }
             }["AppLayout.useEffect"]);
             console.log("[AppLayout Main Auth useEffect] Subscribed to onAuthStateChange.");
@@ -4490,16 +4484,18 @@ function AppLayout({ children }) {
     }["AppLayout.useEffect"], [
         processUserSession,
         toast
-    ]);
+    ]); // processUserSession is now a dependency
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "AppLayout.useEffect": ()=>{
-            console.log(`[AppLayout Redirect useEffect] Running. isLoadingAuth: ${isLoadingAuth}, isPublicPath: ${isPublicPath}, user: ${!!user}, userSettings.onboarding_complete: ${userSettings?.onboarding_complete}, pathname: ${pathname}`);
+            console.log(`[AppLayout Redirect useEffect] Running. isLoadingAuth: ${isLoadingAuth}, isPublicPath: ${isPublicPath}, user: ${!!user}, userSettings.onboarding_complete: ${userSettings?.onboarding_complete}, pathname: ${pathname}, onboardingCheckComplete: ${onboardingCheckComplete}`);
             if (!isLoadingAuth && !isPublicPath) {
                 if (!user) {
                     console.log("[AppLayout Redirect useEffect] Not authenticated and not public path. Redirecting to /landing.");
                     router.push('/landing');
                 }
-            } else if (!isLoadingAuth && user && userSettings?.onboarding_complete && isPublicPath && !BLOG_PATHS_REGEX.test(pathname)) {
+            // If user exists but onboarding not complete, the OnboardingForm will be shown by the main render logic.
+            // No explicit redirect for onboarding here, as AppLayout handles displaying it.
+            } else if (!isLoadingAuth && user && onboardingCheckComplete && userSettings?.onboarding_complete && isPublicPath && !BLOG_PATHS_REGEX.test(pathname)) {
                 console.log("[AppLayout Redirect useEffect] Authenticated, onboarding complete, on public non-blog path. Redirecting to /.");
                 router.push('/');
             }
@@ -4510,20 +4506,24 @@ function AppLayout({ children }) {
         isPublicPath,
         pathname,
         router,
-        userSettings
+        userSettings,
+        onboardingCheckComplete
     ]);
     const handleSignOut = async ()=>{
         console.log("[AppLayout handleSignOut] Initiated.");
-        setIsLoadingAuth(true);
+        // setIsLoadingAuth(true); // Will be handled by onAuthStateChange
         await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].auth.signOut();
-        console.log("[AppLayout handleSignOut] Supabase signOut complete.");
+        console.log("[AppLayout handleSignOut] Supabase signOut complete. onAuthStateChange will trigger user update.");
     };
     const handleOnboardingComplete = async ()=>{
         console.log("[AppLayout handleOnboardingComplete] Initiated.");
-        setShowOnboardingForm(false);
+        setShowOnboardingForm(false); // Immediately hide form
         if (user) {
-            console.log("[AppLayout handleOnboardingComplete] User exists, re-fetching user data and settings.");
-            await fetchUserDataAndSettings(user.id);
+            console.log("[AppLayout handleOnboardingComplete] User exists, re-fetching user data and settings AFTER onboarding.");
+            // No need to set isLoadingSettings true here, fetchUserDataAndSettings does it
+            await fetchUserDataAndSettings(user.id); // Re-fetch to get updated onboarding_complete status
+        } else {
+            console.warn("[AppLayout handleOnboardingComplete] Called but no user found. This shouldn't happen.");
         }
     };
     const toggleTheme = ()=>{
@@ -4535,6 +4535,7 @@ function AppLayout({ children }) {
             return newTheme;
         });
     };
+    // Refined isAppLoading check
     const isAppLoading = isLoadingAuth || user != null && (isLoadingSettings || !onboardingCheckComplete);
     console.log(`[AppLayout] Calculated isAppLoading: ${isAppLoading} (isLoadingAuth: ${isLoadingAuth}, user: ${!!user}, isLoadingSettings: ${isLoadingSettings}, !onboardingCheckComplete: ${!onboardingCheckComplete})`);
     if (isPublicPath) {
