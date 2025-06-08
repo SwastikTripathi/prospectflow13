@@ -14,7 +14,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Eye, EyeOff, KeyRound } from 'lucide-react';
+import { Loader2, Eye, EyeOff } from 'lucide-react';
 import { PublicNavbar } from '@/components/layout/PublicNavbar';
 import {
   Dialog,
@@ -44,19 +44,9 @@ const forgotPasswordSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email address.' }),
 });
 
-const resetPasswordSchema = z.object({
-  newPassword: z.string().min(6, { message: 'Password must be at least 6 characters.' }),
-  confirmNewPassword: z.string().min(1, { message: 'Please confirm your new password.' })
-}).refine(data => data.newPassword === data.confirmNewPassword, {
-  message: "Passwords don't match.",
-  path: ["confirmNewPassword"],
-});
-
-
 type SignInFormValues = z.infer<typeof signInSchema>;
 type SignUpFormValues = z.infer<typeof signUpSchema>;
 type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>;
-type ResetPasswordFormValues = z.infer<typeof resetPasswordSchema>;
 
 const GoogleIcon = () => (
   <svg viewBox="0 0 24 24" width="20" height="20" className="mr-2">
@@ -112,7 +102,6 @@ function getAuthRedirectUrl(): string | undefined {
 
 export default function AuthPage() {
   const router = useRouter();
-  const pathname = usePathname();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
@@ -125,10 +114,6 @@ export default function AuthPage() {
   const [showSignUpConfirmPassword, setShowSignUpConfirmPassword] = useState(false);
   const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false);
   const [isSendingResetLink, setIsSendingResetLink] = useState(false);
-  const [isPasswordRecoveryMode, setIsPasswordRecoveryMode] = useState(false);
-  const [showNewPassword, setShowNewPassword] = useState(false);
-  const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
-
 
   const isCheckingAuthRef = useRef(isCheckingAuth);
   useEffect(() => {
@@ -150,90 +135,52 @@ export default function AuthPage() {
     defaultValues: { email: '' },
   });
 
-  const resetPasswordFormHook = useForm<ResetPasswordFormValues>({
-    resolver: zodResolver(resetPasswordSchema),
-    defaultValues: { newPassword: '', confirmNewPassword: '' },
-  });
 
   useEffect(() => {
-    const hashParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.hash.substring(1) : '');
-    const isRecoveryFromHash = hashParams.get('type') === 'recovery';
-
-    if (isRecoveryFromHash) {
-      setIsPasswordRecoveryMode(true);
-      toast({ title: "Set New Password", description: "Please enter and confirm your new password below."});
-      setIsCheckingAuth(false); // Key: if hash recovery, immediately stop checking and prevent redirect
-    } else {
-      // Only set to true if not immediately determined as recovery from hash.
-      // And if we are not already in recovery mode from a previous render (e.g. AMR based)
-      if (!isPasswordRecoveryMode) {
-          setIsCheckingAuth(true);
-      }
-    }
+    setIsCheckingAuth(true); // Always start by checking auth status
 
     const { data: { subscription: authSubscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      const isAmrRecovery = session?.amr?.some(entry => entry.method === 'recovery');
-
-      // If this event OR the initial hash indicates recovery mode:
-      if (event === 'PASSWORD_RECOVERY' || isAmrRecovery ) {
-        setIsPasswordRecoveryMode(true);
-        // Toast only if not already done by initial hash check (isRecoveryFromHash)
-        if (!isRecoveryFromHash && (event === 'PASSWORD_RECOVERY' || isAmrRecovery)) {
-            toast({ title: "Set New Password", description: "Please enter and confirm your new password below."});
-        }
-        setIsCheckingAuth(false);
-        return; // Critical: stop further processing if it's a recovery flow
+      if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION' || event === 'PASSWORD_RECOVERY' || event === 'USER_UPDATED') && session) {
+        // For PASSWORD_RECOVERY or USER_UPDATED (after password change), Supabase provides an active session.
+        // The user is effectively signed in.
+        router.replace('/');
       }
-
-      // If it's a recovery flow already identified (by hash or previous event that set isPasswordRecoveryMode state to true):
-      if (isPasswordRecoveryMode) { // Check the current state
-        if (event === 'SIGNED_OUT') { setIsPasswordRecoveryMode(false); } // Reset if signed out during recovery
-        setIsCheckingAuth(false); // Make sure loading stops, but don't redirect
-        return;
-      }
-
-      // Standard non-recovery events (isPasswordRecoveryMode state is false here):
-      if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session) {
-        router.replace('/'); // Safe to redirect, not in recovery mode
-      }
-      // For SIGNED_OUT or INITIAL_SESSION without session, or any other event,
-      // just ensure isCheckingAuth becomes false.
+      // For any other event (like SIGNED_OUT, or INITIAL_SESSION without session),
+      // or if no session after the above events, just stop loading.
       setIsCheckingAuth(false);
     });
 
-    // Initial session check, only if not recovery by hash and still checking (ref check)
-    if (!isRecoveryFromHash && isCheckingAuthRef.current) {
-      const checkSession = async () => {
-        if (!isCheckingAuthRef.current) return; // Check ref again, might have been set by onAuthStateChange
-        try {
-          const { data: { session: currentSession }, error } = await supabase.auth.getSession();
-          if (error) { setIsCheckingAuth(false); return; }
+    // Initial session check
+    const checkSession = async () => {
+      if (!isCheckingAuthRef.current) return;
+      try {
+        const { data: { session: currentSession }, error } = await supabase.auth.getSession();
+        if (error) {
+          console.error("Error getting session:", error);
+          setIsCheckingAuth(false);
+          return;
+        }
 
-          const isAmrRecoveryInSession = currentSession?.amr?.some(entry => entry.method === 'recovery');
+        if (currentSession) {
+          // If there's any session, user is authenticated.
+          // This will also cover cases where user lands from a password reset link
+          // and Supabase has established a session for password update.
+          router.replace('/');
+        }
+      } catch (err) {
+        console.error("Catch block error getting session:", err);
+      } finally {
+        // Ensure loader stops even if errors occur or no session
+        setIsCheckingAuth(false);
+      }
+    };
+    checkSession();
 
-          if (currentSession && isAmrRecoveryInSession) {
-            setIsPasswordRecoveryMode(true);
-            // Toast if not already done by hash
-            if(!isRecoveryFromHash) toast({ title: "Set New Password", description: "Please enter and confirm your new password below." });
-            setIsCheckingAuth(false);
-          } else if (currentSession && !isPasswordRecoveryMode) { // Check state here before redirect
-            router.replace('/');
-            setIsCheckingAuth(false);
-          } else { // No session, or already in recovery mode (state is true)
-            setIsCheckingAuth(false);
-          }
-        } catch (err) { setIsCheckingAuth(false); }
-      };
-      checkSession();
-    } else if (isRecoveryFromHash && isCheckingAuthRef.current) {
-      // This is a fallback, should have been set to false by hash check already.
-      setIsCheckingAuth(false);
-    }
 
     return () => {
       authSubscription?.unsubscribe();
     };
-  }, [router, toast, pathname, isPasswordRecoveryMode]); // isPasswordRecoveryMode is a crucial dependency
+  }, [router]);
 
 
   const handleSignIn = async (values: SignInFormValues) => {
@@ -286,18 +233,14 @@ export default function AuthPage() {
         setAuthError(error.message);
         toast({ title: 'Sign Up Failed', description: error.message, variant: 'destructive' });
       } else if (data.session) {
-        // User is signed in (e.g. auto-confirm is on, or social sign up)
         toast({ title: 'Account Created & Signed In!' });
-        // Redirect is handled by onAuthStateChange
       } else if (data.user && !data.session) {
-        // Email confirmation required
         setShowConfirmationMessage(true);
         toast({ title: 'Account Created!', description: 'Please check your email to confirm your account.' });
         signUpForm.reset();
-        signInForm.setValue('email', values.email); // Pre-fill email on sign-in tab
-        setDefaultTab('signin'); // Switch to sign-in tab
+        signInForm.setValue('email', values.email); 
+        setDefaultTab('signin'); 
       } else {
-         // Should not happen with current Supabase versions
          setAuthError('An unexpected outcome occurred during sign up.');
          toast({ title: 'Sign Up Issue', description: 'An unexpected outcome occurred.', variant: 'destructive' });
       }
@@ -331,7 +274,6 @@ export default function AuthPage() {
       toast({ title: 'Google Sign-In Failed', description: error.message, variant: 'destructive' });
       setIsGoogleLoading(false);
     }
-    // On success, Supabase redirects, then onAuthStateChange handles it.
   };
 
   const handleForgotPasswordRequest = async (values: ForgotPasswordFormValues) => {
@@ -366,31 +308,6 @@ export default function AuthPage() {
     setIsSendingResetLink(false);
   };
 
-  const handleResetPassword = async (values: ResetPasswordFormValues) => {
-    setIsLoading(true);
-    setAuthError(null);
-    try {
-      const { error } = await supabase.auth.updateUser({ password: values.newPassword });
-      if (error) {
-        setAuthError(error.message);
-        toast({ title: 'Password Reset Failed', description: error.message, variant: 'destructive' });
-      } else {
-        toast({ title: 'Password Reset Successful!', description: 'You can now sign in with your new password.' });
-        setIsPasswordRecoveryMode(false); // Exit recovery mode
-        setDefaultTab('signin'); // Switch to sign-in tab
-        // Pre-fill email if possible (user might not be fully "gotten" here yet)
-        const { data: { user } } = await supabase.auth.getUser();
-        signInForm.setValue('email', user?.email || '');
-        // Clear the hash to remove recovery params from URL
-        router.replace('/auth', { scroll: false }); // Or router.replace(pathname, undefined, { shallow: true });
-      }
-    } catch (error: any) {
-      setAuthError(error.message || 'An unexpected error occurred.');
-      toast({ title: 'Password Reset Error', description: error.message || 'An unexpected error occurred.', variant: 'destructive' });
-    }
-    setIsLoading(false);
-  };
-
 
   if (isCheckingAuth) {
     return (
@@ -407,89 +324,6 @@ export default function AuthPage() {
     <div className="flex min-h-screen flex-col bg-background">
       <PublicNavbar />
       <main className="flex flex-1 items-center justify-center p-4">
-        {isPasswordRecoveryMode ? (
-           <Card className="w-full max-w-md shadow-xl">
-            <CardHeader>
-              <CardTitle className="font-headline flex items-center">
-                <KeyRound className="mr-2 h-5 w-5 text-primary"/> Set New Password
-              </CardTitle>
-              <CardDescription>Enter and confirm your new password below.</CardDescription>
-            </CardHeader>
-            <Form {...resetPasswordFormHook}>
-              <form onSubmit={resetPasswordFormHook.handleSubmit(handleResetPassword)}>
-                <CardContent className="space-y-4">
-                  <FormField
-                    control={resetPasswordFormHook.control}
-                    name="newPassword"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>New Password</FormLabel>
-                        <div className="relative">
-                          <FormControl>
-                            <Input
-                              type={showNewPassword ? 'text' : 'password'}
-                              placeholder="Enter new password"
-                              {...field}
-                              className="pr-10"
-                            />
-                          </FormControl>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 text-muted-foreground hover:text-primary"
-                            onClick={() => setShowNewPassword(!showNewPassword)}
-                            tabIndex={-1}
-                          >
-                            {showNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                          </Button>
-                        </div>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={resetPasswordFormHook.control}
-                    name="confirmNewPassword"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Confirm New Password</FormLabel>
-                        <div className="relative">
-                          <FormControl>
-                            <Input
-                              type={showConfirmNewPassword ? 'text' : 'password'}
-                              placeholder="Confirm new password"
-                              {...field}
-                              className="pr-10"
-                            />
-                          </FormControl>
-                           <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 text-muted-foreground hover:text-primary"
-                            onClick={() => setShowConfirmNewPassword(!showConfirmNewPassword)}
-                            tabIndex={-1}
-                          >
-                            {showConfirmNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                          </Button>
-                        </div>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  {authError && <p className="text-sm text-destructive">{authError}</p>}
-                </CardContent>
-                <CardFooter>
-                  <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                    Set New Password
-                  </Button>
-                </CardFooter>
-              </form>
-            </Form>
-          </Card>
-        ) : (
             <Tabs value={defaultTab} onValueChange={(value) => setDefaultTab(value as 'signin'|'signup')} className="w-full max-w-md">
                 <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="signin">Sign In</TabsTrigger>
@@ -699,7 +533,6 @@ export default function AuthPage() {
                 </Card>
                 </TabsContent>
             </Tabs>
-        )}
       </main>
 
       <Dialog open={isForgotPasswordOpen} onOpenChange={setIsForgotPasswordOpen}>
@@ -744,4 +577,3 @@ export default function AuthPage() {
     </div>
   );
 }
-
