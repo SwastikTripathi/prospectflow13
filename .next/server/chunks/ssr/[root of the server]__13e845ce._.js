@@ -8821,13 +8821,15 @@ function JobOpeningsPage() {
     const { toast } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hooks$2f$use$2d$toast$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useToast"])();
     const [isLoadingData, setIsLoadingData] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(true);
     const [currentUser, setCurrentUser] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
+    const [hasFetchedData, setHasFetchedData] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
+    const previousUserIdRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useRef"])(null);
     const [focusedOpening, setFocusedOpening] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
     const focusedOpeningIdFromUrl = searchParams?.get('view');
     const { effectiveTierForLimits, isInGracePeriod, subscriptionLoading } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hooks$2f$use$2d$current$2d$subscription$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useCurrentSubscription"])();
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
-        const { data: authListener } = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["supabase"].auth.onAuthStateChange((event, session)=>{
-            setCurrentUser(session?.user ?? null);
-            if (!session?.user) {
+        const handleUserSession = (user)=>{
+            if (user?.id !== previousUserIdRef.current) {
+                setHasFetchedData(false);
                 setJobOpenings([]);
                 setJobOpeningsCount(0);
                 setCompanies([]);
@@ -8835,11 +8837,19 @@ function JobOpeningsPage() {
                 setCompaniesCount(0);
                 setContactsCount(0);
                 setUserSettings(null);
-                setIsLoadingData(false);
             }
+            setCurrentUser(user);
+            previousUserIdRef.current = user?.id;
+            if (!user) {
+                setIsLoadingData(false);
+                setHasFetchedData(true);
+            }
+        };
+        const { data: authListener } = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["supabase"].auth.onAuthStateChange((event, session)=>{
+            handleUserSession(session?.user ?? null);
         });
         __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["supabase"].auth.getUser().then(({ data: { user } })=>{
-            setCurrentUser(user);
+            handleUserSession(user);
         });
         return ()=>{
             authListener.subscription.unsubscribe();
@@ -8855,6 +8865,7 @@ function JobOpeningsPage() {
             setContactsCount(0);
             setUserSettings(null);
             setIsLoadingData(false);
+            setHasFetchedData(true);
             return;
         }
         setIsLoadingData(true);
@@ -8946,19 +8957,22 @@ function JobOpeningsPage() {
             setUserSettings(null);
         } finally{
             setIsLoadingData(false);
+            setHasFetchedData(true);
         }
     }, [
         currentUser,
         toast
     ]);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
-        if (currentUser) {
+        if (currentUser && !hasFetchedData) {
             fetchPageData();
-        } else {
+        } else if (!currentUser && !hasFetchedData) {
             setIsLoadingData(false);
+            setHasFetchedData(true);
         }
     }, [
         currentUser,
+        hasFetchedData,
         fetchPageData
     ]);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
@@ -9049,7 +9063,7 @@ function JobOpeningsPage() {
                     title: "Company Added",
                     description: `${data.name} added to directory.`
                 });
-                await fetchPageData();
+                setHasFetchedData(false); // Trigger re-fetch
                 return data;
             }
             return null;
@@ -9108,7 +9122,7 @@ function JobOpeningsPage() {
                     title: "Contact Added",
                     description: `${data.name} added to directory.`
                 });
-                await fetchPageData();
+                setHasFetchedData(false); // Trigger re-fetch
                 return data;
             }
             return null;
@@ -9213,8 +9227,8 @@ function JobOpeningsPage() {
                     title: "Job Opening Added",
                     description: `${newJobOpeningData.role_title} at ${newJobOpeningData.company_name_cache} has been added.`
                 });
-                await fetchPageData();
-                router.refresh();
+                setHasFetchedData(false); // Trigger re-fetch
+                // router.refresh(); // Not needed if setHasFetchedData works
                 setIsAddDialogOpen(false);
             } else {
                 toast({
@@ -9334,8 +9348,8 @@ function JobOpeningsPage() {
                     title: "Job Opening Updated",
                     description: `${updatedJobOpening.role_title} has been updated.`
                 });
-                await fetchPageData();
-                router.refresh();
+                setHasFetchedData(false); // Trigger re-fetch
+                // router.refresh(); // Not needed
                 setIsEditDialogOpen(false);
                 setEditingOpening(null);
                 if (focusedOpening && focusedOpening.id === openingId) {
@@ -9402,8 +9416,8 @@ function JobOpeningsPage() {
                         }
                     }
                 }
-                await fetchPageData();
-                router.refresh();
+                setHasFetchedData(false); // Trigger re-fetch
+            // router.refresh(); // Not needed
             }
         } catch (error) {
             toast({
@@ -9476,8 +9490,8 @@ function JobOpeningsPage() {
                     }
                 }
             }
-            await fetchPageData();
-            router.refresh();
+            setHasFetchedData(false); // Trigger re-fetch
+        // router.refresh(); // Not needed
         } catch (error) {
             toast({
                 title: 'Error Unlogging Follow-up',
@@ -9490,7 +9504,7 @@ function JobOpeningsPage() {
         toast,
         fetchPageData,
         router
-    ]);
+    ]); // fetchPageData should be stable
     const handleInitiateDeleteOpening = (opening)=>{
         setOpeningToDelete(opening);
         setIsEditDialogOpen(false);
@@ -9515,8 +9529,8 @@ function JobOpeningsPage() {
                 title: "Job Opening Deleted",
                 description: `${openingToDelete.role_title} has been removed.`
             });
-            await fetchPageData();
-            router.refresh();
+            setHasFetchedData(false); // Trigger re-fetch
+        // router.refresh(); // Not needed
         } catch (error) {
             toast({
                 title: 'Error Deleting Opening',
@@ -9548,8 +9562,8 @@ function JobOpeningsPage() {
                 title: newIsFavorite ? 'Added to Favorites' : 'Removed from Favorites',
                 description: `Job opening has been ${newIsFavorite ? 'favorited' : 'unfavorited'}.`
             });
-            await fetchPageData();
-            router.refresh();
+            setHasFetchedData(false); // Trigger re-fetch
+        // router.refresh(); // Not needed
         } catch (error) {
             toast({
                 title: 'Error Toggling Favorite',
@@ -9659,7 +9673,7 @@ function JobOpeningsPage() {
                                     children: "Job Openings"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/job-openings/page.tsx",
-                                    lineNumber: 952,
+                                    lineNumber: 965,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -9667,13 +9681,13 @@ function JobOpeningsPage() {
                                     children: "Manage your job applications and follow-ups."
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/job-openings/page.tsx",
-                                    lineNumber: 953,
+                                    lineNumber: 966,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/job-openings/page.tsx",
-                            lineNumber: 951,
+                            lineNumber: 964,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -9684,20 +9698,20 @@ function JobOpeningsPage() {
                                     className: "mr-2 h-4 w-4"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/job-openings/page.tsx",
-                                    lineNumber: 956,
+                                    lineNumber: 969,
                                     columnNumber: 13
                                 }, this),
                                 " Add New Opening"
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/job-openings/page.tsx",
-                            lineNumber: 955,
+                            lineNumber: 968,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/job-openings/page.tsx",
-                    lineNumber: 950,
+                    lineNumber: 963,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -9710,7 +9724,7 @@ function JobOpeningsPage() {
                                     className: "absolute left-3 h-4 w-4 text-muted-foreground"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/job-openings/page.tsx",
-                                    lineNumber: 962,
+                                    lineNumber: 975,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -9722,7 +9736,7 @@ function JobOpeningsPage() {
                                     disabled: !currentUser || isLoadingData || subscriptionLoading
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/job-openings/page.tsx",
-                                    lineNumber: 963,
+                                    lineNumber: 976,
                                     columnNumber: 13
                                 }, this),
                                 searchTerm && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -9734,12 +9748,12 @@ function JobOpeningsPage() {
                                         className: "h-4 w-4 text-muted-foreground group-hover:text-primary"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/job-openings/page.tsx",
-                                        lineNumber: 973,
+                                        lineNumber: 986,
                                         columnNumber: 17
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/job-openings/page.tsx",
-                                    lineNumber: 972,
+                                    lineNumber: 985,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -9753,7 +9767,7 @@ function JobOpeningsPage() {
                                             disabled: !currentUser || isLoadingData || subscriptionLoading
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/job-openings/page.tsx",
-                                            lineNumber: 977,
+                                            lineNumber: 990,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$label$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Label"], {
@@ -9762,19 +9776,19 @@ function JobOpeningsPage() {
                                             children: "Include Notes"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/job-openings/page.tsx",
-                                            lineNumber: 984,
+                                            lineNumber: 997,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/job-openings/page.tsx",
-                                    lineNumber: 976,
+                                    lineNumber: 989,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/job-openings/page.tsx",
-                            lineNumber: 961,
+                            lineNumber: 974,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Select"], {
@@ -9788,12 +9802,12 @@ function JobOpeningsPage() {
                                         placeholder: "Sort by..."
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/job-openings/page.tsx",
-                                        lineNumber: 989,
+                                        lineNumber: 1002,
                                         columnNumber: 15
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/job-openings/page.tsx",
-                                    lineNumber: 988,
+                                    lineNumber: 1001,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SelectContent"], {
@@ -9802,18 +9816,18 @@ function JobOpeningsPage() {
                                             children: option.label
                                         }, option.value, false, {
                                             fileName: "[project]/src/app/job-openings/page.tsx",
-                                            lineNumber: 993,
+                                            lineNumber: 1006,
                                             columnNumber: 17
                                         }, this))
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/job-openings/page.tsx",
-                                    lineNumber: 991,
+                                    lineNumber: 1004,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/job-openings/page.tsx",
-                            lineNumber: 987,
+                            lineNumber: 1000,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -9828,7 +9842,7 @@ function JobOpeningsPage() {
                                     className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["cn"])("h-5 w-5", showOnlyFavorites ? "fill-yellow-400 text-yellow-500" : "text-muted-foreground")
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/job-openings/page.tsx",
-                                    lineNumber: 1012,
+                                    lineNumber: 1025,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -9836,19 +9850,19 @@ function JobOpeningsPage() {
                                     children: showOnlyFavorites ? "Show All" : "Show Favorites"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/job-openings/page.tsx",
-                                    lineNumber: 1013,
+                                    lineNumber: 1026,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/job-openings/page.tsx",
-                            lineNumber: 999,
+                            lineNumber: 1012,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/job-openings/page.tsx",
-                    lineNumber: 960,
+                    lineNumber: 973,
                     columnNumber: 10
                 }, this),
                 isLoadingData || subscriptionLoading ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -9857,12 +9871,12 @@ function JobOpeningsPage() {
                         className: "h-12 w-12 animate-spin text-primary"
                     }, void 0, false, {
                         fileName: "[project]/src/app/job-openings/page.tsx",
-                        lineNumber: 1018,
+                        lineNumber: 1031,
                         columnNumber: 67
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/app/job-openings/page.tsx",
-                    lineNumber: 1018,
+                    lineNumber: 1031,
                     columnNumber: 11
                 }, this) : !currentUser ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Card"], {
                     className: "shadow-lg",
@@ -9875,19 +9889,19 @@ function JobOpeningsPage() {
                                         className: "mr-2 h-5 w-5 text-primary"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/job-openings/page.tsx",
-                                        lineNumber: 1020,
+                                        lineNumber: 1033,
                                         columnNumber: 108
                                     }, this),
                                     "Please Sign In"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/job-openings/page.tsx",
-                                lineNumber: 1020,
+                                lineNumber: 1033,
                                 columnNumber: 53
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/job-openings/page.tsx",
-                            lineNumber: 1020,
+                            lineNumber: 1033,
                             columnNumber: 41
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -9896,18 +9910,18 @@ function JobOpeningsPage() {
                                 children: "You need to be signed in to manage job openings."
                             }, void 0, false, {
                                 fileName: "[project]/src/app/job-openings/page.tsx",
-                                lineNumber: 1020,
+                                lineNumber: 1033,
                                 columnNumber: 211
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/job-openings/page.tsx",
-                            lineNumber: 1020,
+                            lineNumber: 1033,
                             columnNumber: 198
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/job-openings/page.tsx",
-                    lineNumber: 1020,
+                    lineNumber: 1033,
                     columnNumber: 13
                 }, this) : noResultsAfterFiltering && !focusedOpening ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Card"], {
                     className: "shadow-lg",
@@ -9920,19 +9934,19 @@ function JobOpeningsPage() {
                                         className: "mr-2 h-5 w-5 text-primary"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/job-openings/page.tsx",
-                                        lineNumber: 1023,
+                                        lineNumber: 1036,
                                         columnNumber: 80
                                     }, this),
                                     showOnlyFavorites && searchTerm ? "No Favorite Openings Match Your Search" : showOnlyFavorites ? "No Favorite Openings Yet" : searchTerm ? "No Openings Match Your Search" : "No Job Openings Yet"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/job-openings/page.tsx",
-                                lineNumber: 1023,
+                                lineNumber: 1036,
                                 columnNumber: 25
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/job-openings/page.tsx",
-                            lineNumber: 1023,
+                            lineNumber: 1036,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -9941,18 +9955,18 @@ function JobOpeningsPage() {
                                 children: showOnlyFavorites && searchTerm ? "Try adjusting your search or clear the favorites filter." : showOnlyFavorites ? "Mark some openings as favorite to see them here." : searchTerm ? "Try a different search term or add a new opening." : "Click \"Add New Opening\" to get started."
                             }, void 0, false, {
                                 fileName: "[project]/src/app/job-openings/page.tsx",
-                                lineNumber: 1029,
+                                lineNumber: 1042,
                                 columnNumber: 26
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/job-openings/page.tsx",
-                            lineNumber: 1029,
+                            lineNumber: 1042,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/job-openings/page.tsx",
-                    lineNumber: 1022,
+                    lineNumber: 1035,
                     columnNumber: 11
                 }, this) : focusedOpening ? null : sortOption === 'nextFollowUpDate_asc' ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Fragment"], {
                     children: [
@@ -9964,7 +9978,7 @@ function JobOpeningsPage() {
                                     children: "Due Today / Overdue"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/job-openings/page.tsx",
-                                    lineNumber: 1041,
+                                    lineNumber: 1054,
                                     columnNumber: 19
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$job$2d$openings$2f$components$2f$JobOpeningList$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["JobOpeningList"], {
@@ -9975,20 +9989,20 @@ function JobOpeningsPage() {
                                     onToggleFavorite: handleToggleFavorite
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/job-openings/page.tsx",
-                                    lineNumber: 1042,
+                                    lineNumber: 1055,
                                     columnNumber: 19
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/job-openings/page.tsx",
-                            lineNumber: 1040,
+                            lineNumber: 1053,
                             columnNumber: 17
                         }, this),
                         actionRequiredOpenings.length > 0 && otherOpenings.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$separator$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Separator"], {
                             className: "my-6"
                         }, void 0, false, {
                             fileName: "[project]/src/app/job-openings/page.tsx",
-                            lineNumber: 1052,
+                            lineNumber: 1065,
                             columnNumber: 17
                         }, this),
                         otherOpenings.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -9999,7 +10013,7 @@ function JobOpeningsPage() {
                                     children: "Upcoming Follow-ups"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/job-openings/page.tsx",
-                                    lineNumber: 1056,
+                                    lineNumber: 1069,
                                     columnNumber: 19
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$job$2d$openings$2f$components$2f$JobOpeningList$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["JobOpeningList"], {
@@ -10010,13 +10024,13 @@ function JobOpeningsPage() {
                                     onToggleFavorite: handleToggleFavorite
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/job-openings/page.tsx",
-                                    lineNumber: 1057,
+                                    lineNumber: 1070,
                                     columnNumber: 19
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/job-openings/page.tsx",
-                            lineNumber: 1055,
+                            lineNumber: 1068,
                             columnNumber: 18
                         }, this)
                     ]
@@ -10028,7 +10042,7 @@ function JobOpeningsPage() {
                     onToggleFavorite: handleToggleFavorite
                 }, void 0, false, {
                     fileName: "[project]/src/app/job-openings/page.tsx",
-                    lineNumber: 1068,
+                    lineNumber: 1081,
                     columnNumber: 13
                 }, this),
                 focusedOpening && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Dialog"], {
@@ -10046,7 +10060,7 @@ function JobOpeningsPage() {
                                         children: focusedOpening.role_title
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/job-openings/page.tsx",
-                                        lineNumber: 1082,
+                                        lineNumber: 1095,
                                         columnNumber: 18
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["DialogDescription"], {
@@ -10058,13 +10072,13 @@ function JobOpeningsPage() {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/job-openings/page.tsx",
-                                        lineNumber: 1083,
+                                        lineNumber: 1096,
                                         columnNumber: 18
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/job-openings/page.tsx",
-                                lineNumber: 1081,
+                                lineNumber: 1094,
                                 columnNumber: 15
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$job$2d$openings$2f$components$2f$JobOpeningCard$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["JobOpeningCard"], {
@@ -10087,18 +10101,18 @@ function JobOpeningsPage() {
                                 isFocusedView: true
                             }, void 0, false, {
                                 fileName: "[project]/src/app/job-openings/page.tsx",
-                                lineNumber: 1085,
+                                lineNumber: 1098,
                                 columnNumber: 15
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/job-openings/page.tsx",
-                        lineNumber: 1080,
+                        lineNumber: 1093,
                         columnNumber: 13
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/app/job-openings/page.tsx",
-                    lineNumber: 1079,
+                    lineNumber: 1092,
                     columnNumber: 11
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$job$2d$openings$2f$components$2f$AddJobOpeningDialog$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AddJobOpeningDialog"], {
@@ -10115,7 +10129,7 @@ function JobOpeningsPage() {
                     defaultEmailTemplates: userSettings?.default_email_templates
                 }, void 0, false, {
                     fileName: "[project]/src/app/job-openings/page.tsx",
-                    lineNumber: 1109,
+                    lineNumber: 1122,
                     columnNumber: 9
                 }, this),
                 editingOpening && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$job$2d$openings$2f$components$2f$EditJobOpeningDialog$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["EditJobOpeningDialog"], {
@@ -10132,7 +10146,7 @@ function JobOpeningsPage() {
                     onAddNewContact: handleAddNewContactToListSupabase
                 }, void 0, false, {
                     fileName: "[project]/src/app/job-openings/page.tsx",
-                    lineNumber: 1123,
+                    lineNumber: 1136,
                     columnNumber: 11
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$alert$2d$dialog$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AlertDialog"], {
@@ -10146,7 +10160,7 @@ function JobOpeningsPage() {
                                         children: "Are you sure?"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/job-openings/page.tsx",
-                                        lineNumber: 1140,
+                                        lineNumber: 1153,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$alert$2d$dialog$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AlertDialogDescription"], {
@@ -10162,20 +10176,20 @@ function JobOpeningsPage() {
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/job-openings/page.tsx",
-                                                lineNumber: 1143,
+                                                lineNumber: 1156,
                                                 columnNumber: 17
                                             }, this),
                                             ". All associated follow-up records will also be deleted."
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/job-openings/page.tsx",
-                                        lineNumber: 1141,
+                                        lineNumber: 1154,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/job-openings/page.tsx",
-                                lineNumber: 1139,
+                                lineNumber: 1152,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$alert$2d$dialog$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AlertDialogFooter"], {
@@ -10188,7 +10202,7 @@ function JobOpeningsPage() {
                                         children: "Cancel"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/job-openings/page.tsx",
-                                        lineNumber: 1148,
+                                        lineNumber: 1161,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$alert$2d$dialog$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AlertDialogAction"], {
@@ -10197,35 +10211,35 @@ function JobOpeningsPage() {
                                         children: "Delete Opening"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/job-openings/page.tsx",
-                                        lineNumber: 1149,
+                                        lineNumber: 1162,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/job-openings/page.tsx",
-                                lineNumber: 1147,
+                                lineNumber: 1160,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/job-openings/page.tsx",
-                        lineNumber: 1138,
+                        lineNumber: 1151,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/app/job-openings/page.tsx",
-                    lineNumber: 1137,
+                    lineNumber: 1150,
                     columnNumber: 10
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/app/job-openings/page.tsx",
-            lineNumber: 949,
+            lineNumber: 962,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/app/job-openings/page.tsx",
-        lineNumber: 948,
+        lineNumber: 961,
         columnNumber: 5
     }, this);
 }

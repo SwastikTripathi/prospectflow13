@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
 import type { User } from '@supabase/supabase-js';
@@ -14,8 +14,8 @@ import { useSidebar } from '@/components/ui/sidebar';
 import { getLimitsForTier, ALL_AVAILABLE_PLANS } from '@/lib/config';
 import type { UserSubscription, SubscriptionTier } from '@/lib/types';
 import { cn } from '@/lib/utils';
-import { useCurrentSubscription } from '@/hooks/use-current-subscription'; // Import the hook
-import { differenceInDays } from 'date-fns'; // Added missing import
+import { useCurrentSubscription } from '@/hooks/use-current-subscription';
+import { differenceInDays } from 'date-fns';
 
 interface UsageStats {
   companies: { current: number; limit: number };
@@ -104,18 +104,37 @@ export function SidebarUsageProgress({ user }: SidebarUsageProgressProps) {
     daysLeftInGracePeriod,
   } = useCurrentSubscription();
 
+  const lastFetchedUserIdRef = useRef<string | null | undefined>(null);
+  const lastFetchedTierRef = useRef<SubscriptionTier | null | undefined>(null);
 
   useEffect(() => {
-    if (!user) {
+    if (!user || subscriptionLoading) {
       setIsLoadingCounts(false);
       setStats(null);
+      if (!user) { // Only reset refs if user is truly null, not just sub loading
+        lastFetchedUserIdRef.current = null;
+        lastFetchedTierRef.current = null;
+      }
+      return;
+    }
+
+    if (
+      user.id === lastFetchedUserIdRef.current &&
+      effectiveTierForLimits === lastFetchedTierRef.current
+    ) {
+      setIsLoadingCounts(false); // Already fetched for this context
       return;
     }
 
     let isMounted = true;
+    setIsLoadingCounts(true);
+
     const fetchUsageCounts = async () => {
-      if (!isMounted) return;
-      setIsLoadingCounts(true);
+      if (!isMounted || !user) { // Re-check user in async function
+        if(isMounted) setIsLoadingCounts(false);
+        return;
+      }
+    
       try {
         const [
           { count: companiesCount, error: companiesError },
@@ -133,7 +152,6 @@ export function SidebarUsageProgress({ user }: SidebarUsageProgressProps) {
         if (contactsError) throw contactsError;
         if (jobOpeningsError) throw jobOpeningsError;
         
-        // Limits are now determined by effectiveTierForLimits from the hook
         const limits = getLimitsForTier(effectiveTierForLimits);
 
         setStats({
@@ -142,14 +160,21 @@ export function SidebarUsageProgress({ user }: SidebarUsageProgressProps) {
           jobOpenings: { current: jobOpeningsCount ?? 0, limit: limits.jobOpenings },
         });
 
+        lastFetchedUserIdRef.current = user.id;
+        lastFetchedTierRef.current = effectiveTierForLimits;
+
       } catch (error) {
         if (isMounted) {
-          const limits = getLimitsForTier('free'); // Fallback to free on error
+          console.error("Error fetching sidebar usage stats:", error);
+          const limits = getLimitsForTier('free'); 
           setStats({ 
               companies: { current: 0, limit: limits.companies },
               contacts: { current: 0, limit: limits.contacts },
               jobOpenings: { current: 0, limit: limits.jobOpenings },
           });
+          // Mark as attempted even on error to prevent loops if error is persistent
+          lastFetchedUserIdRef.current = user.id;
+          lastFetchedTierRef.current = effectiveTierForLimits;
         }
       } finally {
         if (isMounted) setIsLoadingCounts(false);
@@ -157,8 +182,11 @@ export function SidebarUsageProgress({ user }: SidebarUsageProgressProps) {
     };
 
     fetchUsageCounts();
-    return () => { isMounted = false; };
-  }, [user, effectiveTierForLimits]); // Re-fetch if user or effectiveTier changes
+
+    return () => {
+      isMounted = false;
+    };
+  }, [user, effectiveTierForLimits, subscriptionLoading]);
 
 
   const renderGracePeriodWarning = () => {
@@ -209,7 +237,7 @@ export function SidebarUsageProgress({ user }: SidebarUsageProgressProps) {
     const timeLeftMessage = currentSubscription?.tier === 'premium' && currentSubscription.status === 'active' && currentSubscription.plan_expiry_date
         ? (() => {
             const daysLeft = differenceInDays(currentSubscription.plan_expiry_date!, new Date());
-            if (daysLeft < 0) return undefined; // Handled by grace period or becomes free
+            if (daysLeft < 0) return undefined; 
             if (daysLeft === 0) return "Expires today";
             return `${daysLeft} day${daysLeft !== 1 ? 's' : ''} left`;
           })()
@@ -246,7 +274,7 @@ export function SidebarUsageProgress({ user }: SidebarUsageProgressProps) {
         );
       }
       return <div className="px-2 mb-2 text-sidebar-foreground">{premiumContent}</div>;
-    } else { // Free Plan (or expired premium in/after grace)
+    } else { 
       const freePlanContent = (
          <div className={cn("w-full", isCollapsed ? "flex flex-col items-center py-1" : "py-2")}>
           {isCollapsed ? (
@@ -309,10 +337,10 @@ export function SidebarUsageProgress({ user }: SidebarUsageProgressProps) {
           <StatItem icon={Building2} label="Companies" current={stats.companies.current} limit={stats.companies.limit} />
         </div>
       )}
-       {!finalIsLoading && !stats && currentSubscription?.status !== 'error' && ( // Assuming 'error' status if sub fetch fails
+       {!finalIsLoading && !stats && currentSubscription?.status !== 'error' && (
         <div className={cn("p-2 text-xs text-sidebar-foreground/60", isCollapsed ? "text-center" : "text-left")}>Usage Stats N/A</div>
       )}
-       {currentSubscription?.status === 'error' && !finalIsLoading && ( // Or some other error indicator from the hook
+       {currentSubscription?.status === 'error' && !finalIsLoading && (
          <div className={cn("p-2 text-xs text-destructive", isCollapsed ? "text-center" : "text-left")}>Error loading stats.</div>
        )}
     </>

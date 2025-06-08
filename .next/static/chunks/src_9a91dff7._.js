@@ -2207,8 +2207,8 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$re
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/components/ui/sidebar.tsx [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$config$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/lib/config.ts [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/lib/utils.ts [app-client] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hooks$2f$use$2d$current$2d$subscription$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/hooks/use-current-subscription.ts [app-client] (ecmascript)"); // Import the hook
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$differenceInDays$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/date-fns/differenceInDays.mjs [app-client] (ecmascript)"); // Added missing import
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hooks$2f$use$2d$current$2d$subscription$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/hooks/use-current-subscription.ts [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$differenceInDays$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/date-fns/differenceInDays.mjs [app-client] (ecmascript)");
 ;
 var _s = __turbopack_context__.k.signature(), _s1 = __turbopack_context__.k.signature();
 'use client';
@@ -2359,18 +2359,31 @@ function SidebarUsageProgress({ user }) {
     const { state: sidebarState } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useSidebar"])();
     const isCollapsed = sidebarState === 'collapsed';
     const { currentSubscription, subscriptionLoading, effectiveTierForLimits, isInGracePeriod, daysLeftInGracePeriod } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hooks$2f$use$2d$current$2d$subscription$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useCurrentSubscription"])();
+    const lastFetchedUserIdRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(null);
+    const lastFetchedTierRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(null);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "SidebarUsageProgress.useEffect": ()=>{
-            if (!user) {
+            if (!user || subscriptionLoading) {
                 setIsLoadingCounts(false);
                 setStats(null);
+                if (!user) {
+                    lastFetchedUserIdRef.current = null;
+                    lastFetchedTierRef.current = null;
+                }
+                return;
+            }
+            if (user.id === lastFetchedUserIdRef.current && effectiveTierForLimits === lastFetchedTierRef.current) {
+                setIsLoadingCounts(false); // Already fetched for this context
                 return;
             }
             let isMounted = true;
+            setIsLoadingCounts(true);
             const fetchUsageCounts = {
                 "SidebarUsageProgress.useEffect.fetchUsageCounts": async ()=>{
-                    if (!isMounted) return;
-                    setIsLoadingCounts(true);
+                    if (!isMounted || !user) {
+                        if (isMounted) setIsLoadingCounts(false);
+                        return;
+                    }
                     try {
                         const [{ count: companiesCount, error: companiesError }, { count: contactsCount, error: contactsError }, { count: jobOpeningsCount, error: jobOpeningsError }] = await Promise.all([
                             __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].from('companies').select('*', {
@@ -2390,7 +2403,6 @@ function SidebarUsageProgress({ user }) {
                         if (companiesError) throw companiesError;
                         if (contactsError) throw contactsError;
                         if (jobOpeningsError) throw jobOpeningsError;
-                        // Limits are now determined by effectiveTierForLimits from the hook
                         const limits = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$config$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getLimitsForTier"])(effectiveTierForLimits);
                         setStats({
                             companies: {
@@ -2406,9 +2418,12 @@ function SidebarUsageProgress({ user }) {
                                 limit: limits.jobOpenings
                             }
                         });
+                        lastFetchedUserIdRef.current = user.id;
+                        lastFetchedTierRef.current = effectiveTierForLimits;
                     } catch (error) {
                         if (isMounted) {
-                            const limits = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$config$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getLimitsForTier"])('free'); // Fallback to free on error
+                            console.error("Error fetching sidebar usage stats:", error);
+                            const limits = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$config$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getLimitsForTier"])('free');
                             setStats({
                                 companies: {
                                     current: 0,
@@ -2423,6 +2438,9 @@ function SidebarUsageProgress({ user }) {
                                     limit: limits.jobOpenings
                                 }
                             });
+                            // Mark as attempted even on error to prevent loops if error is persistent
+                            lastFetchedUserIdRef.current = user.id;
+                            lastFetchedTierRef.current = effectiveTierForLimits;
                         }
                     } finally{
                         if (isMounted) setIsLoadingCounts(false);
@@ -2438,8 +2456,9 @@ function SidebarUsageProgress({ user }) {
         }
     }["SidebarUsageProgress.useEffect"], [
         user,
-        effectiveTierForLimits
-    ]); // Re-fetch if user or effectiveTier changes
+        effectiveTierForLimits,
+        subscriptionLoading
+    ]);
     const renderGracePeriodWarning = ()=>{
         if (!isInGracePeriod || daysLeftInGracePeriod === null || subscriptionLoading) return null;
         const message = daysLeftInGracePeriod > 0 ? `${daysLeftInGracePeriod} day${daysLeftInGracePeriod !== 1 ? 's' : ''} left to manage data.` : "Data cleanup imminent. Renew or manage data now.";
@@ -2454,17 +2473,17 @@ function SidebarUsageProgress({ user }) {
                                 className: "h-5 w-5 text-destructive"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                                lineNumber: 176,
+                                lineNumber: 204,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                            lineNumber: 175,
+                            lineNumber: 203,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                        lineNumber: 174,
+                        lineNumber: 202,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$tooltip$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TooltipContent"], {
@@ -2476,26 +2495,26 @@ function SidebarUsageProgress({ user }) {
                                 children: message
                             }, void 0, false, {
                                 fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                                lineNumber: 180,
+                                lineNumber: 208,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                 children: "Excess data may be deleted."
                             }, void 0, false, {
                                 fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                                lineNumber: 181,
+                                lineNumber: 209,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                        lineNumber: 179,
+                        lineNumber: 207,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                lineNumber: 173,
+                lineNumber: 201,
                 columnNumber: 9
             }, this);
         }
@@ -2509,7 +2528,7 @@ function SidebarUsageProgress({ user }) {
                             className: "h-4 w-4 shrink-0"
                         }, void 0, false, {
                             fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                            lineNumber: 190,
+                            lineNumber: 218,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2517,13 +2536,13 @@ function SidebarUsageProgress({ user }) {
                             children: message
                         }, void 0, false, {
                             fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                            lineNumber: 191,
+                            lineNumber: 219,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                    lineNumber: 189,
+                    lineNumber: 217,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2531,13 +2550,13 @@ function SidebarUsageProgress({ user }) {
                     children: "Excess data may be deleted after this period."
                 }, void 0, false, {
                     fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                    lineNumber: 193,
+                    lineNumber: 221,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-            lineNumber: 188,
+            lineNumber: 216,
             columnNumber: 7
         }, this);
     };
@@ -2550,27 +2569,27 @@ function SidebarUsageProgress({ user }) {
                         className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])("h-4", isCollapsed ? "w-8 mb-0.5" : "w-20 mb-0.5")
                     }, void 0, false, {
                         fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                        lineNumber: 202,
+                        lineNumber: 230,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$skeleton$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Skeleton"], {
                         className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])("h-3", isCollapsed ? "w-12" : "w-16")
                     }, void 0, false, {
                         fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                        lineNumber: 203,
+                        lineNumber: 231,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                lineNumber: 201,
+                lineNumber: 229,
                 columnNumber: 9
             }, this);
         }
         const planDisplayName = currentSubscription?.tier === 'premium' && currentSubscription.status === 'active' ? "Premium Plan" : "Free Plan";
         const timeLeftMessage = currentSubscription?.tier === 'premium' && currentSubscription.status === 'active' && currentSubscription.plan_expiry_date ? (()=>{
             const daysLeft = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$differenceInDays$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["differenceInDays"])(currentSubscription.plan_expiry_date, new Date());
-            if (daysLeft < 0) return undefined; // Handled by grace period or becomes free
+            if (daysLeft < 0) return undefined;
             if (daysLeft === 0) return "Expires today";
             return `${daysLeft} day${daysLeft !== 1 ? 's' : ''} left`;
         })() : undefined;
@@ -2585,7 +2604,7 @@ function SidebarUsageProgress({ user }) {
                             children: planDisplayName
                         }, void 0, false, {
                             fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                            lineNumber: 224,
+                            lineNumber: 252,
                             columnNumber: 15
                         }, this),
                         timeLeftMessage && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2593,7 +2612,7 @@ function SidebarUsageProgress({ user }) {
                             children: timeLeftMessage
                         }, void 0, false, {
                             fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                            lineNumber: 225,
+                            lineNumber: 253,
                             columnNumber: 35
                         }, this)
                     ]
@@ -2606,7 +2625,7 @@ function SidebarUsageProgress({ user }) {
                             children: planDisplayName
                         }, void 0, false, {
                             fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                            lineNumber: 229,
+                            lineNumber: 257,
                             columnNumber: 15
                         }, this),
                         timeLeftMessage && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2614,18 +2633,18 @@ function SidebarUsageProgress({ user }) {
                             children: timeLeftMessage
                         }, void 0, false, {
                             fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                            lineNumber: 230,
+                            lineNumber: 258,
                             columnNumber: 35
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                    lineNumber: 228,
+                    lineNumber: 256,
                     columnNumber: 13
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                lineNumber: 221,
+                lineNumber: 249,
                 columnNumber: 9
             }, this);
             if (isCollapsed) {
@@ -2638,12 +2657,12 @@ function SidebarUsageProgress({ user }) {
                                 children: premiumContent
                             }, void 0, false, {
                                 fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                                lineNumber: 239,
+                                lineNumber: 267,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                            lineNumber: 238,
+                            lineNumber: 266,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$tooltip$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TooltipContent"], {
@@ -2655,26 +2674,26 @@ function SidebarUsageProgress({ user }) {
                                     children: planDisplayName
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                                    lineNumber: 242,
+                                    lineNumber: 270,
                                     columnNumber: 15
                                 }, this),
                                 timeLeftMessage && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                     children: timeLeftMessage
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                                    lineNumber: 243,
+                                    lineNumber: 271,
                                     columnNumber: 35
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                            lineNumber: 241,
+                            lineNumber: 269,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                    lineNumber: 237,
+                    lineNumber: 265,
                     columnNumber: 11
                 }, this);
             }
@@ -2683,7 +2702,7 @@ function SidebarUsageProgress({ user }) {
                 children: premiumContent
             }, void 0, false, {
                 fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                lineNumber: 248,
+                lineNumber: 276,
                 columnNumber: 14
             }, this);
         } else {
@@ -2694,7 +2713,7 @@ function SidebarUsageProgress({ user }) {
                     children: "Free Plan"
                 }, void 0, false, {
                     fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                    lineNumber: 253,
+                    lineNumber: 281,
                     columnNumber: 13
                 }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                     className: "flex justify-between items-center w-full",
@@ -2704,7 +2723,7 @@ function SidebarUsageProgress({ user }) {
                             children: "Free Plan"
                         }, void 0, false, {
                             fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                            lineNumber: 256,
+                            lineNumber: 284,
                             columnNumber: 15
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -2717,23 +2736,23 @@ function SidebarUsageProgress({ user }) {
                                 children: "Upgrade"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                                lineNumber: 258,
+                                lineNumber: 286,
                                 columnNumber: 17
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                            lineNumber: 257,
+                            lineNumber: 285,
                             columnNumber: 15
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                    lineNumber: 255,
+                    lineNumber: 283,
                     columnNumber: 13
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                lineNumber: 251,
+                lineNumber: 279,
                 columnNumber: 10
             }, this);
             if (isCollapsed) {
@@ -2752,22 +2771,22 @@ function SidebarUsageProgress({ user }) {
                                         className: "h-5 w-5"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                                        lineNumber: 271,
+                                        lineNumber: 299,
                                         columnNumber: 19
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                                    lineNumber: 270,
+                                    lineNumber: 298,
                                     columnNumber: 17
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                                lineNumber: 269,
+                                lineNumber: 297,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                            lineNumber: 268,
+                            lineNumber: 296,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$tooltip$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TooltipContent"], {
@@ -2777,13 +2796,13 @@ function SidebarUsageProgress({ user }) {
                             children: "Upgrade to Premium"
                         }, void 0, false, {
                             fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                            lineNumber: 275,
+                            lineNumber: 303,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                    lineNumber: 267,
+                    lineNumber: 295,
                     columnNumber: 11
                 }, this);
             }
@@ -2792,7 +2811,7 @@ function SidebarUsageProgress({ user }) {
                 children: freePlanContent
             }, void 0, false, {
                 fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                lineNumber: 279,
+                lineNumber: 307,
                 columnNumber: 14
             }, this);
         }
@@ -2816,7 +2835,7 @@ function SidebarUsageProgress({ user }) {
                                 className: "h-3 w-20 mb-0.5"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                                lineNumber: 295,
+                                lineNumber: 323,
                                 columnNumber: 34
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2826,38 +2845,38 @@ function SidebarUsageProgress({ user }) {
                                         className: "h-5 w-5"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                                        lineNumber: 297,
+                                        lineNumber: 325,
                                         columnNumber: 37
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$skeleton$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Skeleton"], {
                                         className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])("h-1.5", isCollapsed ? "h-1 w-8" : "w-full")
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                                        lineNumber: 298,
+                                        lineNumber: 326,
                                         columnNumber: 22
                                     }, this),
                                     !isCollapsed && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$skeleton$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Skeleton"], {
                                         className: "h-3 w-8"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                                        lineNumber: 299,
+                                        lineNumber: 327,
                                         columnNumber: 38
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                                lineNumber: 296,
+                                lineNumber: 324,
                                 columnNumber: 18
                             }, this)
                         ]
                     }, i, true, {
                         fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                        lineNumber: 294,
+                        lineNumber: 322,
                         columnNumber: 15
                     }, this))
             }, void 0, false, {
                 fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                lineNumber: 292,
+                lineNumber: 320,
                 columnNumber: 10
             }, this),
             !finalIsLoading && stats && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2870,7 +2889,7 @@ function SidebarUsageProgress({ user }) {
                         limit: stats.jobOpenings.limit
                     }, void 0, false, {
                         fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                        lineNumber: 307,
+                        lineNumber: 335,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(StatItem, {
@@ -2880,7 +2899,7 @@ function SidebarUsageProgress({ user }) {
                         limit: stats.contacts.limit
                     }, void 0, false, {
                         fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                        lineNumber: 308,
+                        lineNumber: 336,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(StatItem, {
@@ -2890,13 +2909,13 @@ function SidebarUsageProgress({ user }) {
                         limit: stats.companies.limit
                     }, void 0, false, {
                         fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                        lineNumber: 309,
+                        lineNumber: 337,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                lineNumber: 306,
+                lineNumber: 334,
                 columnNumber: 9
             }, this),
             !finalIsLoading && !stats && currentSubscription?.status !== 'error' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2904,7 +2923,7 @@ function SidebarUsageProgress({ user }) {
                 children: "Usage Stats N/A"
             }, void 0, false, {
                 fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                lineNumber: 313,
+                lineNumber: 341,
                 columnNumber: 9
             }, this),
             currentSubscription?.status === 'error' && !finalIsLoading && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2912,13 +2931,13 @@ function SidebarUsageProgress({ user }) {
                 children: "Error loading stats."
             }, void 0, false, {
                 fileName: "[project]/src/components/layout/SidebarUsageProgress.tsx",
-                lineNumber: 316,
+                lineNumber: 344,
                 columnNumber: 10
             }, this)
         ]
     }, void 0, true);
 }
-_s1(SidebarUsageProgress, "LLmISpnX4KBn/kbNopMsnMM4xWM=", false, function() {
+_s1(SidebarUsageProgress, "7wYA486ckskB7fdNkGSezlP2VKE=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useSidebar"],
         __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hooks$2f$use$2d$current$2d$subscription$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useCurrentSubscription"]
