@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { AppLayout } from "@/components/layout/AppLayout";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -48,6 +48,8 @@ export default function ContactsPage() {
   const { toast } = useToast();
   const [isLoadingData, setIsLoadingData] = useState(true);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [hasFetchedData, setHasFetchedData] = useState(false);
+  const previousUserIdRef = useRef<string | null | undefined>(null);
 
   const {
     effectiveTierForLimits,
@@ -57,19 +59,28 @@ export default function ContactsPage() {
 
 
   useEffect(() => {
+    const handleUserSession = (user: User | null) => {
+      if (user?.id !== previousUserIdRef.current) {
+        setHasFetchedData(false);
+        setContacts([]);
+        setContactsCount(0);
+        setCompanies([]);
+      }
+      setCurrentUser(user);
+      previousUserIdRef.current = user?.id;
+
+      if (!user) {
+        setIsLoadingData(false);
+        setHasFetchedData(true);
+      }
+    };
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        setCurrentUser(session?.user ?? null);
-        if (!session?.user) {
-          setContacts([]);
-          setContactsCount(0);
-          setCompanies([]);
-          setIsLoadingData(false);
-        }
+        handleUserSession(session?.user ?? null);
       }
     );
     supabase.auth.getUser().then(({ data: { user } }) => {
-        setCurrentUser(user);
+        handleUserSession(user);
     });
 
     return () => {
@@ -83,6 +94,7 @@ export default function ContactsPage() {
       setContactsCount(0);
       setCompanies([]);
       setIsLoadingData(false);
+      setHasFetchedData(true);
       return;
     }
     setIsLoadingData(true);
@@ -114,16 +126,18 @@ export default function ContactsPage() {
       setCompanies([]);
     } finally {
       setIsLoadingData(false);
+      setHasFetchedData(true);
     }
   }, [currentUser, toast]);
 
   useEffect(() => {
-    if (currentUser) {
+    if (currentUser && !hasFetchedData) {
       fetchContactsAndCompanies();
-    } else {
-      setIsLoadingData(false);
+    } else if (!currentUser && !hasFetchedData) {
+        setIsLoadingData(false);
+        setHasFetchedData(true);
     }
-  }, [currentUser, fetchContactsAndCompanies]);
+  }, [currentUser, hasFetchedData, fetchContactsAndCompanies]);
 
   useEffect(() => {
     if (searchParams?.get('new') === 'true' && currentUser) {
@@ -179,7 +193,7 @@ export default function ContactsPage() {
       if (error) throw error;
       if (data) {
         toast({ title: "Company Added", description: `${data.name} has been added.` });
-        await fetchContactsAndCompanies();
+        setHasFetchedData(false); // Trigger re-fetch of all data
         return data as Company;
       }
       return null;
@@ -215,9 +229,10 @@ export default function ContactsPage() {
             companyIdToLink = company.id;
             companyNameCache = company.name;
         } else {
-            return;
+            return; // Company creation failed or was blocked by limits
         }
     } else if (companyIdToLink && values.company_name_input) {
+      // Ensure cache is correct if an existing company ID was selected but name_input might differ slightly (e.g. from search)
       const selectedCompany = companies.find(c => c.id === companyIdToLink);
       companyNameCache = selectedCompany ? selectedCompany.name : values.company_name_input;
     }
@@ -247,7 +262,7 @@ export default function ContactsPage() {
       if (error) throw error;
       if (data) {
         toast({ title: "Contact Added", description: `${data.name} has been added.` });
-        fetchContactsAndCompanies();
+        setHasFetchedData(false); // Trigger re-fetch
         setIsAddDialogOpen(false);
       }
     } catch (error: any) {
@@ -275,12 +290,12 @@ export default function ContactsPage() {
             companyIdToLink = company.id;
             companyNameCache = company.name;
         } else {
-            return;
+            return; // Company creation failed or was blocked
         }
     } else if (companyIdToLink && values.company_name_input) {
         const selectedCompany = companies.find(c => c.id === companyIdToLink);
         companyNameCache = selectedCompany ? selectedCompany.name : values.company_name_input;
-    } else if (!values.company_name_input) {
+    } else if (!values.company_name_input) { // If company name input is cleared
         companyIdToLink = null;
         companyNameCache = null;
     }
@@ -308,7 +323,7 @@ export default function ContactsPage() {
       if (error) throw error;
       if (data) {
         toast({ title: "Contact Updated", description: `${data.name} has been updated.` });
-        fetchContactsAndCompanies();
+        setHasFetchedData(false); // Trigger re-fetch
         setIsEditDialogOpen(false);
         setEditingContact(null);
       }
@@ -333,8 +348,8 @@ export default function ContactsPage() {
       toast({
         title: !currentIsFavorite ? 'Added to Favorites' : 'Removed from Favorites',
       });
-      await fetchContactsAndCompanies();
-      router.refresh();
+      setHasFetchedData(false); // Trigger re-fetch
+      // router.refresh(); // Not strictly needed
     } catch (error: any) {
       toast({ title: 'Error Toggling Favorite', description: error.message, variant: 'destructive' });
     }
@@ -358,7 +373,7 @@ export default function ContactsPage() {
       if (error) throw error;
 
       toast({ title: "Contact Deleted", description: `${contactToDelete.name} has been removed.` });
-      fetchContactsAndCompanies();
+      setHasFetchedData(false); // Trigger re-fetch
     } catch (error: any) {
       toast({ title: 'Error Deleting Contact', description: error.message || 'Could not delete contact.', variant: 'destructive' });
     } finally {
@@ -524,3 +539,4 @@ export default function ContactsPage() {
   );
 }
 
+    

@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { AppLayout } from "@/components/layout/AppLayout";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -48,6 +48,9 @@ export default function CompaniesPage() {
   const { toast } = useToast();
   const [isLoadingData, setIsLoadingData] = useState(true);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [hasFetchedData, setHasFetchedData] = useState(false);
+  const previousUserIdRef = useRef<string | null | undefined>(null);
+
 
   const {
     effectiveTierForLimits,
@@ -56,19 +59,29 @@ export default function CompaniesPage() {
   } = useCurrentSubscription();
 
   useEffect(() => {
+    const handleUserSession = (user: User | null) => {
+      if (user?.id !== previousUserIdRef.current) {
+        setHasFetchedData(false);
+        setCompanies([]);
+        setCompaniesCount(0);
+      }
+      setCurrentUser(user);
+      previousUserIdRef.current = user?.id;
+
+      if (!user) {
+        setIsLoadingData(false);
+        setHasFetchedData(true); // No data to fetch, consider it "fetched"
+      }
+    };
+
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        setCurrentUser(session?.user ?? null);
-        if (!session?.user) {
-          setCompanies([]);
-          setCompaniesCount(0);
-          setIsLoadingData(false);
-        }
+        handleUserSession(session?.user ?? null);
       }
     );
 
     supabase.auth.getUser().then(({ data: { user } }) => {
-        setCurrentUser(user);
+        handleUserSession(user);
     });
 
     return () => {
@@ -81,6 +94,7 @@ export default function CompaniesPage() {
       setCompanies([]);
       setCompaniesCount(0);
       setIsLoadingData(false);
+      setHasFetchedData(true);
       return;
     }
     setIsLoadingData(true);
@@ -114,16 +128,18 @@ export default function CompaniesPage() {
       setCompaniesCount(0);
     } finally {
       setIsLoadingData(false);
+      setHasFetchedData(true);
     }
   }, [currentUser, toast]);
 
   useEffect(() => {
-    if(currentUser) {
+    if (currentUser && !hasFetchedData) {
       fetchCompanies();
-    } else {
-      setIsLoadingData(false);
+    } else if (!currentUser && !hasFetchedData) { // Ensure loading stops if logged out and no fetch attempt was made
+        setIsLoadingData(false);
+        setHasFetchedData(true); // Mark as "fetched" to prevent re-fetch if component re-renders before user is nullified
     }
-  }, [currentUser, fetchCompanies]);
+  }, [currentUser, hasFetchedData, fetchCompanies]);
 
 
   useEffect(() => {
@@ -182,7 +198,7 @@ export default function CompaniesPage() {
       if (error) throw error;
 
       if (data) {
-        fetchCompanies();
+        setHasFetchedData(false); // Trigger re-fetch
         toast({
           title: "Company Added",
           description: `${data.name} has been added.`,
@@ -223,7 +239,7 @@ export default function CompaniesPage() {
       if (error) throw error;
 
       if (data) {
-        fetchCompanies();
+        setHasFetchedData(false); // Trigger re-fetch
          toast({
           title: "Company Updated",
           description: `${data.name} has been updated.`,
@@ -256,8 +272,8 @@ export default function CompaniesPage() {
       toast({
         title: !currentIsFavorite ? 'Added to Favorites' : 'Removed from Favorites',
       });
-      await fetchCompanies();
-      router.refresh();
+      setHasFetchedData(false); // Trigger re-fetch
+      // router.refresh(); // Not strictly needed if fetchCompanies is called
     } catch (error: any) {
       toast({ title: 'Error Toggling Favorite', description: error.message, variant: 'destructive' });
     }
@@ -279,7 +295,7 @@ export default function CompaniesPage() {
         .eq('user_id', currentUser.id);
 
       if (error) throw error;
-      fetchCompanies();
+      setHasFetchedData(false); // Trigger re-fetch
       toast({
         title: "Company Deleted",
         description: `${companyToDelete.name} has been removed.`,
@@ -456,3 +472,4 @@ export default function CompaniesPage() {
   );
 }
 
+    

@@ -113,6 +113,8 @@ export default function JobOpeningsPage() {
   const { toast } = useToast();
   const [isLoadingData, setIsLoadingData] = useState(true);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [hasFetchedData, setHasFetchedData] = useState(false);
+  const previousUserIdRef = useRef<string | null | undefined>(null);
 
   const [focusedOpening, setFocusedOpening] = useState<JobOpening | null>(null);
   const focusedOpeningIdFromUrl = searchParams?.get('view');
@@ -125,23 +127,31 @@ export default function JobOpeningsPage() {
 
 
   useEffect(() => {
+    const handleUserSession = (user: User | null) => {
+      if (user?.id !== previousUserIdRef.current) {
+        setHasFetchedData(false);
+        setJobOpenings([]);
+        setJobOpeningsCount(0);
+        setCompanies([]);
+        setContacts([]);
+        setCompaniesCount(0);
+        setContactsCount(0);
+        setUserSettings(null);
+      }
+      setCurrentUser(user);
+      previousUserIdRef.current = user?.id;
+      if (!user) {
+        setIsLoadingData(false);
+        setHasFetchedData(true);
+      }
+    };
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        setCurrentUser(session?.user ?? null);
-        if (!session?.user) {
-            setJobOpenings([]);
-            setJobOpeningsCount(0);
-            setCompanies([]);
-            setContacts([]);
-            setCompaniesCount(0);
-            setContactsCount(0);
-            setUserSettings(null);
-            setIsLoadingData(false);
-        }
+        handleUserSession(session?.user ?? null);
       }
     );
     supabase.auth.getUser().then(({ data: { user } }) => {
-        setCurrentUser(user);
+        handleUserSession(user);
     });
     return () => {authListener.subscription.unsubscribe()};
   }, []);
@@ -156,6 +166,7 @@ export default function JobOpeningsPage() {
       setContactsCount(0);
       setUserSettings(null);
       setIsLoadingData(false);
+      setHasFetchedData(true);
       return;
     }
     setIsLoadingData(true);
@@ -254,16 +265,18 @@ export default function JobOpeningsPage() {
       setUserSettings(null);
     } finally {
       setIsLoadingData(false);
+      setHasFetchedData(true);
     }
   }, [currentUser, toast]);
 
   useEffect(() => {
-    if (currentUser) {
+    if (currentUser && !hasFetchedData) {
         fetchPageData();
-    } else {
+    } else if (!currentUser && !hasFetchedData) {
         setIsLoadingData(false);
+        setHasFetchedData(true);
     }
-  }, [currentUser, fetchPageData]);
+  }, [currentUser, hasFetchedData, fetchPageData]);
 
   useEffect(() => {
     if (searchParams?.get('new') === 'true' && currentUser) {
@@ -335,7 +348,7 @@ export default function JobOpeningsPage() {
       if (error) throw error;
       if (data) {
         toast({ title: "Company Added", description: `${data.name} added to directory.` });
-        await fetchPageData();
+        setHasFetchedData(false); // Trigger re-fetch
         return data as Company;
       }
       return null;
@@ -381,7 +394,7 @@ export default function JobOpeningsPage() {
       if (error) throw error;
       if (data) {
         toast({ title: "Contact Added", description: `${data.name} added to directory.` });
-        await fetchPageData();
+        setHasFetchedData(false); // Trigger re-fetch
         return data as Contact;
       }
       return null;
@@ -497,8 +510,8 @@ export default function JobOpeningsPage() {
           title: "Job Opening Added",
           description: `${newJobOpeningData.role_title} at ${newJobOpeningData.company_name_cache} has been added.`,
         });
-        await fetchPageData();
-        router.refresh();
+        setHasFetchedData(false); // Trigger re-fetch
+        // router.refresh(); // Not needed if setHasFetchedData works
         setIsAddDialogOpen(false);
       } else {
          toast({ title: 'Save Error', description: 'Failed to get new job opening data after insert.', variant: 'destructive' });
@@ -630,8 +643,8 @@ export default function JobOpeningsPage() {
           }
         }
         toast({ title: "Job Opening Updated", description: `${updatedJobOpening.role_title} has been updated.`});
-        await fetchPageData();
-        router.refresh();
+        setHasFetchedData(false); // Trigger re-fetch
+        // router.refresh(); // Not needed
         setIsEditDialogOpen(false);
         setEditingOpening(null);
         if (focusedOpening && focusedOpening.id === openingId) {
@@ -695,8 +708,8 @@ export default function JobOpeningsPage() {
                 }
               }
             }
-            await fetchPageData();
-            router.refresh();
+            setHasFetchedData(false); // Trigger re-fetch
+            // router.refresh(); // Not needed
         }
     } catch (error: any) {
         toast({title: 'Error Logging Follow-up', description: error.message, variant: 'destructive'});
@@ -768,12 +781,12 @@ export default function JobOpeningsPage() {
           }
         }
       }
-      await fetchPageData();
-      router.refresh();
+      setHasFetchedData(false); // Trigger re-fetch
+      // router.refresh(); // Not needed
     } catch (error: any) {
       toast({ title: 'Error Unlogging Follow-up', description: error.message || 'An unexpected error occurred.', variant: 'destructive' });
     }
-  }, [currentUser, toast, fetchPageData, router]);
+  }, [currentUser, toast, fetchPageData, router]); // fetchPageData should be stable
 
 
   const handleInitiateDeleteOpening = (opening: JobOpening) => {
@@ -812,8 +825,8 @@ export default function JobOpeningsPage() {
       if (jobOpeningError) throw jobOpeningError;
 
       toast({ title: "Job Opening Deleted", description: `${openingToDelete.role_title} has been removed.`});
-      await fetchPageData();
-      router.refresh();
+      setHasFetchedData(false); // Trigger re-fetch
+      // router.refresh(); // Not needed
     } catch (error: any) {
       toast({ title: 'Error Deleting Opening', description: error.message, variant: 'destructive'});
     } finally {
@@ -844,8 +857,8 @@ export default function JobOpeningsPage() {
         title: newIsFavorite ? 'Added to Favorites' : 'Removed from Favorites',
         description: `Job opening has been ${newIsFavorite ? 'favorited' : 'unfavorited'}.`,
       });
-      await fetchPageData();
-      router.refresh();
+      setHasFetchedData(false); // Trigger re-fetch
+      // router.refresh(); // Not needed
     } catch (error: any) {
       toast({ title: 'Error Toggling Favorite', description: error.message, variant: 'destructive' });
     }
@@ -1157,3 +1170,4 @@ export default function JobOpeningsPage() {
   );
 }
 
+    
