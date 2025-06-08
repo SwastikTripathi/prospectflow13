@@ -30,7 +30,8 @@ import { SidebarUsageProgress } from './SidebarUsageProgress';
 import type { JobOpening, UserSettings } from '@/lib/types';
 import { OnboardingForm } from '@/components/onboarding/OnboardingForm';
 
-const PUBLIC_PATHS = ['/landing', '/auth'];
+const PUBLIC_PATHS = ['/landing', '/auth', '/pricing', '/about', '/contact', '/careers', '/partner-with-us', '/privacy-policy', '/terms-and-conditions']; // Added more public paths
+const BLOG_PATHS_REGEX = /^\/blog(\/.*)?$/; // Regex for /blog and /blog/*
 const HIDE_DASHBOARD_LINK_PATHS = ['/', '/job-openings', '/contacts', '/companies', '/settings/billing', '/settings/account'];
 
 
@@ -69,6 +70,8 @@ export function AppLayout({ children }: { children: ReactNode }) {
   const [onboardingCheckComplete, setOnboardingCheckComplete] = useState(false);
   const previousUserIdRef = useRef<string | undefined>();
 
+  const isPublicPath = PUBLIC_PATHS.includes(pathname) || BLOG_PATHS_REGEX.test(pathname);
+
 
   const fetchUserDataAndSettings = useCallback(async (userId: string) => {
     setIsLoadingSettings(true);
@@ -82,21 +85,27 @@ export function AppLayout({ children }: { children: ReactNode }) {
       const { data: settingsData, error: settingsError } = settingsResult;
       if (settingsError && settingsError.code !== 'PGRST116') {
          console.error("Error fetching user settings:", settingsError.message, "Code:", settingsError.code);
-         throw settingsError;
-      }
-      const fetchedSettings = settingsData as UserSettings | null;
-      setUserSettings(fetchedSettings);
-
-      if (!fetchedSettings || fetchedSettings.onboarding_complete === false || fetchedSettings.onboarding_complete === null) {
-        setShowOnboardingForm(true);
+         // If there's a 406 or similar error, don't show onboarding.
+         if (settingsError.code === 'PGRST113' || settingsError.code === '406') { // PGRST113 is 'Not acceptable', a potential name for 406
+            toast({ title: 'Profile Load Error', description: 'Could not load your profile settings. Please try again later.', variant: 'destructive'});
+            setShowOnboardingForm(false);
+         } else {
+            throw settingsError; // Re-throw other errors
+         }
       } else {
-        setShowOnboardingForm(false);
+        const fetchedSettings = settingsData as UserSettings | null;
+        setUserSettings(fetchedSettings);
+        if (!fetchedSettings || fetchedSettings.onboarding_complete === false || fetchedSettings.onboarding_complete === null) {
+            setShowOnboardingForm(true);
+        } else {
+            setShowOnboardingForm(false);
+        }
       }
+
 
       const { data: favoritesData, error: favoritesError } = favoritesResult;
       if (favoritesError) {
          console.error("Error fetching favorite job openings:", favoritesError.message);
-         // Non-fatal, continue with empty favorites
          setFavoriteJobOpenings([]);
       } else {
          setFavoriteJobOpenings(favoritesData as JobOpening[] || []);
@@ -105,7 +114,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
     } catch (error: any) {
       toast({ title: 'Error fetching user data', description: error.message, variant: 'destructive' });
       setUserSettings(null);
-      setShowOnboardingForm(true);
+      setShowOnboardingForm(false); // Don't show onboarding on general error
       setFavoriteJobOpenings([]);
     } finally {
       setIsLoadingSettings(false);
@@ -121,99 +130,85 @@ export function AppLayout({ children }: { children: ReactNode }) {
     setTheme(initialTheme);
     document.documentElement.classList.toggle('dark', initialTheme === 'dark');
 
-    let initialAuthCheckDone = false;
-
-    const processUserSession = async (sessionUser: User | null, isInitialLoad: boolean) => {
-      if (isInitialLoad) {
-        setIsLoadingAuth(true);
-      }
-
+    const processUserSession = async (sessionUser: User | null) => {
       const currentPreviousUserId = previousUserIdRef.current;
       const newUserId = sessionUser?.id;
 
-      setUser(sessionUser); // Update user state immediately
+      setUser(sessionUser);
 
       if (newUserId !== currentPreviousUserId) {
-        // User identity changed OR it's the first load for this user context
-        previousUserIdRef.current = newUserId; // Update ref
-
-        // Reset states that depend on the user identity
+        previousUserIdRef.current = newUserId;
         setFavoriteJobOpenings([]);
         setUserSettings(null);
         setShowOnboardingForm(false);
         setOnboardingCheckComplete(false);
+        setIsLoadingSettings(true); // Ensure settings loading is true for new user
 
         if (sessionUser) {
           await fetchUserDataAndSettings(sessionUser.id);
         } else {
-          // User logged out or no session initially
           setIsLoadingSettings(false);
-          setOnboardingCheckComplete(true); // No onboarding for logged out user
+          setOnboardingCheckComplete(true);
         }
-      } else if (sessionUser && !onboardingCheckComplete && !isLoadingSettings) {
-        // Same user, but perhaps onboarding check was interrupted or settings not fully loaded
-        // This case might occur if a previous fetchUserDataAndSettings was prematurely exited
-        // or if an auth state change happened mid-load for the same user.
-        await fetchUserDataAndSettings(sessionUser.id);
+      } else if (!sessionUser) {
+        // Handle case where user logs out but was already null (e.g. no-op or ensure cleanup)
+        setIsLoadingSettings(false);
+        setOnboardingCheckComplete(true);
       }
-      // If user is the same and onboardingCheckComplete is true, we assume data is current and do nothing.
-
-
-      if (isInitialLoad) {
-        setIsLoadingAuth(false);
-        initialAuthCheckDone = true;
-      }
-
-      // Perform redirection logic only after all loading states for the initial check are resolved
-      if (initialAuthCheckDone && !isLoadingAuth && !isLoadingSettings) {
-        if (!sessionUser && !PUBLIC_PATHS.includes(pathname)) {
-          router.push('/landing');
-        } else if (sessionUser && PUBLIC_PATHS.includes(pathname) && userSettings && userSettings.onboarding_complete) {
-          router.push('/');
-        }
-      }
+      setIsLoadingAuth(false);
     };
 
-    // Initial session check
     supabase.auth.getSession().then(({ data: { session } }) => {
-      processUserSession(session?.user ?? null, true);
+      processUserSession(session?.user ?? null);
     });
 
-    // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (_event, currentSession) => {
-        // Subsequent changes, not initial load
-        await processUserSession(currentSession?.user ?? null, false);
-         if (_event === 'SIGNED_OUT' && !PUBLIC_PATHS.includes(pathname)) {
-          router.push('/landing');
-        }
+        await processUserSession(currentSession?.user ?? null);
       }
     );
 
     return () => {
       subscription?.unsubscribe();
     };
-  }, [pathname, router, fetchUserDataAndSettings]); // isLoadingAuth, isLoadingSettings, userSettings removed from deps of outer useEffect
+  }, [fetchUserDataAndSettings]);
+
+
+  // Moved redirection logic into useEffect
+  useEffect(() => {
+    if (!isLoadingAuth && !isPublicPath) {
+      if (!user) {
+        router.push('/landing');
+      } else if (user && !isLoadingSettings && onboardingCheckComplete && showOnboardingForm) {
+        // User is logged in, settings checked, onboarding needed.
+        // This implies the current page should be the onboarding form,
+        // which is handled by returning <OnboardingForm /> directly.
+        // If the user is on another private page and needs onboarding,
+        // AppLayout structure should ensure OnboardingForm is rendered instead of page children.
+      }
+    } else if (!isLoadingAuth && user && userSettings?.onboarding_complete && isPublicPath && !BLOG_PATHS_REGEX.test(pathname)) {
+      // User is logged in, onboarded, and on a public page (excluding blog pages)
+      router.push('/');
+    }
+  }, [user, isLoadingAuth, isLoadingSettings, onboardingCheckComplete, showOnboardingForm, isPublicPath, pathname, router, userSettings]);
 
 
   const handleSignOut = async () => {
-    setIsLoadingAuth(true); // Indicate auth state is changing
+    setIsLoadingAuth(true);
     const { error } = await supabase.auth.signOut();
-    // User state and other resets will be handled by onAuthStateChange -> processUserSession
     if (error) {
       toast({ title: 'Sign Out Failed', description: error.message, variant: 'destructive' });
-      setIsLoadingAuth(false); // Reset if sign out fails before onAuthStateChange does
+      setIsLoadingAuth(false);
     } else {
       toast({ title: 'Signed Out Successfully' });
-      // Redirect is handled by onAuthStateChange
+      // Redirection and state reset will be handled by onAuthStateChange
     }
   };
 
   const handleOnboardingComplete = async () => {
     setShowOnboardingForm(false);
     if (user) {
-      // Re-fetch settings to confirm onboarding_complete is true and get any other latest settings
-      await fetchUserDataAndSettings(user.id);
+      await fetchUserDataAndSettings(user.id); // Re-fetch to confirm onboarding and get latest settings
     }
   };
 
@@ -228,7 +223,11 @@ export function AppLayout({ children }: { children: ReactNode }) {
 
   const isAppLoading = isLoadingAuth || (user != null && (isLoadingSettings || !onboardingCheckComplete));
 
-  if (isAppLoading && !PUBLIC_PATHS.includes(pathname)) {
+  if (isPublicPath) {
+     return <>{children}</>; // For public paths, just render children, redirection handled by useEffect
+  }
+
+  if (isAppLoading) {
     return (
       <div className="flex h-screen w-screen items-center justify-center bg-background">
         <Loader2 className="h-12 w-12 animate-spin text-primary" />
@@ -236,20 +235,9 @@ export function AppLayout({ children }: { children: ReactNode }) {
     );
   }
 
-  if (PUBLIC_PATHS.includes(pathname)) {
-     if (user && !isAppLoading && userSettings && userSettings.onboarding_complete) {
-        router.push('/');
-        return (
-             <div className="flex h-screen w-screen items-center justify-center bg-background">
-                <Loader2 className="h-12 w-12 animate-spin text-primary" />
-            </div>
-        );
-     }
-     return <>{children}</>;
-  }
-
-  if (!user && !isLoadingAuth && !PUBLIC_PATHS.includes(pathname)) {
-    router.push('/landing');
+  // After initial loading, if still no user and not a public path, this should be caught by useEffect redirect.
+  // This check is a safeguard.
+  if (!user) {
      return (
       <div className="flex h-screen w-screen items-center justify-center bg-background">
         <Loader2 className="h-12 w-12 animate-spin text-primary" />
@@ -257,40 +245,24 @@ export function AppLayout({ children }: { children: ReactNode }) {
     );
   }
 
-  const userDisplayNameToShow = userSettings?.full_name || user?.user_metadata?.full_name || user?.email || 'User';
-  const userInitials = getInitials(userDisplayNameToShow, user?.email);
-
-  if (user && onboardingCheckComplete && showOnboardingForm && !isLoadingSettings) {
+  // If user exists, settings check is complete, and onboarding is needed:
+  if (onboardingCheckComplete && showOnboardingForm) {
     return (
          <OnboardingForm
               user={user}
+              userId={user.id}
+              userEmail={user.email}
+              initialFullName={user.user_metadata?.full_name || user.email || ''}
               existingSettings={userSettings}
               onOnboardingComplete={handleOnboardingComplete}
             />
     );
   }
 
-  if (!user && !isLoadingAuth) { // Should have been caught by redirect
-      router.push('/landing');
-      return (
-          <div className="flex h-screen w-screen items-center justify-center bg-background">
-              <Loader2 className="h-12 w-12 animate-spin text-primary" />
-          </div>
-      );
-  }
-  
-  // Fallback if still loading after all checks, or user is null unexpectedly.
-  if (!user || isAppLoading) {
-    return (
-      <div className="flex h-screen w-screen items-center justify-center bg-background">
-        <Loader2 className="h-12 w-12 animate-spin text-primary" />
-      </div>
-    );
-  }
-
-
-  const menuItemClass = "relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors data-[disabled]:pointer-events-none data-[disabled]:opacity-50";
-  const showDashboardLink = !HIDE_DASHBOARD_LINK_PATHS.includes(pathname);
+  // If user exists, onboarded, and not loading anything else:
+  const userDisplayNameToShow = userSettings?.full_name || user?.user_metadata?.full_name || user?.email || 'User';
+  const userInitials = getInitials(userDisplayNameToShow, user?.email);
+  const showDashboardLinkInMenu = !HIDE_DASHBOARD_LINK_PATHS.includes(pathname);
 
   return (
     <SidebarProvider defaultOpen>
@@ -347,7 +319,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
                     </Button>
                 </HoverCardTrigger>
                 <HoverCardContent align="end" className="w-56 p-1">
-                    <div className={cn(menuItemClass, "font-normal px-2 py-1.5")}>
+                    <div className={cn("font-normal px-2 py-1.5")}>
                         <div className="flex flex-col space-y-1">
                         <p className="text-sm font-medium leading-none truncate">{isLoadingSettings ? "Loading name..." : userDisplayNameToShow}</p>
                         {user.email && <p className="text-xs leading-none text-muted-foreground truncate">{user.email}</p>}
@@ -355,27 +327,27 @@ export function AppLayout({ children }: { children: ReactNode }) {
                     </div>
                     <div className="my-1 h-px bg-muted" />
                     <Link href="/landing" passHref legacyBehavior>
-                        <a className={cn(menuItemClass, "cursor-pointer hover:bg-accent hover:text-accent-foreground")}>
+                        <a className={cn("relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors data-[disabled]:pointer-events-none data-[disabled]:opacity-50", "cursor-pointer hover:bg-accent hover:text-accent-foreground")}>
                         <Home className="mr-2 h-4 w-4" />
                         <span>Homepage</span>
                         </a>
                     </Link>
-                    {showDashboardLink && (
+                    {showDashboardLinkInMenu && (
                          <Link href="/" passHref legacyBehavior>
-                            <a className={cn(menuItemClass, "cursor-pointer hover:bg-accent hover:text-accent-foreground")}>
-                            <Home className="mr-2 h-4 w-4" />
+                            <a className={cn("relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors data-[disabled]:pointer-events-none data-[disabled]:opacity-50", "cursor-pointer hover:bg-accent hover:text-accent-foreground")}>
+                            <Home className="mr-2 h-4 w-4" /> {/* Consider different icon for dashboard if needed */}
                             <span>Dashboard</span>
                             </a>
                         </Link>
                     )}
                     <Link href="/settings/account" passHref legacyBehavior>
-                        <a className={cn(menuItemClass, "cursor-pointer hover:bg-accent hover:text-accent-foreground")}>
+                        <a className={cn("relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors data-[disabled]:pointer-events-none data-[disabled]:opacity-50", "cursor-pointer hover:bg-accent hover:text-accent-foreground")}>
                         <Settings className="mr-2 h-4 w-4" />
                         <span>Account Settings</span>
                         </a>
                     </Link>
                     <Link href="/settings/billing" passHref legacyBehavior>
-                        <a className={cn(menuItemClass, "cursor-pointer hover:bg-accent hover:text-accent-foreground")}>
+                        <a className={cn("relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors data-[disabled]:pointer-events-none data-[disabled]:opacity-50", "cursor-pointer hover:bg-accent hover:text-accent-foreground")}>
                         <CreditCard className="mr-2 h-4 w-4" />
                         <span>Billing &amp; Plan</span>
                         </a>
@@ -383,7 +355,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
                     <div className="my-1 h-px bg-muted" />
                     <button
                         onClick={handleSignOut}
-                        className={cn(menuItemClass, "text-destructive hover:bg-destructive/20 hover:text-destructive focus:bg-destructive/20 focus:text-destructive cursor-pointer w-full")}
+                        className={cn("relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors data-[disabled]:pointer-events-none data-[disabled]:opacity-50", "text-destructive hover:bg-destructive/20 hover:text-destructive focus:bg-destructive/20 focus:text-destructive cursor-pointer w-full")}
                     >
                         <LogOut className="mr-2 h-4 w-4" />
                         <span>Sign Out</span>
@@ -399,3 +371,4 @@ export function AppLayout({ children }: { children: ReactNode }) {
     </SidebarProvider>
   );
 }
+
