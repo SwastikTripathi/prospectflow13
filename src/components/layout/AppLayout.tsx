@@ -30,8 +30,8 @@ import { SidebarUsageProgress } from './SidebarUsageProgress';
 import type { JobOpening, UserSettings } from '@/lib/types';
 import { OnboardingForm } from '@/components/onboarding/OnboardingForm';
 
-const PUBLIC_PATHS = ['/landing', '/auth', '/pricing', '/about', '/contact', '/careers', '/partner-with-us', '/privacy-policy', '/terms-and-conditions']; // Added more public paths
-const BLOG_PATHS_REGEX = /^\/blog(\/.*)?$/; // Regex for /blog and /blog/*
+const PUBLIC_PATHS = ['/landing', '/auth', '/pricing', '/about', '/contact', '/careers', '/partner-with-us', '/privacy-policy', '/terms-and-conditions'];
+const BLOG_PATHS_REGEX = /^\/blog(\/.*)?$/;
 const HIDE_DASHBOARD_LINK_PATHS = ['/', '/job-openings', '/contacts', '/companies', '/settings/billing', '/settings/account'];
 
 
@@ -83,22 +83,28 @@ export function AppLayout({ children }: { children: ReactNode }) {
       ]);
 
       const { data: settingsData, error: settingsError } = settingsResult;
+
       if (settingsError && settingsError.code !== 'PGRST116') {
-         console.error("Error fetching user settings:", settingsError.message, "Code:", settingsError.code);
-         // If there's a 406 or similar error, don't show onboarding.
-         if (settingsError.code === 'PGRST113' || settingsError.code === '406') { // PGRST113 is 'Not acceptable', a potential name for 406
-            toast({ title: 'Profile Load Error', description: 'Could not load your profile settings. Please try again later.', variant: 'destructive'});
-            setShowOnboardingForm(false);
-         } else {
-            throw settingsError; // Re-throw other errors
-         }
-      } else {
+        // Case 1: A definite error occurred, and it's not just "not found"
+        console.error("Definite error fetching user settings:", settingsError);
+        toast({ title: 'Profile Load Error', description: `Could not load profile. (Msg: ${settingsError.message})`, variant: 'destructive', duration: 7000 });
+        setShowOnboardingForm(false);
+      } else if (!settingsData && (!settingsError || settingsError.code !== 'PGRST116')) {
+        // Case 2: No data returned, AND it's NOT the specific "PGRST116 not found" error.
+        // This implies an unexpected situation, possibly like an HTTP 406 returning data:null, error:null.
+        console.error("Unexpected: No settings data and no (or non-PGRST116) error. Potential issue with SELECT query or RLS.", settingsError);
+        toast({ title: 'Profile Access Issue', description: 'Could not verify your profile settings. Please try again or contact support.', variant: 'destructive', duration: 7000 });
+        setShowOnboardingForm(false);
+      }
+      else {
+        // Case 3: Successfully fetched (settingsData is not null) OR
+        // settings genuinely not found (settingsData is null AND settingsError.code IS 'PGRST116')
         const fetchedSettings = settingsData as UserSettings | null;
         setUserSettings(fetchedSettings);
         if (!fetchedSettings || fetchedSettings.onboarding_complete === false || fetchedSettings.onboarding_complete === null) {
-            setShowOnboardingForm(true);
+          setShowOnboardingForm(true);
         } else {
-            setShowOnboardingForm(false);
+          setShowOnboardingForm(false); // User is onboarded
         }
       }
 
@@ -114,7 +120,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
     } catch (error: any) {
       toast({ title: 'Error fetching user data', description: error.message, variant: 'destructive' });
       setUserSettings(null);
-      setShowOnboardingForm(false); // Don't show onboarding on general error
+      setShowOnboardingForm(false);
       setFavoriteJobOpenings([]);
     } finally {
       setIsLoadingSettings(false);
@@ -142,7 +148,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
         setUserSettings(null);
         setShowOnboardingForm(false);
         setOnboardingCheckComplete(false);
-        setIsLoadingSettings(true); // Ensure settings loading is true for new user
+        setIsLoadingSettings(true);
 
         if (sessionUser) {
           await fetchUserDataAndSettings(sessionUser.id);
@@ -151,7 +157,6 @@ export function AppLayout({ children }: { children: ReactNode }) {
           setOnboardingCheckComplete(true);
         }
       } else if (!sessionUser) {
-        // Handle case where user logs out but was already null (e.g. no-op or ensure cleanup)
         setIsLoadingSettings(false);
         setOnboardingCheckComplete(true);
       }
@@ -174,23 +179,15 @@ export function AppLayout({ children }: { children: ReactNode }) {
   }, [fetchUserDataAndSettings]);
 
 
-  // Moved redirection logic into useEffect
   useEffect(() => {
     if (!isLoadingAuth && !isPublicPath) {
       if (!user) {
         router.push('/landing');
-      } else if (user && !isLoadingSettings && onboardingCheckComplete && showOnboardingForm) {
-        // User is logged in, settings checked, onboarding needed.
-        // This implies the current page should be the onboarding form,
-        // which is handled by returning <OnboardingForm /> directly.
-        // If the user is on another private page and needs onboarding,
-        // AppLayout structure should ensure OnboardingForm is rendered instead of page children.
       }
     } else if (!isLoadingAuth && user && userSettings?.onboarding_complete && isPublicPath && !BLOG_PATHS_REGEX.test(pathname)) {
-      // User is logged in, onboarded, and on a public page (excluding blog pages)
       router.push('/');
     }
-  }, [user, isLoadingAuth, isLoadingSettings, onboardingCheckComplete, showOnboardingForm, isPublicPath, pathname, router, userSettings]);
+  }, [user, isLoadingAuth, isPublicPath, pathname, router, userSettings]);
 
 
   const handleSignOut = async () => {
@@ -201,14 +198,13 @@ export function AppLayout({ children }: { children: ReactNode }) {
       setIsLoadingAuth(false);
     } else {
       toast({ title: 'Signed Out Successfully' });
-      // Redirection and state reset will be handled by onAuthStateChange
     }
   };
 
   const handleOnboardingComplete = async () => {
     setShowOnboardingForm(false);
     if (user) {
-      await fetchUserDataAndSettings(user.id); // Re-fetch to confirm onboarding and get latest settings
+      await fetchUserDataAndSettings(user.id);
     }
   };
 
@@ -224,7 +220,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
   const isAppLoading = isLoadingAuth || (user != null && (isLoadingSettings || !onboardingCheckComplete));
 
   if (isPublicPath) {
-     return <>{children}</>; // For public paths, just render children, redirection handled by useEffect
+     return <>{children}</>;
   }
 
   if (isAppLoading) {
@@ -235,8 +231,6 @@ export function AppLayout({ children }: { children: ReactNode }) {
     );
   }
 
-  // After initial loading, if still no user and not a public path, this should be caught by useEffect redirect.
-  // This check is a safeguard.
   if (!user) {
      return (
       <div className="flex h-screen w-screen items-center justify-center bg-background">
@@ -245,7 +239,6 @@ export function AppLayout({ children }: { children: ReactNode }) {
     );
   }
 
-  // If user exists, settings check is complete, and onboarding is needed:
   if (onboardingCheckComplete && showOnboardingForm) {
     return (
          <OnboardingForm
@@ -259,7 +252,6 @@ export function AppLayout({ children }: { children: ReactNode }) {
     );
   }
 
-  // If user exists, onboarded, and not loading anything else:
   const userDisplayNameToShow = userSettings?.full_name || user?.user_metadata?.full_name || user?.email || 'User';
   const userInitials = getInitials(userDisplayNameToShow, user?.email);
   const showDashboardLinkInMenu = !HIDE_DASHBOARD_LINK_PATHS.includes(pathname);
@@ -335,7 +327,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
                     {showDashboardLinkInMenu && (
                          <Link href="/" passHref legacyBehavior>
                             <a className={cn("relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors data-[disabled]:pointer-events-none data-[disabled]:opacity-50", "cursor-pointer hover:bg-accent hover:text-accent-foreground")}>
-                            <Home className="mr-2 h-4 w-4" /> {/* Consider different icon for dashboard if needed */}
+                            <Home className="mr-2 h-4 w-4" /> {}
                             <span>Dashboard</span>
                             </a>
                         </Link>
@@ -371,4 +363,3 @@ export function AppLayout({ children }: { children: ReactNode }) {
     </SidebarProvider>
   );
 }
-
