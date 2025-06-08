@@ -3260,12 +3260,12 @@ const onboardingSchema = (0, __TURBOPACK__imported__module__$5b$project$5d2f$nod
     incomeCurrency: (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["string"])().optional(),
     currentRole: (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["string"])().min(1, "Current role is required").max(100, "Role name too long")
 });
-function OnboardingForm({ user, existingSettings, onOnboardingComplete }) {
+function OnboardingForm({ user, userId, userEmail, initialFullName, existingSettings, onOnboardingComplete }) {
     const { toast } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hooks$2f$use$2d$toast$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useToast"])();
     const form = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$hook$2d$form$2f$dist$2f$index$2e$esm$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useForm"])({
         resolver: (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$hookform$2f$resolvers$2f$zod$2f$dist$2f$zod$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["zodResolver"])(onboardingSchema),
         defaultValues: {
-            fullName: existingSettings?.full_name || user.user_metadata?.full_name || '',
+            fullName: existingSettings?.full_name || initialFullName || '',
             ageRange: existingSettings?.age_range || '',
             country: existingSettings?.country || '',
             annualIncome: existingSettings?.annual_income || '',
@@ -3273,10 +3273,18 @@ function OnboardingForm({ user, existingSettings, onOnboardingComplete }) {
             currentRole: existingSettings?.current_role || ''
         }
     });
-    const onSubmit = async (values)=>{
+    const attemptSaveSettings = async (values)=>{
+        if (!userId) {
+            toast({
+                title: 'Authentication Error',
+                description: 'User ID is missing.',
+                variant: 'destructive'
+            });
+            return;
+        }
         try {
             const settingsToUpsert = {
-                user_id: user.id,
+                user_id: userId,
                 full_name: values.fullName,
                 age_range: values.ageRange,
                 country: values.country,
@@ -3302,32 +3310,37 @@ function OnboardingForm({ user, existingSettings, onOnboardingComplete }) {
                     sharedSignature: ''
                 }
             };
-            const { error } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["supabase"].from('user_settings').upsert(settingsToUpsert, {
+            const { error: settingsError } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["supabase"].from('user_settings').upsert(settingsToUpsert, {
                 onConflict: 'user_id'
             });
-            if (error) throw error;
-            if (user.user_metadata?.full_name !== values.fullName) {
-                const { error: userUpdateError } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["supabase"].auth.updateUser({
-                    data: {
-                        full_name: values.fullName
-                    }
-                });
-                if (userUpdateError) {
-                    console.warn("Failed to update user_metadata.full_name:", userUpdateError.message);
+            if (settingsError) {
+                console.error("Error saving user_settings:", settingsError);
+                // Check for foreign key violation specifically
+                if (settingsError.code === '23503') {
+                    toast({
+                        title: 'Data Sync Error',
+                        description: 'Could not save settings due to a data synchronization issue. Please try again in a moment. If the problem persists, contact support.',
+                        variant: 'destructive',
+                        duration: 7000
+                    });
+                } else {
+                    throw settingsError; // Re-throw other errors to be caught by the generic catch block
                 }
+                return; // Stop execution if there was a settings error
             }
+            // If settings save was successful, proceed
             toast({
                 title: 'Onboarding Complete!',
                 description: 'Welcome to ProspectFlow!'
             });
-            onOnboardingComplete(); // Only call on successful save
+            onOnboardingComplete();
         } catch (error) {
+            // This catch block now handles errors not specifically caught above (e.g., network issues)
             toast({
                 title: 'Error Saving Onboarding Data',
-                description: error.message,
+                description: error.message || 'An unexpected error occurred. Please try again.',
                 variant: 'destructive'
             });
-        // Do NOT call onOnboardingComplete() here if save fails, so the form remains.
         }
     };
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Dialog"], {
@@ -3347,26 +3360,39 @@ function OnboardingForm({ user, existingSettings, onOnboardingComplete }) {
                                 children: "Welcome to ProspectFlow!"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                lineNumber: 104,
+                                lineNumber: 131,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["DialogDescription"], {
-                                children: "Let's get you set up. Please tell us a bit about yourself."
-                            }, void 0, false, {
+                                children: [
+                                    "Let's get you set up. Please tell us a bit about yourself.",
+                                    userEmail && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                        className: "block text-xs mt-1 text-muted-foreground",
+                                        children: [
+                                            "For account: ",
+                                            userEmail
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
+                                        lineNumber: 134,
+                                        columnNumber: 28
+                                    }, this)
+                                ]
+                            }, void 0, true, {
                                 fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                lineNumber: 105,
+                                lineNumber: 132,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                        lineNumber: 103,
+                        lineNumber: 130,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Form"], {
                         ...form,
                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
-                            onSubmit: form.handleSubmit(onSubmit),
+                            onSubmit: form.handleSubmit(attemptSaveSettings),
                             className: "space-y-4 max-h-[70vh] overflow-y-auto p-1",
                             children: [
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["FormField"], {
@@ -3378,7 +3404,7 @@ function OnboardingForm({ user, existingSettings, onOnboardingComplete }) {
                                                     children: "Full Name"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                    lineNumber: 116,
+                                                    lineNumber: 144,
                                                     columnNumber: 19
                                                 }, void 0),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["FormControl"], {
@@ -3387,28 +3413,28 @@ function OnboardingForm({ user, existingSettings, onOnboardingComplete }) {
                                                         ...field
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                        lineNumber: 117,
+                                                        lineNumber: 145,
                                                         columnNumber: 32
                                                     }, void 0)
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                    lineNumber: 117,
+                                                    lineNumber: 145,
                                                     columnNumber: 19
                                                 }, void 0),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["FormMessage"], {}, void 0, false, {
                                                     fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                    lineNumber: 118,
+                                                    lineNumber: 146,
                                                     columnNumber: 19
                                                 }, void 0)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                            lineNumber: 115,
+                                            lineNumber: 143,
                                             columnNumber: 17
                                         }, void 0)
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                    lineNumber: 111,
+                                    lineNumber: 139,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["FormField"], {
@@ -3420,7 +3446,7 @@ function OnboardingForm({ user, existingSettings, onOnboardingComplete }) {
                                                     children: "Current Role/Profession"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                    lineNumber: 127,
+                                                    lineNumber: 155,
                                                     columnNumber: 19
                                                 }, void 0),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["FormControl"], {
@@ -3429,28 +3455,28 @@ function OnboardingForm({ user, existingSettings, onOnboardingComplete }) {
                                                         ...field
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                        lineNumber: 128,
+                                                        lineNumber: 156,
                                                         columnNumber: 32
                                                     }, void 0)
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                    lineNumber: 128,
+                                                    lineNumber: 156,
                                                     columnNumber: 19
                                                 }, void 0),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["FormMessage"], {}, void 0, false, {
                                                     fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                    lineNumber: 129,
+                                                    lineNumber: 157,
                                                     columnNumber: 19
                                                 }, void 0)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                            lineNumber: 126,
+                                            lineNumber: 154,
                                             columnNumber: 17
                                         }, void 0)
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                    lineNumber: 122,
+                                    lineNumber: 150,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3465,7 +3491,7 @@ function OnboardingForm({ user, existingSettings, onOnboardingComplete }) {
                                                             children: "Age Range"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                            lineNumber: 139,
+                                                            lineNumber: 167,
                                                             columnNumber: 21
                                                         }, void 0),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Select"], {
@@ -3478,17 +3504,17 @@ function OnboardingForm({ user, existingSettings, onOnboardingComplete }) {
                                                                             placeholder: "Select your age range"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                                            lineNumber: 141,
+                                                                            lineNumber: 169,
                                                                             columnNumber: 51
                                                                         }, void 0)
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                                        lineNumber: 141,
+                                                                        lineNumber: 169,
                                                                         columnNumber: 36
                                                                     }, void 0)
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                                    lineNumber: 141,
+                                                                    lineNumber: 169,
                                                                     columnNumber: 23
                                                                 }, void 0),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SelectContent"], {
@@ -3497,34 +3523,34 @@ function OnboardingForm({ user, existingSettings, onOnboardingComplete }) {
                                                                             children: range
                                                                         }, range, false, {
                                                                             fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                                            lineNumber: 143,
+                                                                            lineNumber: 171,
                                                                             columnNumber: 50
                                                                         }, void 0))
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                                    lineNumber: 142,
+                                                                    lineNumber: 170,
                                                                     columnNumber: 23
                                                                 }, void 0)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                            lineNumber: 140,
+                                                            lineNumber: 168,
                                                             columnNumber: 21
                                                         }, void 0),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["FormMessage"], {}, void 0, false, {
                                                             fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                            lineNumber: 146,
+                                                            lineNumber: 174,
                                                             columnNumber: 21
                                                         }, void 0)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                    lineNumber: 138,
+                                                    lineNumber: 166,
                                                     columnNumber: 19
                                                 }, void 0)
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                            lineNumber: 134,
+                                            lineNumber: 162,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["FormField"], {
@@ -3536,7 +3562,7 @@ function OnboardingForm({ user, existingSettings, onOnboardingComplete }) {
                                                             children: "Country of Residence"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                            lineNumber: 155,
+                                                            lineNumber: 183,
                                                             columnNumber: 21
                                                         }, void 0),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["FormControl"], {
@@ -3545,34 +3571,34 @@ function OnboardingForm({ user, existingSettings, onOnboardingComplete }) {
                                                                 ...field
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                                lineNumber: 156,
+                                                                lineNumber: 184,
                                                                 columnNumber: 34
                                                             }, void 0)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                            lineNumber: 156,
+                                                            lineNumber: 184,
                                                             columnNumber: 21
                                                         }, void 0),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["FormMessage"], {}, void 0, false, {
                                                             fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                            lineNumber: 157,
+                                                            lineNumber: 185,
                                                             columnNumber: 21
                                                         }, void 0)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                    lineNumber: 154,
+                                                    lineNumber: 182,
                                                     columnNumber: 19
                                                 }, void 0)
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                            lineNumber: 150,
+                                            lineNumber: 178,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                    lineNumber: 133,
+                                    lineNumber: 161,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3587,7 +3613,7 @@ function OnboardingForm({ user, existingSettings, onOnboardingComplete }) {
                                                             children: "Annual Income (Optional)"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                            lineNumber: 168,
+                                                            lineNumber: 196,
                                                             columnNumber: 21
                                                         }, void 0),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["FormControl"], {
@@ -3598,28 +3624,28 @@ function OnboardingForm({ user, existingSettings, onOnboardingComplete }) {
                                                                 onChange: (e)=>field.onChange(e.target.value === '' ? '' : parseFloat(e.target.value))
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                                lineNumber: 169,
+                                                                lineNumber: 197,
                                                                 columnNumber: 34
                                                             }, void 0)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                            lineNumber: 169,
+                                                            lineNumber: 197,
                                                             columnNumber: 21
                                                         }, void 0),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["FormMessage"], {}, void 0, false, {
                                                             fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                            lineNumber: 170,
+                                                            lineNumber: 198,
                                                             columnNumber: 21
                                                         }, void 0)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                    lineNumber: 167,
+                                                    lineNumber: 195,
                                                     columnNumber: 19
                                                 }, void 0)
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                            lineNumber: 163,
+                                            lineNumber: 191,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["FormField"], {
@@ -3631,7 +3657,7 @@ function OnboardingForm({ user, existingSettings, onOnboardingComplete }) {
                                                             children: "Income Currency (Optional)"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                            lineNumber: 179,
+                                                            lineNumber: 207,
                                                             columnNumber: 21
                                                         }, void 0),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Select"], {
@@ -3644,17 +3670,17 @@ function OnboardingForm({ user, existingSettings, onOnboardingComplete }) {
                                                                             placeholder: "Select currency"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                                            lineNumber: 181,
+                                                                            lineNumber: 209,
                                                                             columnNumber: 51
                                                                         }, void 0)
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                                        lineNumber: 181,
+                                                                        lineNumber: 209,
                                                                         columnNumber: 36
                                                                     }, void 0)
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                                    lineNumber: 181,
+                                                                    lineNumber: 209,
                                                                     columnNumber: 23
                                                                 }, void 0),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SelectContent"], {
@@ -3663,40 +3689,40 @@ function OnboardingForm({ user, existingSettings, onOnboardingComplete }) {
                                                                             children: currency
                                                                         }, currency, false, {
                                                                             fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                                            lineNumber: 183,
+                                                                            lineNumber: 211,
                                                                             columnNumber: 53
                                                                         }, void 0))
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                                    lineNumber: 182,
+                                                                    lineNumber: 210,
                                                                     columnNumber: 23
                                                                 }, void 0)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                            lineNumber: 180,
+                                                            lineNumber: 208,
                                                             columnNumber: 21
                                                         }, void 0),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["FormMessage"], {}, void 0, false, {
                                                             fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                            lineNumber: 186,
+                                                            lineNumber: 214,
                                                             columnNumber: 21
                                                         }, void 0)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                    lineNumber: 178,
+                                                    lineNumber: 206,
                                                     columnNumber: 19
                                                 }, void 0)
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                            lineNumber: 174,
+                                            lineNumber: 202,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                    lineNumber: 162,
+                                    lineNumber: 190,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["DialogFooter"], {
@@ -3710,42 +3736,42 @@ function OnboardingForm({ user, existingSettings, onOnboardingComplete }) {
                                                 className: "mr-2 h-4 w-4 animate-spin"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                lineNumber: 193,
+                                                lineNumber: 221,
                                                 columnNumber: 49
                                             }, this),
                                             "Get Started"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                        lineNumber: 192,
+                                        lineNumber: 220,
                                         columnNumber: 15
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                    lineNumber: 191,
+                                    lineNumber: 219,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                            lineNumber: 110,
+                            lineNumber: 138,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                        lineNumber: 109,
+                        lineNumber: 137,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                lineNumber: 102,
+                lineNumber: 129,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-        lineNumber: 101,
+        lineNumber: 128,
         columnNumber: 5
     }, this);
 }

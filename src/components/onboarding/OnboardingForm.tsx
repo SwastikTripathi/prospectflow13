@@ -34,17 +34,27 @@ const onboardingSchema = z.object({
 type OnboardingFormValues = z.infer<typeof onboardingSchema>;
 
 interface OnboardingFormProps {
-  user: User;
+  user: User; // Full user object passed down
+  userId: string;
+  userEmail?: string | null;
+  initialFullName?: string | null;
   existingSettings: UserSettings | null;
   onOnboardingComplete: () => void;
 }
 
-export function OnboardingForm({ user, existingSettings, onOnboardingComplete }: OnboardingFormProps) {
+export function OnboardingForm({
+  user, // The full user object
+  userId, // Specifically passed userId
+  userEmail,
+  initialFullName,
+  existingSettings,
+  onOnboardingComplete
+}: OnboardingFormProps) {
   const { toast } = useToast();
   const form = useForm<OnboardingFormValues>({
     resolver: zodResolver(onboardingSchema),
     defaultValues: {
-      fullName: existingSettings?.full_name || user.user_metadata?.full_name || '',
+      fullName: existingSettings?.full_name || initialFullName || '',
       ageRange: existingSettings?.age_range || '',
       country: existingSettings?.country || '',
       annualIncome: existingSettings?.annual_income || '',
@@ -53,10 +63,15 @@ export function OnboardingForm({ user, existingSettings, onOnboardingComplete }:
     },
   });
 
-  const onSubmit = async (values: OnboardingFormValues) => {
+  const attemptSaveSettings = async (values: OnboardingFormValues) => {
+    if (!userId) {
+      toast({ title: 'Authentication Error', description: 'User ID is missing.', variant: 'destructive' });
+      return;
+    }
+
     try {
       const settingsToUpsert: TablesInsert<'user_settings'> = {
-        user_id: user.id,
+        user_id: userId, // Use the passed userId
         full_name: values.fullName,
         age_range: values.ageRange,
         country: values.country,
@@ -74,28 +89,40 @@ export function OnboardingForm({ user, existingSettings, onOnboardingComplete }:
         },
       };
 
-      const { error } = await supabase.from('user_settings').upsert(settingsToUpsert, {
+      const { error: settingsError } = await supabase.from('user_settings').upsert(settingsToUpsert, {
         onConflict: 'user_id',
       });
 
-      if (error) throw error;
-
-      if (user.user_metadata?.full_name !== values.fullName) {
-        const { error: userUpdateError } = await supabase.auth.updateUser({
-          data: { full_name: values.fullName }
-        });
-        if (userUpdateError) {
-          console.warn("Failed to update user_metadata.full_name:", userUpdateError.message);
+      if (settingsError) {
+        console.error("Error saving user_settings:", settingsError);
+        // Check for foreign key violation specifically
+        if (settingsError.code === '23503') { // PostgreSQL foreign key violation error code
+          toast({
+            title: 'Data Sync Error',
+            description: 'Could not save settings due to a data synchronization issue. Please try again in a moment. If the problem persists, contact support.',
+            variant: 'destructive',
+            duration: 7000,
+          });
+        } else {
+          throw settingsError; // Re-throw other errors to be caught by the generic catch block
         }
+        return; // Stop execution if there was a settings error
       }
 
+      // If settings save was successful, proceed
       toast({ title: 'Onboarding Complete!', description: 'Welcome to ProspectFlow!' });
-      onOnboardingComplete(); // Only call on successful save
+      onOnboardingComplete();
+
     } catch (error: any) {
-      toast({ title: 'Error Saving Onboarding Data', description: error.message, variant: 'destructive' });
-      // Do NOT call onOnboardingComplete() here if save fails, so the form remains.
+      // This catch block now handles errors not specifically caught above (e.g., network issues)
+      toast({
+        title: 'Error Saving Onboarding Data',
+        description: error.message || 'An unexpected error occurred. Please try again.',
+        variant: 'destructive',
+      });
     }
   };
+
 
   return (
     <Dialog open={true} onOpenChange={() => {}}> {/* Controlled by AppLayout */}
@@ -104,10 +131,11 @@ export function OnboardingForm({ user, existingSettings, onOnboardingComplete }:
           <DialogTitle className="font-headline text-2xl">Welcome to ProspectFlow!</DialogTitle>
           <DialogDescription>
             Let's get you set up. Please tell us a bit about yourself.
+            {userEmail && (<span className="block text-xs mt-1 text-muted-foreground">For account: {userEmail}</span>)}
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 max-h-[70vh] overflow-y-auto p-1">
+          <form onSubmit={form.handleSubmit(attemptSaveSettings)} className="space-y-4 max-h-[70vh] overflow-y-auto p-1">
             <FormField
               control={form.control}
               name="fullName"
