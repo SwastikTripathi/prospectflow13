@@ -92,15 +92,12 @@ function getAuthRedirectUrl(): string | undefined {
 
     try {
         const baseUrl = new URL(siteURL);
-        // Normalize pathname: remove trailing slash if it's not the root, then append /auth
         let path = baseUrl.pathname;
         if (path.endsWith('/auth') || path.endsWith('/auth/')) {
-            // Already ends with /auth or /auth/, normalize to /auth
             baseUrl.pathname = path.replace(/\/+$/, '').replace(/\/auth\/?$/, '/auth');
         } else if (path === '/' || path === '') {
             baseUrl.pathname = '/auth';
         } else {
-            // Remove potential trailing slash from original path, then add /auth
             baseUrl.pathname = path.replace(/\/$/, '') + '/auth';
         }
         return baseUrl.toString();
@@ -160,89 +157,83 @@ export default function AuthPage() {
 
   useEffect(() => {
     const hashParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.hash.substring(1) : '');
-    if (hashParams.get('type') === 'recovery') {
+    const isRecoveryFromHash = hashParams.get('type') === 'recovery';
+
+    if (isRecoveryFromHash) {
       setIsPasswordRecoveryMode(true);
       toast({ title: "Set New Password", description: "Please enter and confirm your new password below."});
-    }
-
-    setIsCheckingAuth(true);
-
-    const currentSearchParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
-    const hasAuthCodeInQuery = currentSearchParams.has('code');
-    const hasAccessTokenInHash = typeof window !== 'undefined' && window.location.hash.includes('access_token');
-
-    const checkSession = async () => {
-      try {
-        const { data: { session }, error } = await supabase.auth.getSession();
-        if (error) {
-          setIsCheckingAuth(false);
-          return;
-        }
-        if (session && !isPasswordRecoveryMode) {
-          router.replace('/');
-        } else {
-          setIsCheckingAuth(false);
-        }
-      } catch (error: any) {
-        setIsCheckingAuth(false);
+      setIsCheckingAuth(false); // Key: if hash recovery, immediately stop checking and prevent redirect
+    } else {
+      // Only set to true if not immediately determined as recovery from hash.
+      // And if we are not already in recovery mode from a previous render (e.g. AMR based)
+      if (!isPasswordRecoveryMode) {
+          setIsCheckingAuth(true);
       }
-    };
+    }
 
     const { data: { subscription: authSubscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      const isRecoveryMethod = session?.amr?.some(entry => entry.method === 'recovery');
+      const isAmrRecovery = session?.amr?.some(entry => entry.method === 'recovery');
 
-      if (event === 'PASSWORD_RECOVERY') {
+      // If this event OR the initial hash indicates recovery mode:
+      if (event === 'PASSWORD_RECOVERY' || isAmrRecovery ) {
         setIsPasswordRecoveryMode(true);
-        toast({ title: "Set New Password", description: "Please enter and confirm your new password below."});
-        setIsCheckingAuth(false);
-      } else if (event === 'SIGNED_IN' && session) {
-        if (isRecoveryMethod) {
-          setIsPasswordRecoveryMode(true);
-          toast({ title: "Set New Password", description: "Please enter and confirm your new password below." });
-          setIsCheckingAuth(false);
-        } else if (!isPasswordRecoveryMode) { 
-          router.replace('/');
-          setIsCheckingAuth(false);
+        // Toast only if not already done by initial hash check (isRecoveryFromHash)
+        if (!isRecoveryFromHash && (event === 'PASSWORD_RECOVERY' || isAmrRecovery)) {
+            toast({ title: "Set New Password", description: "Please enter and confirm your new password below."});
         }
-      } else if (event === 'INITIAL_SESSION' && session) {
-        if (isRecoveryMethod) {
-          setIsPasswordRecoveryMode(true);
-          toast({ title: "Set New Password", description: "Please enter and confirm your new password below." });
-          setIsCheckingAuth(false);
-        } else if (!isPasswordRecoveryMode) { 
-          router.replace('/');
-          setIsCheckingAuth(false);
-        }
-      } else if (event === 'SIGNED_OUT') {
         setIsCheckingAuth(false);
-        setIsPasswordRecoveryMode(false);
+        return; // Critical: stop further processing if it's a recovery flow
       }
 
-      if (isCheckingAuthRef.current && (
-            (event === 'INITIAL_SESSION' && !session && !hasAuthCodeInQuery && !hasAccessTokenInHash && !isPasswordRecoveryMode) ||
-            (event !== 'PASSWORD_RECOVERY' && event !== 'SIGNED_IN' && event !== 'INITIAL_SESSION')
-         )
-      ) {
-        setIsCheckingAuth(false);
+      // If it's a recovery flow already identified (by hash or previous event that set isPasswordRecoveryMode state to true):
+      if (isPasswordRecoveryMode) { // Check the current state
+        if (event === 'SIGNED_OUT') { setIsPasswordRecoveryMode(false); } // Reset if signed out during recovery
+        setIsCheckingAuth(false); // Make sure loading stops, but don't redirect
+        return;
       }
+
+      // Standard non-recovery events (isPasswordRecoveryMode state is false here):
+      if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session) {
+        router.replace('/'); // Safe to redirect, not in recovery mode
+      }
+      // For SIGNED_OUT or INITIAL_SESSION without session, or any other event,
+      // just ensure isCheckingAuth becomes false.
+      setIsCheckingAuth(false);
     });
 
+    // Initial session check, only if not recovery by hash and still checking (ref check)
+    if (!isRecoveryFromHash && isCheckingAuthRef.current) {
+      const checkSession = async () => {
+        if (!isCheckingAuthRef.current) return; // Check ref again, might have been set by onAuthStateChange
+        try {
+          const { data: { session: currentSession }, error } = await supabase.auth.getSession();
+          if (error) { setIsCheckingAuth(false); return; }
 
-    if (hashParams.get('type') === 'recovery') {
-       setTimeout(() => {
-         if (isCheckingAuthRef.current) setIsCheckingAuth(false);
-       }, 1000);
-    } else if (hasAuthCodeInQuery || hasAccessTokenInHash) {
-      // Rely on onAuthStateChange
-    }
-     else {
+          const isAmrRecoveryInSession = currentSession?.amr?.some(entry => entry.method === 'recovery');
+
+          if (currentSession && isAmrRecoveryInSession) {
+            setIsPasswordRecoveryMode(true);
+            // Toast if not already done by hash
+            if(!isRecoveryFromHash) toast({ title: "Set New Password", description: "Please enter and confirm your new password below." });
+            setIsCheckingAuth(false);
+          } else if (currentSession && !isPasswordRecoveryMode) { // Check state here before redirect
+            router.replace('/');
+            setIsCheckingAuth(false);
+          } else { // No session, or already in recovery mode (state is true)
+            setIsCheckingAuth(false);
+          }
+        } catch (err) { setIsCheckingAuth(false); }
+      };
       checkSession();
+    } else if (isRecoveryFromHash && isCheckingAuthRef.current) {
+      // This is a fallback, should have been set to false by hash check already.
+      setIsCheckingAuth(false);
     }
 
     return () => {
       authSubscription?.unsubscribe();
     };
-  }, [router, toast, pathname]);
+  }, [router, toast, pathname, isPasswordRecoveryMode]); // isPasswordRecoveryMode is a crucial dependency
 
 
   const handleSignIn = async (values: SignInFormValues) => {
@@ -258,6 +249,7 @@ export default function AuthPage() {
         toast({ title: 'Sign In Failed', description: error.message, variant: 'destructive' });
       } else {
         toast({ title: 'Signed In Successfully!'});
+        // Redirect is handled by onAuthStateChange
       }
     } catch (error: any) {
       setAuthError(error.message || 'An unexpected error occurred.');
@@ -294,14 +286,18 @@ export default function AuthPage() {
         setAuthError(error.message);
         toast({ title: 'Sign Up Failed', description: error.message, variant: 'destructive' });
       } else if (data.session) {
+        // User is signed in (e.g. auto-confirm is on, or social sign up)
         toast({ title: 'Account Created & Signed In!' });
+        // Redirect is handled by onAuthStateChange
       } else if (data.user && !data.session) {
+        // Email confirmation required
         setShowConfirmationMessage(true);
         toast({ title: 'Account Created!', description: 'Please check your email to confirm your account.' });
         signUpForm.reset();
-        signInForm.setValue('email', values.email);
-        setDefaultTab('signin');
+        signInForm.setValue('email', values.email); // Pre-fill email on sign-in tab
+        setDefaultTab('signin'); // Switch to sign-in tab
       } else {
+         // Should not happen with current Supabase versions
          setAuthError('An unexpected outcome occurred during sign up.');
          toast({ title: 'Sign Up Issue', description: 'An unexpected outcome occurred.', variant: 'destructive' });
       }
@@ -335,6 +331,7 @@ export default function AuthPage() {
       toast({ title: 'Google Sign-In Failed', description: error.message, variant: 'destructive' });
       setIsGoogleLoading(false);
     }
+    // On success, Supabase redirects, then onAuthStateChange handles it.
   };
 
   const handleForgotPasswordRequest = async (values: ForgotPasswordFormValues) => {
@@ -379,11 +376,13 @@ export default function AuthPage() {
         toast({ title: 'Password Reset Failed', description: error.message, variant: 'destructive' });
       } else {
         toast({ title: 'Password Reset Successful!', description: 'You can now sign in with your new password.' });
-        setIsPasswordRecoveryMode(false); 
-        setDefaultTab('signin'); 
+        setIsPasswordRecoveryMode(false); // Exit recovery mode
+        setDefaultTab('signin'); // Switch to sign-in tab
+        // Pre-fill email if possible (user might not be fully "gotten" here yet)
         const { data: { user } } = await supabase.auth.getUser();
         signInForm.setValue('email', user?.email || '');
-        router.replace('/auth', { scroll: false });
+        // Clear the hash to remove recovery params from URL
+        router.replace('/auth', { scroll: false }); // Or router.replace(pathname, undefined, { shallow: true });
       }
     } catch (error: any) {
       setAuthError(error.message || 'An unexpected error occurred.');
@@ -745,3 +744,4 @@ export default function AuthPage() {
     </div>
   );
 }
+
