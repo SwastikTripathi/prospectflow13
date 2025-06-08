@@ -4285,11 +4285,15 @@ function AppLayout({ children }) {
     const [onboardingCheckComplete, setOnboardingCheckComplete] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const previousUserIdRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])();
     const isPublicPath = PUBLIC_PATHS.includes(pathname) || BLOG_PATHS_REGEX.test(pathname);
+    console.log(`[AppLayout] Render. Path: ${pathname}, IsPublic: ${isPublicPath}`);
+    console.log(`[AppLayout] Current states: isLoadingAuth: ${isLoadingAuth}, isLoadingSettings: ${isLoadingSettings}, user: ${user?.id}, userSettings: ${!!userSettings}, showOnboardingForm: ${showOnboardingForm}, onboardingCheckComplete: ${onboardingCheckComplete}`);
     const fetchUserDataAndSettings = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useCallback"])({
         "AppLayout.useCallback[fetchUserDataAndSettings]": async (userId)=>{
+            console.log(`[AppLayout fetchUserDataAndSettings] Called for user: ${userId}. Setting isLoadingSettings: true, setOnboardingCheckComplete: false`);
             setIsLoadingSettings(true);
             setOnboardingCheckComplete(false);
             try {
+                console.log(`[AppLayout fetchUserDataAndSettings] Fetching settings and favorites for user: ${userId}`);
                 const [settingsResult, favoritesResult] = await Promise.all([
                     __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].from('user_settings').select('*').eq('user_id', userId).single(),
                     __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].from('job_openings').select('id, role_title, company_name_cache, favorited_at, is_favorite').eq('user_id', userId).eq('is_favorite', true).order('favorited_at', {
@@ -4297,18 +4301,20 @@ function AppLayout({ children }) {
                         nulls: 'last'
                     })
                 ]);
+                console.log(`[AppLayout fetchUserDataAndSettings] API calls completed for user: ${userId}`);
                 const { data: settingsData, error: settingsError } = settingsResult;
+                console.log(`[AppLayout fetchUserDataAndSettings] Settings result: data: ${!!settingsData}, error:`, settingsError);
                 if (settingsError && settingsError.code !== 'PGRST116') {
-                    console.error("Error fetching user settings:", settingsError);
+                    console.error("[AppLayout fetchUserDataAndSettings] Error fetching user settings (non-PGRST116):", settingsError);
                     toast({
                         title: 'Profile Load Error',
                         description: `Could not load profile. (Code: ${settingsError.code})`,
                         variant: 'destructive',
                         duration: 7000
                     });
-                    setShowOnboardingForm(false); // Don't show onboarding if settings fetch fails for non-404 reasons
+                    setShowOnboardingForm(false);
                 } else if (!settingsData && (!settingsError || settingsError.code !== 'PGRST116')) {
-                    console.error("Unexpected: No settings data and no (or non-PGRST116) error. Potential issue with SELECT query or RLS.", settingsError);
+                    console.error("[AppLayout fetchUserDataAndSettings] Unexpected: No settings data and no (or non-PGRST116) error. Potential issue with SELECT query or RLS.", settingsError);
                     toast({
                         title: 'Profile Access Issue',
                         description: 'Could not verify your profile settings. Please try again or contact support.',
@@ -4319,28 +4325,33 @@ function AppLayout({ children }) {
                 } else {
                     const fetchedSettings = settingsData;
                     setUserSettings(fetchedSettings);
+                    console.log(`[AppLayout fetchUserDataAndSettings] User settings set:`, fetchedSettings);
                     if (!fetchedSettings || fetchedSettings.onboarding_complete === false || fetchedSettings.onboarding_complete === null) {
+                        console.log(`[AppLayout fetchUserDataAndSettings] Onboarding not complete or settings missing. setShowOnboardingForm: true`);
                         setShowOnboardingForm(true);
                     } else {
+                        console.log(`[AppLayout fetchUserDataAndSettings] Onboarding complete. setShowOnboardingForm: false`);
                         setShowOnboardingForm(false);
                     }
                 }
                 const { data: favoritesData, error: favoritesError } = favoritesResult;
+                console.log(`[AppLayout fetchUserDataAndSettings] Favorites result: data: ${!!favoritesData}, error:`, favoritesError);
                 if (favoritesError) {
-                    console.error("Error fetching favorite job openings:", favoritesError.message);
+                    console.error("[AppLayout fetchUserDataAndSettings] Error fetching favorite job openings:", favoritesError.message);
                     setFavoriteJobOpenings([]);
                 } else {
                     setFavoriteJobOpenings(favoritesData || []);
                 }
             } catch (error) {
-                // This catch block will handle errors from the Promise.all or if thrown by AuthApiError during a Supabase call
+                console.error("[AppLayout fetchUserDataAndSettings] CATCH BLOCK ERROR:", error);
                 if (error.name === 'AuthApiError' && error.message.includes('Invalid Refresh Token')) {
+                    console.log("[AppLayout fetchUserDataAndSettings] Invalid Refresh Token detected. Signing out.");
                     toast({
                         title: 'Session Invalid',
                         description: 'Your session is invalid. Please sign in again.',
                         variant: 'destructive'
                     });
-                    await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].auth.signOut(); // This will trigger onAuthStateChange, leading to user being null
+                    await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].auth.signOut();
                 } else {
                     toast({
                         title: 'Error fetching user data',
@@ -4352,6 +4363,7 @@ function AppLayout({ children }) {
                 setShowOnboardingForm(false);
                 setFavoriteJobOpenings([]);
             } finally{
+                console.log(`[AppLayout fetchUserDataAndSettings] FINALLY block. Setting isLoadingSettings: false, setOnboardingCheckComplete: true`);
                 setIsLoadingSettings(false);
                 setOnboardingCheckComplete(true);
             }
@@ -4363,40 +4375,59 @@ function AppLayout({ children }) {
         "AppLayout.useCallback[processUserSession]": async (sessionUser)=>{
             const currentPreviousUserId = previousUserIdRef.current;
             const newUserId = sessionUser?.id;
+            console.log(`[AppLayout processUserSession] Called. newUserId: ${newUserId}, currentPreviousUserId: ${currentPreviousUserId}`);
             setUser(sessionUser); // Update user state first
             if (newUserId !== currentPreviousUserId) {
+                console.log(`[AppLayout processUserSession] User ID changed or first load. Old: ${currentPreviousUserId}, New: ${newUserId}. Resetting related states.`);
                 previousUserIdRef.current = newUserId;
                 setFavoriteJobOpenings([]);
                 setUserSettings(null);
                 setShowOnboardingForm(false);
-                setOnboardingCheckComplete(false); // Reset for new user
-                setIsLoadingSettings(true);
+                setOnboardingCheckComplete(false);
+                setIsLoadingSettings(true); // Set loading true before potential fetch
                 if (sessionUser) {
+                    console.log(`[AppLayout processUserSession] New user session. Calling fetchUserDataAndSettings for ${newUserId}`);
                     await fetchUserDataAndSettings(sessionUser.id);
                 } else {
+                    console.log(`[AppLayout processUserSession] No user session (user is null). Setting loading states to false.`);
                     setIsLoadingSettings(false);
-                    setOnboardingCheckComplete(true); // Onboarding check is "complete" as there's no user
+                    setOnboardingCheckComplete(true);
                 }
             } else if (!sessionUser) {
+                console.log(`[AppLayout processUserSession] No user session (user is null and was already null or unchanged). Setting loading states to false.`);
                 setIsLoadingSettings(false);
                 setOnboardingCheckComplete(true);
+            } else {
+                console.log(`[AppLayout processUserSession] User ID did not change (${newUserId}). No state reset needed. isLoadingSettings: ${isLoadingSettings}, onboardingCheckComplete: ${onboardingCheckComplete}`);
+                // If user is the same and settings haven't been loaded (e.g., due to a fast reload interrupting previous fetch),
+                // and we are not already loading settings, then fetch them.
+                if (sessionUser && !userSettings && !isLoadingSettings && !onboardingCheckComplete) {
+                    console.log(`[AppLayout processUserSession] User same, but settings not loaded and not currently loading. Re-initiating fetch for ${newUserId}.`);
+                    await fetchUserDataAndSettings(sessionUser.id);
+                }
             }
-            // If user is the same and not null, settings might already be loading or loaded.
-            //isLoadingAuth is set based on the overall process.
-            setIsLoadingAuth(false); // Mark auth check as complete once session is processed
+            console.log(`[AppLayout processUserSession] Setting isLoadingAuth: false`);
+            setIsLoadingAuth(false);
         }
     }["AppLayout.useCallback[processUserSession]"], [
-        fetchUserDataAndSettings
-    ]); // fetchUserDataAndSettings is a dependency
+        fetchUserDataAndSettings,
+        userSettings,
+        isLoadingSettings,
+        onboardingCheckComplete
+    ]); // Added userSettings, isLoadingSettings, onboardingCheckComplete
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "AppLayout.useEffect": ()=>{
+            console.log("[AppLayout Main Auth useEffect] Running.");
             const storedTheme = localStorage.getItem('theme');
             const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
             const initialTheme = storedTheme || (systemPrefersDark ? 'dark' : 'light');
             setTheme(initialTheme);
             document.documentElement.classList.toggle('dark', initialTheme === 'dark');
+            console.log(`[AppLayout Main Auth useEffect] Initial theme set to: ${initialTheme}`);
+            setIsLoadingAuth(true); // Set loading true at the start of effect
             const handleSessionResult = {
                 "AppLayout.useEffect.handleSessionResult": async (session, error)=>{
+                    console.log(`[AppLayout Main Auth useEffect - handleSessionResult] Session: ${!!session}, Error:`, error);
                     if (error) {
                         console.error("[AppLayout handleSessionResult] Error processing session:", error);
                         if (error.name === 'AuthApiError' && error.message.includes("Invalid Refresh Token")) {
@@ -4405,34 +4436,37 @@ function AppLayout({ children }) {
                                 description: 'Your session is invalid. Please sign in again.',
                                 variant: 'destructive'
                             });
-                            await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].auth.signOut(); // This will trigger onAuthStateChange with null session
-                            // The onAuthStateChange handler will then call processUserSession(null)
-                            return; // Early exit
+                            await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].auth.signOut();
+                            return;
                         }
                     }
                     await processUserSession(session?.user ?? null);
                 }
             }["AppLayout.useEffect.handleSessionResult"];
-            // Initial session check
             __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].auth.getSession().then({
-                "AppLayout.useEffect": ({ data: { session }, error })=>handleSessionResult(session, error)
+                "AppLayout.useEffect": ({ data: { session }, error })=>{
+                    console.log("[AppLayout Main Auth useEffect] getSession() promise resolved.");
+                    handleSessionResult(session, error);
+                }
             }["AppLayout.useEffect"]).catch({
-                "AppLayout.useEffect": (catchError)=>handleSessionResult(null, catchError)
-            }["AppLayout.useEffect"]); // Catch potential promise rejection
+                "AppLayout.useEffect": (catchError)=>{
+                    console.error("[AppLayout Main Auth useEffect] getSession() promise REJECTED:", catchError);
+                    handleSessionResult(null, catchError);
+                }
+            }["AppLayout.useEffect"]);
             const { data: { subscription } } = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].auth.onAuthStateChange({
                 "AppLayout.useEffect": async (event, session)=>{
-                    console.log('[AppLayout onAuthStateChange] Event:', event, 'Session:', session);
+                    console.log(`[AppLayout onAuthStateChange] Event: ${event}, Session User ID: ${session?.user?.id}`);
                     if (event === 'TOKEN_REFRESHED' && !session) {
-                        // If token refresh results in no session, it's a sign of invalidity.
+                        console.warn("[AppLayout onAuthStateChange] TOKEN_REFRESHED but no session. Potential invalid session.");
                         toast({
                             title: 'Session Expired',
                             description: 'Your session has expired. Please sign in again.',
                             variant: 'destructive'
                         });
-                    // processUserSession(null) will be called by the main logic below
                     } else if (event === 'SIGNED_OUT') {
-                        // Only show "Signed Out" if no "Session Expired/Invalid" toast is already active.
-                        const activeToasts = toast.toasts || []; // Assuming useToast provides access to current toasts
+                        console.log("[AppLayout onAuthStateChange] SIGNED_OUT event.");
+                        const activeToasts = toast.toasts || [];
                         if (!activeToasts.some({
                             "AppLayout.useEffect": (t)=>t.title === 'Session Expired' || t.title === 'Session Invalid'
                         }["AppLayout.useEffect"])) {
@@ -4442,12 +4476,13 @@ function AppLayout({ children }) {
                             });
                         }
                     }
-                    // Always process the session state
                     await processUserSession(session?.user ?? null);
                 }
             }["AppLayout.useEffect"]);
+            console.log("[AppLayout Main Auth useEffect] Subscribed to onAuthStateChange.");
             return ({
                 "AppLayout.useEffect": ()=>{
+                    console.log("[AppLayout Main Auth useEffect] Unsubscribing from onAuthStateChange.");
                     subscription?.unsubscribe();
                 }
             })["AppLayout.useEffect"];
@@ -4455,14 +4490,17 @@ function AppLayout({ children }) {
     }["AppLayout.useEffect"], [
         processUserSession,
         toast
-    ]); // processUserSession is stable due to useCallback
+    ]);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "AppLayout.useEffect": ()=>{
+            console.log(`[AppLayout Redirect useEffect] Running. isLoadingAuth: ${isLoadingAuth}, isPublicPath: ${isPublicPath}, user: ${!!user}, userSettings.onboarding_complete: ${userSettings?.onboarding_complete}, pathname: ${pathname}`);
             if (!isLoadingAuth && !isPublicPath) {
                 if (!user) {
+                    console.log("[AppLayout Redirect useEffect] Not authenticated and not public path. Redirecting to /landing.");
                     router.push('/landing');
                 }
             } else if (!isLoadingAuth && user && userSettings?.onboarding_complete && isPublicPath && !BLOG_PATHS_REGEX.test(pathname)) {
+                console.log("[AppLayout Redirect useEffect] Authenticated, onboarding complete, on public non-blog path. Redirecting to /.");
                 router.push('/');
             }
         }
@@ -4475,15 +4513,17 @@ function AppLayout({ children }) {
         userSettings
     ]);
     const handleSignOut = async ()=>{
-        setIsLoadingAuth(true); // Visually indicate action
+        console.log("[AppLayout handleSignOut] Initiated.");
+        setIsLoadingAuth(true);
         await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].auth.signOut();
-    // onAuthStateChange will handle state updates and redirection via processUserSession(null)
-    // Toast for sign out is now handled within onAuthStateChange for SIGNED_OUT event
+        console.log("[AppLayout handleSignOut] Supabase signOut complete.");
     };
     const handleOnboardingComplete = async ()=>{
+        console.log("[AppLayout handleOnboardingComplete] Initiated.");
         setShowOnboardingForm(false);
         if (user) {
-            await fetchUserDataAndSettings(user.id); // Re-fetch to get updated onboarding_complete status
+            console.log("[AppLayout handleOnboardingComplete] User exists, re-fetching user data and settings.");
+            await fetchUserDataAndSettings(user.id);
         }
     };
     const toggleTheme = ()=>{
@@ -4491,40 +4531,37 @@ function AppLayout({ children }) {
             const newTheme = prevTheme === 'light' ? 'dark' : 'light';
             document.documentElement.classList.toggle('dark', newTheme === 'dark');
             localStorage.setItem('theme', newTheme);
+            console.log(`[AppLayout toggleTheme] Theme changed to: ${newTheme}`);
             return newTheme;
         });
     };
     const isAppLoading = isLoadingAuth || user != null && (isLoadingSettings || !onboardingCheckComplete);
+    console.log(`[AppLayout] Calculated isAppLoading: ${isAppLoading} (isLoadingAuth: ${isLoadingAuth}, user: ${!!user}, isLoadingSettings: ${isLoadingSettings}, !onboardingCheckComplete: ${!onboardingCheckComplete})`);
     if (isPublicPath) {
+        console.log("[AppLayout] Rendering public path children directly.");
         return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
             children: children
         }, void 0, false);
     }
     if (isAppLoading) {
+        console.log("[AppLayout] Rendering main app loader because isAppLoading is true.");
         return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
             className: "flex h-screen w-screen items-center justify-center bg-background",
             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$loader$2d$circle$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Loader2$3e$__["Loader2"], {
                 className: "h-12 w-12 animate-spin text-primary"
             }, void 0, false, {
                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                lineNumber: 265,
+                lineNumber: 309,
                 columnNumber: 9
             }, this)
         }, void 0, false, {
             fileName: "[project]/src/components/layout/AppLayout.tsx",
-            lineNumber: 264,
+            lineNumber: 308,
             columnNumber: 7
         }, this);
     }
-    // This redirection is now handled by the useEffect hook above.
-    // if (!user) {
-    //    return (
-    //     <div className="flex h-screen w-screen items-center justify-center bg-background">
-    //       <Loader2 className="h-12 w-12 animate-spin text-primary" />
-    //     </div>
-    //   );
-    // }
     if (onboardingCheckComplete && showOnboardingForm && user) {
+        console.log("[AppLayout] Rendering OnboardingForm.");
         return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$onboarding$2f$OnboardingForm$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["OnboardingForm"], {
             user: user,
             userId: user.id,
@@ -4534,10 +4571,11 @@ function AppLayout({ children }) {
             onOnboardingComplete: handleOnboardingComplete
         }, void 0, false, {
             fileName: "[project]/src/components/layout/AppLayout.tsx",
-            lineNumber: 281,
+            lineNumber: 318,
             columnNumber: 10
         }, this);
     }
+    console.log("[AppLayout] Rendering main SidebarProvider layout.");
     const userDisplayNameToShow = userSettings?.full_name || user?.user_metadata?.full_name || user?.email || 'User';
     const userInitials = getInitials(userDisplayNameToShow, user?.email);
     const showDashboardLinkInMenu = !HIDE_DASHBOARD_LINK_PATHS.includes(pathname);
@@ -4559,25 +4597,25 @@ function AppLayout({ children }) {
                                     className: "group-data-[collapsible=icon]:hidden"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                    lineNumber: 301,
+                                    lineNumber: 339,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                lineNumber: 300,
+                                lineNumber: 338,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SidebarTrigger"], {
                                 className: "group-data-[collapsible=icon]:hidden md:hidden hover:bg-transparent focus-visible:bg-transparent hover:text-primary"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                lineNumber: 303,
+                                lineNumber: 341,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/layout/AppLayout.tsx",
-                        lineNumber: 299,
+                        lineNumber: 337,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SidebarContent"], {
@@ -4585,12 +4623,12 @@ function AppLayout({ children }) {
                             favoriteJobOpenings: favoriteJobOpenings
                         }, void 0, false, {
                             fileName: "[project]/src/components/layout/AppLayout.tsx",
-                            lineNumber: 306,
+                            lineNumber: 344,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/layout/AppLayout.tsx",
-                        lineNumber: 305,
+                        lineNumber: 343,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SidebarFooter"], {
@@ -4600,7 +4638,7 @@ function AppLayout({ children }) {
                                 user: user
                             }, void 0, false, {
                                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                lineNumber: 313,
+                                lineNumber: 351,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4616,24 +4654,24 @@ function AppLayout({ children }) {
                                     }
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                    lineNumber: 315,
+                                    lineNumber: 353,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                lineNumber: 314,
+                                lineNumber: 352,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/layout/AppLayout.tsx",
-                        lineNumber: 308,
+                        lineNumber: 346,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                lineNumber: 298,
+                lineNumber: 336,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SidebarInset"], {
@@ -4648,12 +4686,12 @@ function AppLayout({ children }) {
                                     className: "md:hidden hover:bg-transparent focus-visible:bg-transparent hover:text-primary"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                    lineNumber: 334,
+                                    lineNumber: 372,
                                     columnNumber: 17
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                lineNumber: 333,
+                                lineNumber: 371,
                                 columnNumber: 13
                             }, this),
                             user && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$hover$2d$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["HoverCard"], {
@@ -4673,27 +4711,27 @@ function AppLayout({ children }) {
                                                         className: "h-4 w-4 animate-spin"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                        lineNumber: 345,
+                                                        lineNumber: 383,
                                                         columnNumber: 67
                                                     }, this) : userInitials
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                    lineNumber: 344,
+                                                    lineNumber: 382,
                                                     columnNumber: 25
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                lineNumber: 343,
+                                                lineNumber: 381,
                                                 columnNumber: 25
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                            lineNumber: 339,
+                                            lineNumber: 377,
                                             columnNumber: 21
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                        lineNumber: 338,
+                                        lineNumber: 376,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$hover$2d$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["HoverCardContent"], {
@@ -4710,7 +4748,7 @@ function AppLayout({ children }) {
                                                             children: isLoadingSettings ? "Loading name..." : userDisplayNameToShow
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                            lineNumber: 353,
+                                                            lineNumber: 391,
                                                             columnNumber: 25
                                                         }, this),
                                                         user.email && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -4718,25 +4756,25 @@ function AppLayout({ children }) {
                                                             children: user.email
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                            lineNumber: 354,
+                                                            lineNumber: 392,
                                                             columnNumber: 40
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                    lineNumber: 352,
+                                                    lineNumber: 390,
                                                     columnNumber: 25
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                lineNumber: 351,
+                                                lineNumber: 389,
                                                 columnNumber: 21
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                 className: "my-1 h-px bg-muted"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                lineNumber: 357,
+                                                lineNumber: 395,
                                                 columnNumber: 21
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -4750,25 +4788,25 @@ function AppLayout({ children }) {
                                                             className: "mr-2 h-4 w-4"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                            lineNumber: 360,
+                                                            lineNumber: 398,
                                                             columnNumber: 25
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                             children: "Homepage"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                            lineNumber: 361,
+                                                            lineNumber: 399,
                                                             columnNumber: 25
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                    lineNumber: 359,
+                                                    lineNumber: 397,
                                                     columnNumber: 25
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                lineNumber: 358,
+                                                lineNumber: 396,
                                                 columnNumber: 21
                                             }, this),
                                             showDashboardLinkInMenu && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -4782,7 +4820,7 @@ function AppLayout({ children }) {
                                                             className: "mr-2 h-4 w-4"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                            lineNumber: 367,
+                                                            lineNumber: 405,
                                                             columnNumber: 29
                                                         }, this),
                                                         " ",
@@ -4790,18 +4828,18 @@ function AppLayout({ children }) {
                                                             children: "Dashboard"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                            lineNumber: 368,
+                                                            lineNumber: 406,
                                                             columnNumber: 29
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                    lineNumber: 366,
+                                                    lineNumber: 404,
                                                     columnNumber: 29
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                lineNumber: 365,
+                                                lineNumber: 403,
                                                 columnNumber: 26
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -4815,25 +4853,25 @@ function AppLayout({ children }) {
                                                             className: "mr-2 h-4 w-4"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                            lineNumber: 374,
+                                                            lineNumber: 412,
                                                             columnNumber: 25
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                             children: "Account Settings"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                            lineNumber: 375,
+                                                            lineNumber: 413,
                                                             columnNumber: 25
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                    lineNumber: 373,
+                                                    lineNumber: 411,
                                                     columnNumber: 25
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                lineNumber: 372,
+                                                lineNumber: 410,
                                                 columnNumber: 21
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -4847,32 +4885,32 @@ function AppLayout({ children }) {
                                                             className: "mr-2 h-4 w-4"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                            lineNumber: 380,
+                                                            lineNumber: 418,
                                                             columnNumber: 25
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                             children: "Billing & Plan"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                            lineNumber: 381,
+                                                            lineNumber: 419,
                                                             columnNumber: 25
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                    lineNumber: 379,
+                                                    lineNumber: 417,
                                                     columnNumber: 25
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                lineNumber: 378,
+                                                lineNumber: 416,
                                                 columnNumber: 21
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                 className: "my-1 h-px bg-muted"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                lineNumber: 384,
+                                                lineNumber: 422,
                                                 columnNumber: 21
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -4883,38 +4921,38 @@ function AppLayout({ children }) {
                                                         className: "mr-2 h-4 w-4"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                        lineNumber: 389,
+                                                        lineNumber: 427,
                                                         columnNumber: 25
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                         children: "Sign Out"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                        lineNumber: 390,
+                                                        lineNumber: 428,
                                                         columnNumber: 25
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                lineNumber: 385,
+                                                lineNumber: 423,
                                                 columnNumber: 21
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                        lineNumber: 350,
+                                        lineNumber: 388,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                lineNumber: 337,
+                                lineNumber: 375,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/layout/AppLayout.tsx",
-                        lineNumber: 332,
+                        lineNumber: 370,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("main", {
@@ -4922,19 +4960,19 @@ function AppLayout({ children }) {
                         children: children
                     }, void 0, false, {
                         fileName: "[project]/src/components/layout/AppLayout.tsx",
-                        lineNumber: 396,
+                        lineNumber: 434,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                lineNumber: 331,
+                lineNumber: 369,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/layout/AppLayout.tsx",
-        lineNumber: 297,
+        lineNumber: 335,
         columnNumber: 5
     }, this);
 }
