@@ -14,7 +14,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip,
 import { supabase } from '@/lib/supabaseClient';
 import type { User, Session, AuthChangeEvent } from '@supabase/supabase-js';
 import { useToast } from '@/hooks/use-toast';
-import { Skeleton } from "@/components/ui/skeleton"; // Added import
+import { Skeleton } from "@/components/ui/skeleton";
 
 const initialEmailSentStatuses: JobOpening['status'][] = [
   'Emailed',
@@ -72,23 +72,25 @@ export default function DashboardPage() {
     if (newUser?.id !== previousUserIdRef.current) {
       // console.log(`[DashboardPage] User CHANGED or first load with user. Old ID: ${previousUserIdRef.current} New ID: ${newUser?.id}`);
       setHasFetchedData(false); // Reset fetch status for new user/logout
-      if (!newUser) { // If logging out, clear stats immediately
+      if (!newUser) {
         setStats({ followUpsToday: 0, followUpsThisWeek: 0, activeOpenings: 0, totalContacts: 0, totalCompanies: 0 });
         setEmailsSentData([]);
         setOpeningsAddedData([]);
+        setLoadingStats(false); // Also set loading to false if user logs out
+        setLoadingCharts(false);
       }
     }
     setCurrentUser(newUser);
     previousUserIdRef.current = newUser?.id;
     // console.log(`[DashboardPage] handleAuthStateChanged FINISHED. isLoadingUser set to false. CurrentUser ID: ${currentUser?.id}`);
-    setIsLoadingUser(false); // Set loading to false once auth state is known
-  }, []); // No dependencies, ensures stability
+    setIsLoadingUser(false);
+  }, []);
 
   useEffect(() => {
     // console.log(`[DashboardPage] Auth useEffect RUNNING. Setting isLoadingUser to true.`);
     setIsLoadingUser(true);
     const { data: authListener } = supabase.auth.onAuthStateChange(handleAuthStateChanged);
-    // No need for explicit getSession() as onAuthStateChange handles INITIAL_SESSION
+    // No explicit getSession call, onAuthStateChange handles INITIAL_SESSION
     return () => {
       // console.log("[DashboardPage] Auth useEffect CLEANUP. Unsubscribing.");
       authListener.subscription.unsubscribe();
@@ -102,60 +104,63 @@ export default function DashboardPage() {
       // console.log('[DashboardPage] fetchDashboardData SKIPPED - no user provided.');
       setLoadingStats(false);
       setLoadingCharts(false);
-      setHasFetchedData(true); // Mark attempt as made
+      setHasFetchedData(true);
       return;
     }
     // console.log(`[DashboardPage] fetchDashboardData - Proceeding with user: ${userForFetch.id} . Setting loading true.`);
     setLoadingStats(true);
     setLoadingCharts(true);
 
+    let rawJobOpenings: any[] = [];
+    let allFollowUps: any[] = [];
+    let contactsCount = 0;
+    let companiesCount = 0;
+
     try {
       // console.log('[DB_FETCH] Entering try block...');
-      let jobOpeningsResponse, followUpsResponse, contactsCountResponse, companiesCountResponse;
 
-      // console.log('[DB_FETCH] Starting fetch for job_openings...');
-      jobOpeningsResponse = await supabase.from('job_openings').select('*').eq('user_id', userForFetch.id)
-        .catch(err => { console.error('[DB_FETCH] Error in job_openings fetch:', err); return { data: [], error: err }; });
+      console.log('[DB_FETCH] Starting fetch for job_openings...');
+      const jobOpeningsResponse = await supabase.from('job_openings').select('*').eq('user_id', userForFetch.id);
+      if (jobOpeningsResponse.error) {
+        console.error('[DB_FETCH] Error fetching job_openings:', jobOpeningsResponse.error);
+        // Don't throw, allow other fetches to proceed, use default empty array
+      } else {
+        rawJobOpenings = jobOpeningsResponse.data || [];
+      }
       // console.log('[DB_FETCH] Completed fetch for job_openings.');
-      if (jobOpeningsResponse.error && !Array.isArray(jobOpeningsResponse.data)) {
-        console.error('[DB_FETCH] Error job_openings:', jobOpeningsResponse.error); throw jobOpeningsResponse.error;
-      }
 
-      // console.log('[DB_FETCH] Starting fetch for follow_ups...');
-      followUpsResponse = await supabase.from('follow_ups').select('*').eq('user_id', userForFetch.id)
-        .catch(err => { console.error('[DB_FETCH] Error in follow_ups fetch:', err); return { data: [], error: err }; });
+      console.log('[DB_FETCH] Starting fetch for follow_ups...');
+      const followUpsResponse = await supabase.from('follow_ups').select('*').eq('user_id', userForFetch.id);
+      if (followUpsResponse.error) {
+        console.error('[DB_FETCH] Error fetching follow_ups:', followUpsResponse.error);
+      } else {
+        allFollowUps = followUpsResponse.data || [];
+      }
       // console.log('[DB_FETCH] Completed fetch for follow_ups.');
-      if (followUpsResponse.error && !Array.isArray(followUpsResponse.data)) {
-        console.error('[DB_FETCH] Error follow_ups:', followUpsResponse.error); throw followUpsResponse.error;
-      }
 
-      // console.log('[DB_FETCH] Starting fetch for contacts count...');
-      contactsCountResponse = await supabase.from('contacts').select('id', { count: 'exact', head: true }).eq('user_id', userForFetch.id)
-        .catch(err => { console.error('[DB_FETCH] Error in contacts count fetch:', err); return { count: 0, error: err }; });
+      console.log('[DB_FETCH] Starting fetch for contacts count...');
+      const contactsCountResponse = await supabase.from('contacts').select('id', { count: 'exact', head: true }).eq('user_id', userForFetch.id);
+      if (contactsCountResponse.error) {
+        console.error('[DB_FETCH] Error fetching contacts count:', contactsCountResponse.error);
+      } else {
+        contactsCount = contactsCountResponse.count ?? 0;
+      }
       // console.log('[DB_FETCH] Completed fetch for contacts count.');
-      if (contactsCountResponse.error && typeof contactsCountResponse.count !== 'number') {
-        console.error('[DB_FETCH] Error contacts count:', contactsCountResponse.error); throw contactsCountResponse.error;
-      }
 
-      // console.log('[DB_FETCH] Starting fetch for companies count...');
-      companiesCountResponse = await supabase.from('companies').select('id', { count: 'exact', head: true }).eq('user_id', userForFetch.id)
-        .catch(err => { console.error('[DB_FETCH] Error in companies count fetch:', err); return { count: 0, error: err }; });
+      console.log('[DB_FETCH] Starting fetch for companies count...');
+      const companiesCountResponse = await supabase.from('companies').select('id', { count: 'exact', head: true }).eq('user_id', userForFetch.id);
+      if (companiesCountResponse.error) {
+        console.error('[DB_FETCH] Error fetching companies count:', companiesCountResponse.error);
+      } else {
+        companiesCount = companiesCountResponse.count ?? 0;
+      }
       // console.log('[DB_FETCH] Completed fetch for companies count.');
-      if (companiesCountResponse.error && typeof companiesCountResponse.count !== 'number') {
-        console.error('[DB_FETCH] Error companies count:', companiesCountResponse.error); throw companiesCountResponse.error;
-      }
-      // console.log('[DB_FETCH] Promise.all resolved successfully.');
-
-      const rawJobOpenings = jobOpeningsResponse.data || [];
-      const allFollowUps = (followUpsResponse && Array.isArray(followUpsResponse.data)) ? followUpsResponse.data : [];
-      const contactsCount = contactsCountResponse.count ?? 0;
-      const companiesCount = companiesCountResponse.count ?? 0;
 
 
       const openingsWithFollowUps: JobOpening[] = rawJobOpenings.map(jo => ({
         ...jo,
         initial_email_date: new Date(jo.initial_email_date),
-        followUps: allFollowUps // Already guaranteed to be an array
+        followUps: allFollowUps
           .filter(fu => fu.job_opening_id === jo.id)
           .map(fuDb => ({
             id: fuDb.id,
@@ -271,7 +276,7 @@ export default function DashboardPage() {
       // console.log('[DB_FETCH] FINALLY block reached in fetchDashboardData.');
       setLoadingStats(false);
       setLoadingCharts(false);
-      setHasFetchedData(true); // Indicate fetch attempt completed, regardless of success
+      setHasFetchedData(true);
     }
   }, [toast]);
 
@@ -280,11 +285,16 @@ export default function DashboardPage() {
     if (currentUser && !isLoadingUser && !hasFetchedData) {
       // console.log(`[DashboardPage] Data Fetch useEffect - CONDITIONS MET, calling fetchDashboardData with currentUser: ${currentUser.id}`);
       fetchDashboardData(currentUser);
+      // console.log(`[DashboardPage] Data Fetch useEffect - fetchDashboardData SUCCESS, hasFetchedData should now be true (set inside fetch).`);
     } else {
       // console.log(`[DashboardPage] Data Fetch useEffect - Conditions NOT MET for fetch or already fetched.`);
       if (!currentUser || isLoadingUser) {
-        setLoadingStats(false); // Ensure loaders are off if no user or auth is still loading
-        setLoadingCharts(false);
+        // Ensure loaders are off if no user or auth is still loading
+        // and data fetch hasn't started or has been reset
+        if (hasFetchedData) { // If hasFetchedData became true due to a previous error, reset it
+            setLoadingStats(false);
+            setLoadingCharts(false);
+        }
       }
     }
   }, [currentUser, isLoadingUser, hasFetchedData, fetchDashboardData]);
@@ -564,5 +574,3 @@ export default function DashboardPage() {
     </AppLayout>
   );
 }
-    
-
