@@ -62,7 +62,7 @@ export function AskForNameDialog({ isOpen, onOpenChange, onSubmitName, currentEm
           <DialogTitle className="font-headline">Enter Your Name for the Invoice</DialogTitle>
           <DialogDescription>
             Please provide your full name. This will be used on the invoice and saved to your profile.
-            {currentEmail && (<p className="text-xs mt-1">For account: {currentEmail}</p>)}
+            {currentEmail && (<div className="text-xs mt-1 text-muted-foreground">For account: {currentEmail}</div>)}
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>

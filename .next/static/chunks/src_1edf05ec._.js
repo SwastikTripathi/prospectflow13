@@ -2021,18 +2021,25 @@ function useCurrentSubscription() {
     const [isInGracePeriod, setIsInGracePeriod] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const [daysLeftInGracePeriod, setDaysLeftInGracePeriod] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
     const { toast } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hooks$2f$use$2d$toast$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useToast"])();
+    const previousUserIdRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])();
+    const currentSubscriptionFetchedOnceRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(false);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "useCurrentSubscription.useEffect": ()=>{
             const { data: authListener } = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].auth.onAuthStateChange({
                 "useCurrentSubscription.useEffect": (event, session)=>{
                     const user = session?.user ?? null;
                     setCurrentUser(user);
+                    if (user?.id !== previousUserIdRef.current) {
+                        currentSubscriptionFetchedOnceRef.current = false; // Reset fetch status for new user
+                    }
                     if (!user) {
                         setCurrentSubscription(null);
                         setEffectiveTierForLimits('free');
                         setIsInGracePeriod(false);
                         setDaysLeftInGracePeriod(null);
-                        setSubscriptionLoading(false);
+                        setSubscriptionLoading(false); // Ensure loading is false if user logs out
+                        previousUserIdRef.current = undefined;
+                        currentSubscriptionFetchedOnceRef.current = false;
                     }
                 }
             }["useCurrentSubscription.useEffect"]);
@@ -2042,6 +2049,8 @@ function useCurrentSubscription() {
                     if (!user) {
                         setSubscriptionLoading(false);
                         setEffectiveTierForLimits('free');
+                        previousUserIdRef.current = undefined;
+                        currentSubscriptionFetchedOnceRef.current = false;
                     }
                 }
             }["useCurrentSubscription.useEffect"]);
@@ -2053,6 +2062,8 @@ function useCurrentSubscription() {
     const fetchSubscriptionDetails = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useCallback"])({
         "useCurrentSubscription.useCallback[fetchSubscriptionDetails]": async ()=>{
             if (!currentUser) {
+                // This case should be handled by the useEffect that calls this,
+                // but as a safeguard:
                 setCurrentSubscription(null);
                 setEffectiveTierForLimits('free');
                 setIsInGracePeriod(false);
@@ -2082,24 +2093,21 @@ function useCurrentSubscription() {
                         if (sub.plan_expiry_date && (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$isFuture$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["isFuture"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$startOfDay$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["startOfDay"])(sub.plan_expiry_date))) {
                             resolvedTier = 'premium';
                         } else if (sub.plan_expiry_date) {
-                            resolvedTier = 'free'; // Limits revert to free tier
+                            resolvedTier = 'free';
                             const gracePeriodEndDate = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$addDays$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["addDays"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$startOfDay$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["startOfDay"])(sub.plan_expiry_date), GRACE_PERIOD_DAYS);
                             const today = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$startOfDay$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["startOfDay"])(new Date());
                             if ((0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$isFuture$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["isFuture"])(gracePeriodEndDate) || (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$differenceInDays$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["differenceInDays"])(gracePeriodEndDate, today) === 0) {
                                 gracePeriodActive = true;
                                 daysLeftGrace = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$differenceInDays$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["differenceInDays"])(gracePeriodEndDate, today);
-                                // Ensure daysLeftGrace is never negative if today is exactly gracePeriodEndDate
                                 daysLeftGrace = Math.max(0, daysLeftGrace);
                             } else {
-                                gracePeriodActive = false; // Grace period over
+                                gracePeriodActive = false;
                             }
                         }
                     } else {
-                        // Not active premium, so effectively free
                         resolvedTier = 'free';
                     }
                 } else {
-                    // No subscription record, effectively free
                     setCurrentSubscription(null);
                     resolvedTier = 'free';
                 }
@@ -2118,6 +2126,7 @@ function useCurrentSubscription() {
                 setDaysLeftInGracePeriod(null);
             } finally{
                 setSubscriptionLoading(false);
+                currentSubscriptionFetchedOnceRef.current = true; // Mark that a fetch attempt was made for this user
             }
         }
     }["useCurrentSubscription.useCallback[fetchSubscriptionDetails]"], [
@@ -2126,19 +2135,35 @@ function useCurrentSubscription() {
     ]);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "useCurrentSubscription.useEffect": ()=>{
-            if (currentUser) {
-                fetchSubscriptionDetails();
+            const currentAuthUserId = currentUser?.id;
+            if (currentAuthUserId) {
+                if (currentAuthUserId !== previousUserIdRef.current) {
+                    // User ID has changed, reset fetch status and previous ID
+                    currentSubscriptionFetchedOnceRef.current = false;
+                    previousUserIdRef.current = currentAuthUserId;
+                }
+                if (!currentSubscriptionFetchedOnceRef.current) {
+                    // Fetch only if it's a new user or first fetch attempt for this user
+                    fetchSubscriptionDetails();
+                } else {
+                    // Already fetched for this user, ensure loading is false if not already
+                    if (subscriptionLoading) setSubscriptionLoading(false);
+                }
             } else {
-                setSubscriptionLoading(false);
+                // No current user
                 setCurrentSubscription(null);
                 setEffectiveTierForLimits('free');
                 setIsInGracePeriod(false);
                 setDaysLeftInGracePeriod(null);
+                setSubscriptionLoading(false);
+                previousUserIdRef.current = undefined;
+                currentSubscriptionFetchedOnceRef.current = false; // Reset for potential next user
             }
         }
     }["useCurrentSubscription.useEffect"], [
         currentUser,
-        fetchSubscriptionDetails
+        fetchSubscriptionDetails,
+        subscriptionLoading
     ]);
     return {
         currentSubscription,
@@ -2149,7 +2174,7 @@ function useCurrentSubscription() {
         daysLeftInGracePeriod
     };
 }
-_s(useCurrentSubscription, "qIe/iZhKzKw6Pwf8leil/yfPcZs=", false, function() {
+_s(useCurrentSubscription, "uvrlCMh0E21vL92hFBENc5gEhvY=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hooks$2f$use$2d$toast$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useToast"]
     ];
@@ -3595,13 +3620,13 @@ const onboardingSchema = (0, __TURBOPACK__imported__module__$5b$project$5d2f$nod
     incomeCurrency: (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["string"])().optional(),
     currentRole: (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["string"])().min(1, "Current role is required").max(100, "Role name too long")
 });
-function OnboardingForm({ user, existingSettings, onOnboardingComplete }) {
+function OnboardingForm({ user, userId, userEmail, initialFullName, existingSettings, onOnboardingComplete }) {
     _s();
     const { toast } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hooks$2f$use$2d$toast$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useToast"])();
     const form = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$hook$2d$form$2f$dist$2f$index$2e$esm$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useForm"])({
         resolver: (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$hookform$2f$resolvers$2f$zod$2f$dist$2f$zod$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["zodResolver"])(onboardingSchema),
         defaultValues: {
-            fullName: existingSettings?.full_name || user.user_metadata?.full_name || '',
+            fullName: existingSettings?.full_name || initialFullName || '',
             ageRange: existingSettings?.age_range || '',
             country: existingSettings?.country || '',
             annualIncome: existingSettings?.annual_income || '',
@@ -3609,61 +3634,107 @@ function OnboardingForm({ user, existingSettings, onOnboardingComplete }) {
             currentRole: existingSettings?.current_role || ''
         }
     });
-    const onSubmit = async (values)=>{
-        try {
-            const settingsToUpsert = {
-                user_id: user.id,
-                full_name: values.fullName,
-                age_range: values.ageRange,
-                country: values.country,
-                annual_income: values.annualIncome ? Number(values.annualIncome) : null,
-                income_currency: values.incomeCurrency || null,
-                current_role: values.currentRole,
-                onboarding_complete: true,
-                usage_preference: existingSettings?.usage_preference || 'job_hunt',
-                follow_up_cadence_days: existingSettings?.follow_up_cadence_days || DEFAULT_FOLLOW_UP_CADENCE_DAYS,
-                default_email_templates: existingSettings?.default_email_templates || {
-                    followUp1: {
-                        subject: '',
-                        openingLine: ''
-                    },
-                    followUp2: {
-                        subject: '',
-                        openingLine: ''
-                    },
-                    followUp3: {
-                        subject: '',
-                        openingLine: ''
-                    },
-                    sharedSignature: ''
-                }
-            };
-            const { error } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].from('user_settings').upsert(settingsToUpsert, {
-                onConflict: 'user_id'
+    const attemptSaveSettings = async (values)=>{
+        if (!userId) {
+            toast({
+                title: 'Authentication Error',
+                description: 'User ID is missing.',
+                variant: 'destructive'
             });
-            if (error) throw error;
-            if (user.user_metadata?.full_name !== values.fullName) {
-                const { error: userUpdateError } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].auth.updateUser({
-                    data: {
-                        full_name: values.fullName
+            return;
+        }
+        const settingsData = {
+            user_id: userId,
+            full_name: values.fullName,
+            age_range: values.ageRange,
+            country: values.country,
+            annual_income: values.annualIncome ? Number(values.annualIncome) : null,
+            income_currency: values.incomeCurrency || null,
+            current_role: values.currentRole,
+            onboarding_complete: true,
+            usage_preference: existingSettings?.usage_preference || 'job_hunt',
+            follow_up_cadence_days: existingSettings?.follow_up_cadence_days || DEFAULT_FOLLOW_UP_CADENCE_DAYS,
+            default_email_templates: existingSettings?.default_email_templates || {
+                followUp1: {
+                    subject: '',
+                    openingLine: ''
+                },
+                followUp2: {
+                    subject: '',
+                    openingLine: ''
+                },
+                followUp3: {
+                    subject: '',
+                    openingLine: ''
+                },
+                sharedSignature: ''
+            }
+        };
+        try {
+            // Attempt to INSERT first
+            const { error: insertError } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].from('user_settings').insert(settingsData);
+            if (insertError) {
+                if (insertError.code === '23505') {
+                    // Try to UPDATE
+                    const { error: updateError } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].from('user_settings').update(settingsData) // Supabase client's update will only update provided fields
+                    .eq('user_id', userId);
+                    if (updateError) {
+                        console.error("Error updating user_settings after insert failed:", updateError);
+                        toast({
+                            title: 'Onboarding Save Failed',
+                            description: `Could not update existing settings. ${updateError.message || 'Please try again.'}`,
+                            variant: 'destructive',
+                            duration: 7000
+                        });
+                        return; // Stop if update fails
                     }
-                });
-                if (userUpdateError) {
-                    console.warn("Failed to update user_metadata.full_name:", userUpdateError.message);
+                // Update successful
+                } else if (insertError.code === '23503') {
+                    console.error("Foreign key violation on insert user_settings:", insertError);
+                    toast({
+                        title: 'Data Sync Error',
+                        description: 'Could not save settings due to a data synchronization issue with your new account. This can happen occasionally. Please try submitting again in a few moments. (Error code: 23503)',
+                        variant: 'destructive',
+                        duration: 10000
+                    });
+                    return; // Stop if it's the FK violation
+                } else {
+                    // Other INSERT error
+                    console.error("Error inserting user_settings:", insertError);
+                    throw insertError; // Let the generic catch block handle it
                 }
             }
+            // If INSERT was successful OR (INSERT failed with 23505 AND UPDATE was successful)
             toast({
                 title: 'Onboarding Complete!',
                 description: 'Welcome to ProspectFlow!'
             });
-            onOnboardingComplete(); // Only call on successful save
+            onOnboardingComplete();
         } catch (error) {
+            // Generic catch for errors not specifically handled above
+            console.error("Full error object in onboarding (generic catch):", error);
+            let errorMessage = "An unexpected error occurred during onboarding.";
+            let errorDetails = "";
+            if (error && typeof error === 'object') {
+                if ('message' in error && typeof error.message === 'string' && error.message) {
+                    errorMessage = `Error: ${error.message}`;
+                }
+                if ('details' in error && typeof error.details === 'string') errorDetails = error.details;
+                if ('hint' in error && typeof error.hint === 'string') errorDetails += ` Hint: ${error.hint}`;
+                if (!error.message && !error.details && !error.hint) {
+                    try {
+                        errorDetails = JSON.stringify(error);
+                    } catch (e) {
+                        errorDetails = "Could not stringify error object.";
+                    }
+                }
+            }
             toast({
-                title: 'Error Saving Onboarding Data',
-                description: error.message,
-                variant: 'destructive'
+                title: 'Onboarding Save Failed',
+                description: `${errorMessage}${errorDetails ? ` Details: ${errorDetails}` : ''}`,
+                variant: 'destructive',
+                duration: 10000
             });
-        // Do NOT call onOnboardingComplete() here if save fails, so the form remains.
         }
     };
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Dialog"], {
@@ -3683,26 +3754,39 @@ function OnboardingForm({ user, existingSettings, onOnboardingComplete }) {
                                 children: "Welcome to ProspectFlow!"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                lineNumber: 104,
+                                lineNumber: 167,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["DialogDescription"], {
-                                children: "Let's get you set up. Please tell us a bit about yourself."
-                            }, void 0, false, {
+                                children: [
+                                    "Let's get you set up. Please tell us a bit about yourself.",
+                                    userEmail && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                        className: "block text-xs mt-1 text-muted-foreground",
+                                        children: [
+                                            "For account: ",
+                                            userEmail
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
+                                        lineNumber: 170,
+                                        columnNumber: 28
+                                    }, this)
+                                ]
+                            }, void 0, true, {
                                 fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                lineNumber: 105,
+                                lineNumber: 168,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                        lineNumber: 103,
+                        lineNumber: 166,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Form"], {
                         ...form,
                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
-                            onSubmit: form.handleSubmit(onSubmit),
+                            onSubmit: form.handleSubmit(attemptSaveSettings),
                             className: "space-y-4 max-h-[70vh] overflow-y-auto p-1",
                             children: [
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormField"], {
@@ -3714,7 +3798,7 @@ function OnboardingForm({ user, existingSettings, onOnboardingComplete }) {
                                                     children: "Full Name"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                    lineNumber: 116,
+                                                    lineNumber: 180,
                                                     columnNumber: 19
                                                 }, void 0),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormControl"], {
@@ -3723,28 +3807,28 @@ function OnboardingForm({ user, existingSettings, onOnboardingComplete }) {
                                                         ...field
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                        lineNumber: 117,
+                                                        lineNumber: 181,
                                                         columnNumber: 32
                                                     }, void 0)
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                    lineNumber: 117,
+                                                    lineNumber: 181,
                                                     columnNumber: 19
                                                 }, void 0),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormMessage"], {}, void 0, false, {
                                                     fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                    lineNumber: 118,
+                                                    lineNumber: 182,
                                                     columnNumber: 19
                                                 }, void 0)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                            lineNumber: 115,
+                                            lineNumber: 179,
                                             columnNumber: 17
                                         }, void 0)
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                    lineNumber: 111,
+                                    lineNumber: 175,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormField"], {
@@ -3756,7 +3840,7 @@ function OnboardingForm({ user, existingSettings, onOnboardingComplete }) {
                                                     children: "Current Role/Profession"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                    lineNumber: 127,
+                                                    lineNumber: 191,
                                                     columnNumber: 19
                                                 }, void 0),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormControl"], {
@@ -3765,28 +3849,28 @@ function OnboardingForm({ user, existingSettings, onOnboardingComplete }) {
                                                         ...field
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                        lineNumber: 128,
+                                                        lineNumber: 192,
                                                         columnNumber: 32
                                                     }, void 0)
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                    lineNumber: 128,
+                                                    lineNumber: 192,
                                                     columnNumber: 19
                                                 }, void 0),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormMessage"], {}, void 0, false, {
                                                     fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                    lineNumber: 129,
+                                                    lineNumber: 193,
                                                     columnNumber: 19
                                                 }, void 0)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                            lineNumber: 126,
+                                            lineNumber: 190,
                                             columnNumber: 17
                                         }, void 0)
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                    lineNumber: 122,
+                                    lineNumber: 186,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3801,7 +3885,7 @@ function OnboardingForm({ user, existingSettings, onOnboardingComplete }) {
                                                             children: "Age Range"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                            lineNumber: 139,
+                                                            lineNumber: 203,
                                                             columnNumber: 21
                                                         }, void 0),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Select"], {
@@ -3814,17 +3898,17 @@ function OnboardingForm({ user, existingSettings, onOnboardingComplete }) {
                                                                             placeholder: "Select your age range"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                                            lineNumber: 141,
+                                                                            lineNumber: 205,
                                                                             columnNumber: 51
                                                                         }, void 0)
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                                        lineNumber: 141,
+                                                                        lineNumber: 205,
                                                                         columnNumber: 36
                                                                     }, void 0)
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                                    lineNumber: 141,
+                                                                    lineNumber: 205,
                                                                     columnNumber: 23
                                                                 }, void 0),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectContent"], {
@@ -3833,34 +3917,34 @@ function OnboardingForm({ user, existingSettings, onOnboardingComplete }) {
                                                                             children: range
                                                                         }, range, false, {
                                                                             fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                                            lineNumber: 143,
+                                                                            lineNumber: 207,
                                                                             columnNumber: 50
                                                                         }, void 0))
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                                    lineNumber: 142,
+                                                                    lineNumber: 206,
                                                                     columnNumber: 23
                                                                 }, void 0)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                            lineNumber: 140,
+                                                            lineNumber: 204,
                                                             columnNumber: 21
                                                         }, void 0),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormMessage"], {}, void 0, false, {
                                                             fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                            lineNumber: 146,
+                                                            lineNumber: 210,
                                                             columnNumber: 21
                                                         }, void 0)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                    lineNumber: 138,
+                                                    lineNumber: 202,
                                                     columnNumber: 19
                                                 }, void 0)
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                            lineNumber: 134,
+                                            lineNumber: 198,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormField"], {
@@ -3872,7 +3956,7 @@ function OnboardingForm({ user, existingSettings, onOnboardingComplete }) {
                                                             children: "Country of Residence"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                            lineNumber: 155,
+                                                            lineNumber: 219,
                                                             columnNumber: 21
                                                         }, void 0),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormControl"], {
@@ -3881,34 +3965,34 @@ function OnboardingForm({ user, existingSettings, onOnboardingComplete }) {
                                                                 ...field
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                                lineNumber: 156,
+                                                                lineNumber: 220,
                                                                 columnNumber: 34
                                                             }, void 0)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                            lineNumber: 156,
+                                                            lineNumber: 220,
                                                             columnNumber: 21
                                                         }, void 0),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormMessage"], {}, void 0, false, {
                                                             fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                            lineNumber: 157,
+                                                            lineNumber: 221,
                                                             columnNumber: 21
                                                         }, void 0)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                    lineNumber: 154,
+                                                    lineNumber: 218,
                                                     columnNumber: 19
                                                 }, void 0)
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                            lineNumber: 150,
+                                            lineNumber: 214,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                    lineNumber: 133,
+                                    lineNumber: 197,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3923,7 +4007,7 @@ function OnboardingForm({ user, existingSettings, onOnboardingComplete }) {
                                                             children: "Annual Income (Optional)"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                            lineNumber: 168,
+                                                            lineNumber: 232,
                                                             columnNumber: 21
                                                         }, void 0),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormControl"], {
@@ -3934,28 +4018,28 @@ function OnboardingForm({ user, existingSettings, onOnboardingComplete }) {
                                                                 onChange: (e)=>field.onChange(e.target.value === '' ? '' : parseFloat(e.target.value))
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                                lineNumber: 169,
+                                                                lineNumber: 233,
                                                                 columnNumber: 34
                                                             }, void 0)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                            lineNumber: 169,
+                                                            lineNumber: 233,
                                                             columnNumber: 21
                                                         }, void 0),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormMessage"], {}, void 0, false, {
                                                             fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                            lineNumber: 170,
+                                                            lineNumber: 234,
                                                             columnNumber: 21
                                                         }, void 0)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                    lineNumber: 167,
+                                                    lineNumber: 231,
                                                     columnNumber: 19
                                                 }, void 0)
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                            lineNumber: 163,
+                                            lineNumber: 227,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormField"], {
@@ -3967,7 +4051,7 @@ function OnboardingForm({ user, existingSettings, onOnboardingComplete }) {
                                                             children: "Income Currency (Optional)"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                            lineNumber: 179,
+                                                            lineNumber: 243,
                                                             columnNumber: 21
                                                         }, void 0),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Select"], {
@@ -3980,17 +4064,17 @@ function OnboardingForm({ user, existingSettings, onOnboardingComplete }) {
                                                                             placeholder: "Select currency"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                                            lineNumber: 181,
+                                                                            lineNumber: 245,
                                                                             columnNumber: 51
                                                                         }, void 0)
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                                        lineNumber: 181,
+                                                                        lineNumber: 245,
                                                                         columnNumber: 36
                                                                     }, void 0)
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                                    lineNumber: 181,
+                                                                    lineNumber: 245,
                                                                     columnNumber: 23
                                                                 }, void 0),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectContent"], {
@@ -3999,40 +4083,40 @@ function OnboardingForm({ user, existingSettings, onOnboardingComplete }) {
                                                                             children: currency
                                                                         }, currency, false, {
                                                                             fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                                            lineNumber: 183,
+                                                                            lineNumber: 247,
                                                                             columnNumber: 53
                                                                         }, void 0))
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                                    lineNumber: 182,
+                                                                    lineNumber: 246,
                                                                     columnNumber: 23
                                                                 }, void 0)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                            lineNumber: 180,
+                                                            lineNumber: 244,
                                                             columnNumber: 21
                                                         }, void 0),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormMessage"], {}, void 0, false, {
                                                             fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                            lineNumber: 186,
+                                                            lineNumber: 250,
                                                             columnNumber: 21
                                                         }, void 0)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                    lineNumber: 178,
+                                                    lineNumber: 242,
                                                     columnNumber: 19
                                                 }, void 0)
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                            lineNumber: 174,
+                                            lineNumber: 238,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                    lineNumber: 162,
+                                    lineNumber: 226,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["DialogFooter"], {
@@ -4046,42 +4130,42 @@ function OnboardingForm({ user, existingSettings, onOnboardingComplete }) {
                                                 className: "mr-2 h-4 w-4 animate-spin"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                                lineNumber: 193,
+                                                lineNumber: 257,
                                                 columnNumber: 49
                                             }, this),
                                             "Get Started"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                        lineNumber: 192,
+                                        lineNumber: 256,
                                         columnNumber: 15
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                                    lineNumber: 191,
+                                    lineNumber: 255,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                            lineNumber: 110,
+                            lineNumber: 174,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                        lineNumber: 109,
+                        lineNumber: 173,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-                lineNumber: 102,
+                lineNumber: 165,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/onboarding/OnboardingForm.tsx",
-        lineNumber: 101,
+        lineNumber: 164,
         columnNumber: 5
     }, this);
 }
@@ -4126,7 +4210,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hooks$2f$use$2d$toast
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$theme$2d$toggles$2f$react$2f$dist$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@theme-toggles/react/dist/index.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/lib/utils.ts [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$layout$2f$SidebarUsageProgress$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/components/layout/SidebarUsageProgress.tsx [app-client] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$onboarding$2f$OnboardingForm$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/components/onboarding/OnboardingForm.tsx [app-client] (ecmascript)"); // Import OnboardingForm
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$onboarding$2f$OnboardingForm$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/components/onboarding/OnboardingForm.tsx [app-client] (ecmascript)");
 ;
 var _s = __turbopack_context__.k.signature();
 'use client';
@@ -4149,8 +4233,16 @@ var _s = __turbopack_context__.k.signature();
 ;
 const PUBLIC_PATHS = [
     '/landing',
-    '/auth'
+    '/auth',
+    '/pricing',
+    '/about',
+    '/contact',
+    '/careers',
+    '/partner-with-us',
+    '/privacy-policy',
+    '/terms-and-conditions'
 ];
+const BLOG_PATHS_REGEX = /^\/blog(\/.*)?$/;
 const HIDE_DASHBOARD_LINK_PATHS = [
     '/',
     '/job-openings',
@@ -4186,113 +4278,174 @@ function AppLayout({ children }) {
     const [user, setUser] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
     const [userSettings, setUserSettings] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
     const [isLoadingAuth, setIsLoadingAuth] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(true);
-    const [isLoadingSettings, setIsLoadingSettings] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
+    const [isLoadingSettings, setIsLoadingSettings] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(true);
     const [theme, setTheme] = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].useState('light');
     const [favoriteJobOpenings, setFavoriteJobOpenings] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])([]);
     const [showOnboardingForm, setShowOnboardingForm] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const [onboardingCheckComplete, setOnboardingCheckComplete] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
-    const fetchFavoriteJobOpenings = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useCallback"])({
-        "AppLayout.useCallback[fetchFavoriteJobOpenings]": async (userId)=>{
-            try {
-                const { data, error } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].from('job_openings').select('id, role_title, company_name_cache, favorited_at, is_favorite').eq('user_id', userId).eq('is_favorite', true).order('favorited_at', {
-                    ascending: true,
-                    nulls: 'last'
-                });
-                if (error) throw error;
-                setFavoriteJobOpenings(data || []);
-            } catch (error) {
-                toast({
-                    title: 'Error Fetching Favorites',
-                    description: error.message,
-                    variant: 'destructive'
-                });
-                setFavoriteJobOpenings([]);
-            }
-        }
-    }["AppLayout.useCallback[fetchFavoriteJobOpenings]"], [
-        toast
-    ]);
-    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
-        "AppLayout.useEffect": ()=>{
-            setIsLoadingAuth(true);
+    const previousUserIdRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])();
+    const isPublicPath = PUBLIC_PATHS.includes(pathname) || BLOG_PATHS_REGEX.test(pathname);
+    const fetchUserDataAndSettings = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useCallback"])({
+        "AppLayout.useCallback[fetchUserDataAndSettings]": async (userId)=>{
             setIsLoadingSettings(true);
             setOnboardingCheckComplete(false);
-            const fetchUserSettings = {
-                "AppLayout.useEffect.fetchUserSettings": async (userId)=>{
-                    setIsLoadingSettings(true);
-                    try {
-                        const { data: settingsData, error: settingsError } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].from('user_settings').select('*').eq('user_id', userId).single();
-                        if (settingsError && settingsError.code !== 'PGRST116') {
-                            console.error("Error fetching user settings:", settingsError.message, "Code:", settingsError.code);
-                        // For other errors (like 406), we treat settings as null and let onboarding logic decide.
-                        // Toast for critical errors can be added here if needed, but 406 might be common if RLS isn't perfect.
-                        }
-                        const fetchedSettings = settingsData; // settingsData will be null if error occurred or no row
-                        setUserSettings(fetchedSettings);
-                        if (!fetchedSettings || fetchedSettings.onboarding_complete === false || fetchedSettings.onboarding_complete === null) {
-                            setShowOnboardingForm(true);
-                        } else {
-                            setShowOnboardingForm(false);
-                        }
-                    } catch (error) {
-                        console.error("Critical error in fetchUserSettings processing:", error.message);
-                        setUserSettings(null); // Ensure settings are null on critical error
-                        setShowOnboardingForm(true); // Fallback to showing onboarding
-                    } finally{
-                        setIsLoadingSettings(false); // Always set loading to false
-                        setOnboardingCheckComplete(true); // Mark check as complete regardless of outcome
-                    }
-                }
-            }["AppLayout.useEffect.fetchUserSettings"];
-            const handleAuthChange = {
-                "AppLayout.useEffect.handleAuthChange": async (currentSessionUser)=>{
-                    setUser(currentSessionUser);
-                    setUserSettings(null);
+            try {
+                const [settingsResult, favoritesResult] = await Promise.all([
+                    __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].from('user_settings').select('*').eq('user_id', userId).single(),
+                    __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].from('job_openings').select('id, role_title, company_name_cache, favorited_at, is_favorite').eq('user_id', userId).eq('is_favorite', true).order('favorited_at', {
+                        ascending: true,
+                        nulls: 'last'
+                    })
+                ]);
+                const { data: settingsData, error: settingsError } = settingsResult;
+                if (settingsError && settingsError.code !== 'PGRST116') {
+                    console.error("Error fetching user settings:", settingsError);
+                    toast({
+                        title: 'Profile Load Error',
+                        description: `Could not load profile. (Code: ${settingsError.code})`,
+                        variant: 'destructive',
+                        duration: 7000
+                    });
+                    setShowOnboardingForm(false); // Don't show onboarding if settings fetch fails for non-404 reasons
+                } else if (!settingsData && (!settingsError || settingsError.code !== 'PGRST116')) {
+                    console.error("Unexpected: No settings data and no (or non-PGRST116) error. Potential issue with SELECT query or RLS.", settingsError);
+                    toast({
+                        title: 'Profile Access Issue',
+                        description: 'Could not verify your profile settings. Please try again or contact support.',
+                        variant: 'destructive',
+                        duration: 7000
+                    });
                     setShowOnboardingForm(false);
-                    setOnboardingCheckComplete(false);
-                    if (currentSessionUser) {
-                        await fetchFavoriteJobOpenings(currentSessionUser.id);
-                        await fetchUserSettings(currentSessionUser.id);
+                } else {
+                    const fetchedSettings = settingsData;
+                    setUserSettings(fetchedSettings);
+                    if (!fetchedSettings || fetchedSettings.onboarding_complete === false || fetchedSettings.onboarding_complete === null) {
+                        setShowOnboardingForm(true);
                     } else {
-                        setFavoriteJobOpenings([]);
-                        setIsLoadingSettings(false); // No user, so settings loading is done (no settings)
-                        setOnboardingCheckComplete(true); // No user, so onboarding check is effectively complete
-                    }
-                    setIsLoadingAuth(false);
-                }
-            }["AppLayout.useEffect.handleAuthChange"];
-            const { data: { subscription } } = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].auth.onAuthStateChange({
-                "AppLayout.useEffect": async (event, currentSession)=>{
-                    await handleAuthChange(currentSession?.user ?? null);
-                    if (event === 'SIGNED_OUT') {
-                        if (!PUBLIC_PATHS.includes(pathname)) {
-                            router.push('/landing');
-                        }
+                        setShowOnboardingForm(false);
                     }
                 }
-            }["AppLayout.useEffect"]);
-            __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].auth.getSession().then({
-                "AppLayout.useEffect": async ({ data: { session: initialSession } })=>{
-                    const initialUser = initialSession?.user ?? null;
-                    await handleAuthChange(initialUser);
-                    if (!initialUser && !isLoadingAuth && !PUBLIC_PATHS.includes(pathname)) {
-                        router.push('/landing');
-                    } else if (initialUser && !isLoadingAuth && PUBLIC_PATHS.includes(pathname)) {
-                    // If user is logged in and on a public path, redirect to dashboard,
-                    // but only after onboarding check is complete and onboarding isn't needed.
-                    // This check is now implicitly handled by the main loading logic and onboarding display.
-                    // If isAppLoading is false and showOnboardingForm is false, then main content renders.
-                    // If user is on public path and logged in, the dashboard (`/`) will be the children.
-                    // This part might need adjustment if direct redirect is desired from public to dashboard.
-                    // For now, let the main render logic handle it.
-                    }
+                const { data: favoritesData, error: favoritesError } = favoritesResult;
+                if (favoritesError) {
+                    console.error("Error fetching favorite job openings:", favoritesError.message);
+                    setFavoriteJobOpenings([]);
+                } else {
+                    setFavoriteJobOpenings(favoritesData || []);
                 }
-            }["AppLayout.useEffect"]);
+            } catch (error) {
+                // This catch block will handle errors from the Promise.all or if thrown by AuthApiError during a Supabase call
+                if (error.name === 'AuthApiError' && error.message.includes('Invalid Refresh Token')) {
+                    toast({
+                        title: 'Session Invalid',
+                        description: 'Your session is invalid. Please sign in again.',
+                        variant: 'destructive'
+                    });
+                    await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].auth.signOut(); // This will trigger onAuthStateChange, leading to user being null
+                } else {
+                    toast({
+                        title: 'Error fetching user data',
+                        description: error.message,
+                        variant: 'destructive'
+                    });
+                }
+                setUserSettings(null);
+                setShowOnboardingForm(false);
+                setFavoriteJobOpenings([]);
+            } finally{
+                setIsLoadingSettings(false);
+                setOnboardingCheckComplete(true);
+            }
+        }
+    }["AppLayout.useCallback[fetchUserDataAndSettings]"], [
+        toast
+    ]);
+    const processUserSession = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useCallback"])({
+        "AppLayout.useCallback[processUserSession]": async (sessionUser)=>{
+            const currentPreviousUserId = previousUserIdRef.current;
+            const newUserId = sessionUser?.id;
+            setUser(sessionUser); // Update user state first
+            if (newUserId !== currentPreviousUserId) {
+                previousUserIdRef.current = newUserId;
+                setFavoriteJobOpenings([]);
+                setUserSettings(null);
+                setShowOnboardingForm(false);
+                setOnboardingCheckComplete(false); // Reset for new user
+                setIsLoadingSettings(true);
+                if (sessionUser) {
+                    await fetchUserDataAndSettings(sessionUser.id);
+                } else {
+                    setIsLoadingSettings(false);
+                    setOnboardingCheckComplete(true); // Onboarding check is "complete" as there's no user
+                }
+            } else if (!sessionUser) {
+                setIsLoadingSettings(false);
+                setOnboardingCheckComplete(true);
+            }
+            // If user is the same and not null, settings might already be loading or loaded.
+            //isLoadingAuth is set based on the overall process.
+            setIsLoadingAuth(false); // Mark auth check as complete once session is processed
+        }
+    }["AppLayout.useCallback[processUserSession]"], [
+        fetchUserDataAndSettings
+    ]); // fetchUserDataAndSettings is a dependency
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "AppLayout.useEffect": ()=>{
             const storedTheme = localStorage.getItem('theme');
             const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
             const initialTheme = storedTheme || (systemPrefersDark ? 'dark' : 'light');
             setTheme(initialTheme);
             document.documentElement.classList.toggle('dark', initialTheme === 'dark');
+            const handleSessionResult = {
+                "AppLayout.useEffect.handleSessionResult": async (session, error)=>{
+                    if (error) {
+                        console.error("[AppLayout handleSessionResult] Error processing session:", error);
+                        if (error.name === 'AuthApiError' && error.message.includes("Invalid Refresh Token")) {
+                            toast({
+                                title: 'Session Invalid',
+                                description: 'Your session is invalid. Please sign in again.',
+                                variant: 'destructive'
+                            });
+                            await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].auth.signOut(); // This will trigger onAuthStateChange with null session
+                            // The onAuthStateChange handler will then call processUserSession(null)
+                            return; // Early exit
+                        }
+                    }
+                    await processUserSession(session?.user ?? null);
+                }
+            }["AppLayout.useEffect.handleSessionResult"];
+            // Initial session check
+            __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].auth.getSession().then({
+                "AppLayout.useEffect": ({ data: { session }, error })=>handleSessionResult(session, error)
+            }["AppLayout.useEffect"]).catch({
+                "AppLayout.useEffect": (catchError)=>handleSessionResult(null, catchError)
+            }["AppLayout.useEffect"]); // Catch potential promise rejection
+            const { data: { subscription } } = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].auth.onAuthStateChange({
+                "AppLayout.useEffect": async (event, session)=>{
+                    console.log('[AppLayout onAuthStateChange] Event:', event, 'Session:', session);
+                    if (event === 'TOKEN_REFRESHED' && !session) {
+                        // If token refresh results in no session, it's a sign of invalidity.
+                        toast({
+                            title: 'Session Expired',
+                            description: 'Your session has expired. Please sign in again.',
+                            variant: 'destructive'
+                        });
+                    // processUserSession(null) will be called by the main logic below
+                    } else if (event === 'SIGNED_OUT') {
+                        // Only show "Signed Out" if no "Session Expired/Invalid" toast is already active.
+                        const activeToasts = toast.toasts || []; // Assuming useToast provides access to current toasts
+                        if (!activeToasts.some({
+                            "AppLayout.useEffect": (t)=>t.title === 'Session Expired' || t.title === 'Session Invalid'
+                        }["AppLayout.useEffect"])) {
+                            toast({
+                                title: 'Signed Out',
+                                description: 'You have been signed out.'
+                            });
+                        }
+                    }
+                    // Always process the session state
+                    await processUserSession(session?.user ?? null);
+                }
+            }["AppLayout.useEffect"]);
             return ({
                 "AppLayout.useEffect": ()=>{
                     subscription?.unsubscribe();
@@ -4300,50 +4453,37 @@ function AppLayout({ children }) {
             })["AppLayout.useEffect"];
         }
     }["AppLayout.useEffect"], [
-        fetchFavoriteJobOpenings,
+        processUserSession,
+        toast
+    ]); // processUserSession is stable due to useCallback
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "AppLayout.useEffect": ()=>{
+            if (!isLoadingAuth && !isPublicPath) {
+                if (!user) {
+                    router.push('/landing');
+                }
+            } else if (!isLoadingAuth && user && userSettings?.onboarding_complete && isPublicPath && !BLOG_PATHS_REGEX.test(pathname)) {
+                router.push('/');
+            }
+        }
+    }["AppLayout.useEffect"], [
+        user,
+        isLoadingAuth,
+        isPublicPath,
         pathname,
-        router
+        router,
+        userSettings
     ]);
     const handleSignOut = async ()=>{
-        setIsLoadingAuth(true);
-        const { error } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].auth.signOut();
-        if (error) {
-            toast({
-                title: 'Sign Out Failed',
-                description: error.message,
-                variant: 'destructive'
-            });
-            setIsLoadingAuth(false);
-        } else {
-            toast({
-                title: 'Signed Out Successfully'
-            });
-            setFavoriteJobOpenings([]);
-            setUserSettings(null);
-            setShowOnboardingForm(false);
-            setOnboardingCheckComplete(false);
-        }
+        setIsLoadingAuth(true); // Visually indicate action
+        await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].auth.signOut();
+    // onAuthStateChange will handle state updates and redirection via processUserSession(null)
+    // Toast for sign out is now handled within onAuthStateChange for SIGNED_OUT event
     };
     const handleOnboardingComplete = async ()=>{
         setShowOnboardingForm(false);
-        // setOnboardingCheckComplete is already true because fetchUserSettings would have run.
-        // We need to re-fetch user settings to get the `onboarding_complete: true` and any name changes.
         if (user) {
-            setIsLoadingSettings(true); // Indicate settings are being re-fetched
-            try {
-                const { data: settingsData, error: settingsError } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].from('user_settings').select('*').eq('user_id', user.id).single();
-                if (settingsError && settingsError.code !== 'PGRST116') throw settingsError;
-                setUserSettings(settingsData);
-            } catch (error) {
-                toast({
-                    title: 'Error refreshing settings',
-                    description: error.message,
-                    variant: 'destructive'
-                });
-                setUserSettings(null); // Fallback
-            } finally{
-                setIsLoadingSettings(false);
-            }
+            await fetchUserDataAndSettings(user.id); // Re-fetch to get updated onboarding_complete status
         }
     };
     const toggleTheme = ()=>{
@@ -4354,54 +4494,13 @@ function AppLayout({ children }) {
             return newTheme;
         });
     };
-    const isAppLoading = isLoadingAuth || user && isLoadingSettings || user && !onboardingCheckComplete;
-    if (isAppLoading && !PUBLIC_PATHS.includes(pathname)) {
-        return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-            className: "flex h-screen w-screen items-center justify-center bg-background",
-            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$loader$2d$circle$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Loader2$3e$__["Loader2"], {
-                className: "h-12 w-12 animate-spin text-primary"
-            }, void 0, false, {
-                fileName: "[project]/src/components/layout/AppLayout.tsx",
-                lineNumber: 237,
-                columnNumber: 9
-            }, this)
-        }, void 0, false, {
-            fileName: "[project]/src/components/layout/AppLayout.tsx",
-            lineNumber: 236,
-            columnNumber: 7
-        }, this);
-    }
-    if (PUBLIC_PATHS.includes(pathname)) {
-        if (user && !isLoadingAuth) {
-            // If user is logged in and trying to access a public path,
-            // and we are past initial auth check, we might want to redirect.
-            // However, if onboarding is required, this might cause a loop.
-            // Let's ensure redirect only if not loading and onboarding is NOT required.
-            if (!isAppLoading && !showOnboardingForm) {
-                router.push('/'); // Redirect to dashboard
-                return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                    className: "flex h-screen w-screen items-center justify-center bg-background",
-                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$loader$2d$circle$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Loader2$3e$__["Loader2"], {
-                        className: "h-12 w-12 animate-spin text-primary"
-                    }, void 0, false, {
-                        fileName: "[project]/src/components/layout/AppLayout.tsx",
-                        lineNumber: 252,
-                        columnNumber: 21
-                    }, this)
-                }, void 0, false, {
-                    fileName: "[project]/src/components/layout/AppLayout.tsx",
-                    lineNumber: 251,
-                    columnNumber: 18
-                }, this);
-            }
-        // If still loading app state (e.g. for onboarding check) or onboarding is shown, stay on public page.
-        }
+    const isAppLoading = isLoadingAuth || user != null && (isLoadingSettings || !onboardingCheckComplete);
+    if (isPublicPath) {
         return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
             children: children
         }, void 0, false);
     }
-    if (!user && !isLoadingAuth && !PUBLIC_PATHS.includes(pathname)) {
-        router.push('/landing'); // Redirect to landing if not logged in and not on a public path
+    if (isAppLoading) {
         return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
             className: "flex h-screen w-screen items-center justify-center bg-background",
             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$loader$2d$circle$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Loader2$3e$__["Loader2"], {
@@ -4417,42 +4516,31 @@ function AppLayout({ children }) {
             columnNumber: 7
         }, this);
     }
-    // This is the display name logic from before, ensures it's updated after settings fetch
-    const userDisplayNameToShow = userSettings?.full_name || user?.user_metadata?.full_name || user?.email || 'User';
-    const userInitials = getInitials(userDisplayNameToShow, user?.email);
-    const menuItemClass = "relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors data-[disabled]:pointer-events-none data-[disabled]:opacity-50";
-    const showDashboardLink = !HIDE_DASHBOARD_LINK_PATHS.includes(pathname);
-    // If still loading, or user exists but onboarding check isn't done, show loader
-    if (isLoadingAuth || user && isLoadingSettings || user && !onboardingCheckComplete) {
-        return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-            className: "flex h-screen w-screen items-center justify-center bg-background",
-            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$loader$2d$circle$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Loader2$3e$__["Loader2"], {
-                className: "h-12 w-12 animate-spin text-primary"
-            }, void 0, false, {
-                fileName: "[project]/src/components/layout/AppLayout.tsx",
-                lineNumber: 281,
-                columnNumber: 13
-            }, this)
-        }, void 0, false, {
-            fileName: "[project]/src/components/layout/AppLayout.tsx",
-            lineNumber: 280,
-            columnNumber: 9
-        }, this);
-    }
-    // If user is loaded, settings are loaded, onboarding check is complete,
-    // and onboarding form needs to be shown:
-    if (user && !isLoadingSettings && onboardingCheckComplete && showOnboardingForm) {
+    // This redirection is now handled by the useEffect hook above.
+    // if (!user) {
+    //    return (
+    //     <div className="flex h-screen w-screen items-center justify-center bg-background">
+    //       <Loader2 className="h-12 w-12 animate-spin text-primary" />
+    //     </div>
+    //   );
+    // }
+    if (onboardingCheckComplete && showOnboardingForm && user) {
         return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$onboarding$2f$OnboardingForm$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["OnboardingForm"], {
             user: user,
+            userId: user.id,
+            userEmail: user.email,
+            initialFullName: user.user_metadata?.full_name || user.email || '',
             existingSettings: userSettings,
             onOnboardingComplete: handleOnboardingComplete
         }, void 0, false, {
             fileName: "[project]/src/components/layout/AppLayout.tsx",
-            lineNumber: 290,
+            lineNumber: 281,
             columnNumber: 10
         }, this);
     }
-    // If all checks pass and onboarding is not needed, render the main app layout
+    const userDisplayNameToShow = userSettings?.full_name || user?.user_metadata?.full_name || user?.email || 'User';
+    const userInitials = getInitials(userDisplayNameToShow, user?.email);
+    const showDashboardLinkInMenu = !HIDE_DASHBOARD_LINK_PATHS.includes(pathname);
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SidebarProvider"], {
         defaultOpen: true,
         children: [
@@ -4471,25 +4559,25 @@ function AppLayout({ children }) {
                                     className: "group-data-[collapsible=icon]:hidden"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                    lineNumber: 305,
+                                    lineNumber: 301,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                lineNumber: 304,
+                                lineNumber: 300,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SidebarTrigger"], {
                                 className: "group-data-[collapsible=icon]:hidden md:hidden hover:bg-transparent focus-visible:bg-transparent hover:text-primary"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                lineNumber: 307,
+                                lineNumber: 303,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/layout/AppLayout.tsx",
-                        lineNumber: 303,
+                        lineNumber: 299,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SidebarContent"], {
@@ -4497,12 +4585,12 @@ function AppLayout({ children }) {
                             favoriteJobOpenings: favoriteJobOpenings
                         }, void 0, false, {
                             fileName: "[project]/src/components/layout/AppLayout.tsx",
-                            lineNumber: 310,
+                            lineNumber: 306,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/layout/AppLayout.tsx",
-                        lineNumber: 309,
+                        lineNumber: 305,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SidebarFooter"], {
@@ -4512,7 +4600,7 @@ function AppLayout({ children }) {
                                 user: user
                             }, void 0, false, {
                                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                lineNumber: 317,
+                                lineNumber: 313,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4528,24 +4616,24 @@ function AppLayout({ children }) {
                                     }
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                    lineNumber: 319,
+                                    lineNumber: 315,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                lineNumber: 318,
+                                lineNumber: 314,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/layout/AppLayout.tsx",
-                        lineNumber: 312,
+                        lineNumber: 308,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                lineNumber: 302,
+                lineNumber: 298,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SidebarInset"], {
@@ -4560,12 +4648,12 @@ function AppLayout({ children }) {
                                     className: "md:hidden hover:bg-transparent focus-visible:bg-transparent hover:text-primary"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                    lineNumber: 338,
+                                    lineNumber: 334,
                                     columnNumber: 17
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                lineNumber: 337,
+                                lineNumber: 333,
                                 columnNumber: 13
                             }, this),
                             user && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$hover$2d$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["HoverCard"], {
@@ -4585,27 +4673,27 @@ function AppLayout({ children }) {
                                                         className: "h-4 w-4 animate-spin"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                        lineNumber: 349,
+                                                        lineNumber: 345,
                                                         columnNumber: 67
                                                     }, this) : userInitials
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                    lineNumber: 348,
+                                                    lineNumber: 344,
                                                     columnNumber: 25
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                lineNumber: 347,
+                                                lineNumber: 343,
                                                 columnNumber: 25
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                            lineNumber: 343,
+                                            lineNumber: 339,
                                             columnNumber: 21
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                        lineNumber: 342,
+                                        lineNumber: 338,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$hover$2d$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["HoverCardContent"], {
@@ -4613,7 +4701,7 @@ function AppLayout({ children }) {
                                         className: "w-56 p-1",
                                         children: [
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])(menuItemClass, "font-normal px-2 py-1.5"),
+                                                className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])("font-normal px-2 py-1.5"),
                                                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                     className: "flex flex-col space-y-1",
                                                     children: [
@@ -4622,7 +4710,7 @@ function AppLayout({ children }) {
                                                             children: isLoadingSettings ? "Loading name..." : userDisplayNameToShow
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                            lineNumber: 357,
+                                                            lineNumber: 353,
                                                             columnNumber: 25
                                                         }, this),
                                                         user.email && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -4630,25 +4718,25 @@ function AppLayout({ children }) {
                                                             children: user.email
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                            lineNumber: 358,
+                                                            lineNumber: 354,
                                                             columnNumber: 40
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                    lineNumber: 356,
+                                                    lineNumber: 352,
                                                     columnNumber: 25
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                lineNumber: 355,
+                                                lineNumber: 351,
                                                 columnNumber: 21
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                 className: "my-1 h-px bg-muted"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                lineNumber: 361,
+                                                lineNumber: 357,
                                                 columnNumber: 21
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -4656,63 +4744,64 @@ function AppLayout({ children }) {
                                                 passHref: true,
                                                 legacyBehavior: true,
                                                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
-                                                    className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])(menuItemClass, "cursor-pointer hover:bg-accent hover:text-accent-foreground"),
+                                                    className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])("relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors data-[disabled]:pointer-events-none data-[disabled]:opacity-50", "cursor-pointer hover:bg-accent hover:text-accent-foreground"),
                                                     children: [
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$house$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Home$3e$__["Home"], {
                                                             className: "mr-2 h-4 w-4"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                            lineNumber: 364,
+                                                            lineNumber: 360,
                                                             columnNumber: 25
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                             children: "Homepage"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                            lineNumber: 365,
+                                                            lineNumber: 361,
                                                             columnNumber: 25
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                    lineNumber: 363,
+                                                    lineNumber: 359,
                                                     columnNumber: 25
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                lineNumber: 362,
+                                                lineNumber: 358,
                                                 columnNumber: 21
                                             }, this),
-                                            showDashboardLink && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
+                                            showDashboardLinkInMenu && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
                                                 href: "/",
                                                 passHref: true,
                                                 legacyBehavior: true,
                                                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
-                                                    className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])(menuItemClass, "cursor-pointer hover:bg-accent hover:text-accent-foreground"),
+                                                    className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])("relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors data-[disabled]:pointer-events-none data-[disabled]:opacity-50", "cursor-pointer hover:bg-accent hover:text-accent-foreground"),
                                                     children: [
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$house$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Home$3e$__["Home"], {
                                                             className: "mr-2 h-4 w-4"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                            lineNumber: 371,
+                                                            lineNumber: 367,
                                                             columnNumber: 29
                                                         }, this),
+                                                        " ",
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                             children: "Dashboard"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                            lineNumber: 372,
+                                                            lineNumber: 368,
                                                             columnNumber: 29
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                    lineNumber: 370,
+                                                    lineNumber: 366,
                                                     columnNumber: 29
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                lineNumber: 369,
+                                                lineNumber: 365,
                                                 columnNumber: 26
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -4720,31 +4809,31 @@ function AppLayout({ children }) {
                                                 passHref: true,
                                                 legacyBehavior: true,
                                                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
-                                                    className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])(menuItemClass, "cursor-pointer hover:bg-accent hover:text-accent-foreground"),
+                                                    className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])("relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors data-[disabled]:pointer-events-none data-[disabled]:opacity-50", "cursor-pointer hover:bg-accent hover:text-accent-foreground"),
                                                     children: [
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$settings$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Settings$3e$__["Settings"], {
                                                             className: "mr-2 h-4 w-4"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                            lineNumber: 378,
+                                                            lineNumber: 374,
                                                             columnNumber: 25
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                             children: "Account Settings"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                            lineNumber: 379,
+                                                            lineNumber: 375,
                                                             columnNumber: 25
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                    lineNumber: 377,
+                                                    lineNumber: 373,
                                                     columnNumber: 25
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                lineNumber: 376,
+                                                lineNumber: 372,
                                                 columnNumber: 21
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -4752,80 +4841,80 @@ function AppLayout({ children }) {
                                                 passHref: true,
                                                 legacyBehavior: true,
                                                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
-                                                    className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])(menuItemClass, "cursor-pointer hover:bg-accent hover:text-accent-foreground"),
+                                                    className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])("relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors data-[disabled]:pointer-events-none data-[disabled]:opacity-50", "cursor-pointer hover:bg-accent hover:text-accent-foreground"),
                                                     children: [
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$credit$2d$card$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__CreditCard$3e$__["CreditCard"], {
                                                             className: "mr-2 h-4 w-4"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                            lineNumber: 384,
+                                                            lineNumber: 380,
                                                             columnNumber: 25
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                             children: "Billing & Plan"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                            lineNumber: 385,
+                                                            lineNumber: 381,
                                                             columnNumber: 25
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                    lineNumber: 383,
+                                                    lineNumber: 379,
                                                     columnNumber: 25
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                lineNumber: 382,
+                                                lineNumber: 378,
                                                 columnNumber: 21
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                 className: "my-1 h-px bg-muted"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                lineNumber: 388,
+                                                lineNumber: 384,
                                                 columnNumber: 21
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                                 onClick: handleSignOut,
-                                                className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])(menuItemClass, "text-destructive hover:bg-destructive/20 hover:text-destructive focus:bg-destructive/20 focus:text-destructive cursor-pointer w-full"),
+                                                className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])("relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors data-[disabled]:pointer-events-none data-[disabled]:opacity-50", "text-destructive hover:bg-destructive/20 hover:text-destructive focus:bg-destructive/20 focus:text-destructive cursor-pointer w-full"),
                                                 children: [
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$log$2d$out$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__LogOut$3e$__["LogOut"], {
                                                         className: "mr-2 h-4 w-4"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                        lineNumber: 393,
+                                                        lineNumber: 389,
                                                         columnNumber: 25
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                         children: "Sign Out"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                        lineNumber: 394,
+                                                        lineNumber: 390,
                                                         columnNumber: 25
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                lineNumber: 389,
+                                                lineNumber: 385,
                                                 columnNumber: 21
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                        lineNumber: 354,
+                                        lineNumber: 350,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                lineNumber: 341,
+                                lineNumber: 337,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/layout/AppLayout.tsx",
-                        lineNumber: 336,
+                        lineNumber: 332,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("main", {
@@ -4833,23 +4922,23 @@ function AppLayout({ children }) {
                         children: children
                     }, void 0, false, {
                         fileName: "[project]/src/components/layout/AppLayout.tsx",
-                        lineNumber: 400,
+                        lineNumber: 396,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                lineNumber: 335,
+                lineNumber: 331,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/layout/AppLayout.tsx",
-        lineNumber: 301,
+        lineNumber: 297,
         columnNumber: 5
     }, this);
 }
-_s(AppLayout, "lEClOYTltJDTPkSsGXOqDk10EHA=", false, function() {
+_s(AppLayout, "qEQJsFMxNA0QoZVlsICKY1sD75A=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"],
         __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["usePathname"],
