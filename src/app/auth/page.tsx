@@ -10,13 +10,23 @@ import * as z from 'zod';
 import { supabase } from '@/lib/supabaseClient';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Label } from '@/components/ui/label'; // Keep if used elsewhere, otherwise can remove if not used by new dialog directly
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Eye, EyeOff } from 'lucide-react';
 import { PublicNavbar } from '@/components/layout/PublicNavbar';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose,
+} from '@/components/ui/dialog';
 
 const signInSchema = z.object({
   email: z.string().email({ message: 'Invalid email address.' }),
@@ -32,8 +42,13 @@ const signUpSchema = z.object({
   path: ["confirmPassword"],
 });
 
+const forgotPasswordSchema = z.object({
+  email: z.string().email({ message: 'Please enter a valid email address.' }),
+});
+
 type SignInFormValues = z.infer<typeof signInSchema>;
 type SignUpFormValues = z.infer<typeof signUpSchema>;
+type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>;
 
 // Simple Google Icon SVG
 const GoogleIcon = () => (
@@ -68,8 +83,11 @@ export default function AuthPage() {
   const [authError, setAuthError] = useState<string | null>(null);
   const [showConfirmationMessage, setShowConfirmationMessage] = useState(false);
   const [defaultTab, setDefaultTab] = useState<'signin' | 'signup'>('signin');
+  const [showSignInPassword, setShowSignInPassword] = useState(false);
   const [showSignUpPassword, setShowSignUpPassword] = useState(false);
   const [showSignUpConfirmPassword, setShowSignUpConfirmPassword] = useState(false);
+  const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false);
+  const [isSendingResetLink, setIsSendingResetLink] = useState(false);
 
   const isCheckingAuthRef = useRef(isCheckingAuth);
   useEffect(() => {
@@ -84,6 +102,11 @@ export default function AuthPage() {
   const signUpForm = useForm<SignUpFormValues>({
     resolver: zodResolver(signUpSchema),
     defaultValues: { email: '', password: '', confirmPassword: '' },
+  });
+
+  const forgotPasswordForm = useForm<ForgotPasswordFormValues>({
+    resolver: zodResolver(forgotPasswordSchema),
+    defaultValues: { email: '' },
   });
 
   useEffect(() => {
@@ -142,6 +165,7 @@ export default function AuthPage() {
         } else {
           if (hasAuthCodeInQuery || hasAccessTokenInHash) {
             console.log('[AuthPage onAuthStateChange] INITIAL_SESSION: No session, but code/token in URL. Loader remains active for Supabase client to process.');
+            // Keep isCheckingAuth true IF a code/token is present and Supabase client is handling it
           } else {
             setIsCheckingAuth(false);
             console.log('[AuthPage onAuthStateChange] INITIAL_SESSION: No session, no code/token. Loader disabled.');
@@ -154,6 +178,17 @@ export default function AuthPage() {
         console.log('[AuthPage onAuthStateChange] isCheckingAuth set to false (SIGNED_OUT).');
       } else if (event === 'PASSWORD_RECOVERY') {
         console.log('[AuthPage onAuthStateChange] PASSWORD_RECOVERY event.');
+        // If password recovery is detected, you might want to show a specific UI to set a new password.
+        // For now, we're assuming Supabase's default UI handles this, or the user is redirected
+        // to a page that handles the session with type=recovery in the hash.
+        // If redirecting here, ensure the loader stays until Supabase processes the recovery state.
+        // If the user is on /auth because of a password reset link, Supabase handles this.
+        // The loader might need to stay active longer if session is still null but type=recovery is in hash.
+        const hashParams = new URLSearchParams(window.location.hash.substring(1)); // Remove #
+        if (hashParams.get('type') === 'recovery') {
+          toast({ title: "Set New Password", description: "You can now set your new password. If the form is not visible, please contact support."});
+          // Potentially show a specific form here for password reset if not handled by Supabase UI
+        }
       } else if (event === 'USER_UPDATED') {
         console.log('[AuthPage onAuthStateChange] USER_UPDATED event.');
       } else if (event === 'TOKEN_REFRESHED') {
@@ -163,6 +198,7 @@ export default function AuthPage() {
 
     if (hasAuthCodeInQuery || hasAccessTokenInHash) {
       console.log('[AuthPage useEffect] Auth code or hash token detected. Relying on onAuthStateChange. Loader remains active initially.');
+      // isCheckingAuth remains true, onAuthStateChange should handle it
     } else {
       console.log('[AuthPage useEffect] No auth code or hash token in URL. Calling checkSession.');
       checkSession();
@@ -188,6 +224,7 @@ export default function AuthPage() {
         toast({ title: 'Sign In Failed', description: error.message, variant: 'destructive' });
       } else {
         toast({ title: 'Signed In Successfully!'});
+        // Redirect is handled by onAuthStateChange
       }
     } catch (error: any) {
       setAuthError(error.message || 'An unexpected error occurred.');
@@ -211,7 +248,7 @@ export default function AuthPage() {
     let signUpRedirectURL = '';
     try {
         const url = new URL(siteURL);
-        url.pathname = '/auth'; // Ensure the path is set to /auth
+        url.pathname = '/auth';
         signUpRedirectURL = url.toString();
     } catch (e) {
         toast({ title: 'Configuration Error', description: 'Invalid Site URL configured. Cannot proceed with sign up.', variant: 'destructive' });
@@ -237,6 +274,7 @@ export default function AuthPage() {
         toast({ title: 'Sign Up Failed', description: error.message, variant: 'destructive' });
       } else if (data.session) {
         toast({ title: 'Account Created & Signed In!' });
+        // Redirect handled by onAuthStateChange
       } else if (data.user && !data.session) {
         setShowConfirmationMessage(true);
         toast({ title: 'Account Created!', description: 'Please check your email to confirm your account.' });
@@ -268,7 +306,7 @@ export default function AuthPage() {
     let googleRedirectURL = '';
     try {
         const url = new URL(siteURL);
-        url.pathname = pathname; // pathname here will be /auth
+        url.pathname = pathname; 
         googleRedirectURL = url.toString();
     } catch (e) {
         toast({ title: 'Configuration Error', description: 'Invalid Site URL for Google Sign-In.', variant: 'destructive' });
@@ -289,7 +327,35 @@ export default function AuthPage() {
       toast({ title: 'Google Sign-In Failed', description: error.message, variant: 'destructive' });
       setIsGoogleLoading(false);
     }
+    // On success, Supabase handles redirect. Loader remains active.
   };
+
+  const handleForgotPasswordRequest = async (values: ForgotPasswordFormValues) => {
+    setIsSendingResetLink(true);
+    setAuthError(null);
+    try {
+      // For password reset, Supabase handles where the user is redirected to set a new password
+      // based on your Supabase project's email template settings (Authentication -> Email Templates -> Reset Password).
+      // You can configure a "Redirect URL" there. If not set, Supabase might use its default password reset page.
+      // Pointing it to YOUR_SITE_URL/auth is a common practice IF /auth is set up to handle the #type=recovery fragment.
+      const { error } = await supabase.auth.resetPasswordForEmail(values.email, {
+        // redirectTo: 'YOUR_APP_URL/reset-password-page' // Optional: if you have a custom page
+      });
+      if (error) {
+        setAuthError(error.message);
+        toast({ title: 'Password Reset Failed', description: error.message, variant: 'destructive' });
+      } else {
+        toast({ title: 'Password Reset Email Sent', description: 'If an account exists for this email, a password reset link has been sent.' });
+        setIsForgotPasswordOpen(false);
+        forgotPasswordForm.reset();
+      }
+    } catch (error: any) {
+      setAuthError(error.message || 'An unexpected error occurred.');
+      toast({ title: 'Password Reset Error', description: error.message || 'An unexpected error occurred.', variant: 'destructive' });
+    }
+    setIsSendingResetLink(false);
+  };
+
 
   console.log('[AuthPage render] Current isCheckingAuth state:', isCheckingAuth);
   if (isCheckingAuth) {
@@ -341,10 +407,38 @@ export default function AuthPage() {
                         name="password"
                         render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Password</FormLabel>
-                            <FormControl>
-                            <Input type="password" placeholder="••••••••" {...field} />
-                            </FormControl>
+                            <div className="flex justify-between items-center">
+                                <FormLabel>Password</FormLabel>
+                                <Button
+                                    type="button"
+                                    variant="link"
+                                    className="p-0 h-auto text-xs text-primary hover:underline"
+                                    onClick={() => setIsForgotPasswordOpen(true)}
+                                >
+                                    Forgot password?
+                                </Button>
+                            </div>
+                            <div className="relative">
+                                <FormControl>
+                                <Input
+                                    type={showSignInPassword ? 'text' : 'password'}
+                                    placeholder="••••••••"
+                                    {...field}
+                                    className="pr-10"
+                                />
+                                </FormControl>
+                                <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 text-muted-foreground hover:text-primary"
+                                onClick={() => setShowSignInPassword(!showSignInPassword)}
+                                tabIndex={-1}
+                                >
+                                {showSignInPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                <span className="sr-only">{showSignInPassword ? 'Hide password' : 'Show password'}</span>
+                                </Button>
+                            </div>
                             <FormMessage />
                         </FormItem>
                         )}
@@ -492,6 +586,48 @@ export default function AuthPage() {
             </TabsContent>
         </Tabs>
       </main>
+
+      <Dialog open={isForgotPasswordOpen} onOpenChange={setIsForgotPasswordOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="font-headline">Reset Your Password</DialogTitle>
+            <DialogDescription>
+              Enter your email address below and we'll send you a link to reset your password.
+            </DialogDescription>
+          </DialogHeader>
+          <Form {...forgotPasswordForm}>
+            <form onSubmit={forgotPasswordForm.handleSubmit(handleForgotPasswordRequest)} className="space-y-4">
+              <FormField
+                control={forgotPasswordForm.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email Address</FormLabel>
+                    <FormControl>
+                      <Input type="email" placeholder="you@example.com" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {authError && <p className="text-sm text-destructive">{authError}</p>}
+              <DialogFooter>
+                <DialogClose asChild>
+                    <Button type="button" variant="outline" disabled={isSendingResetLink}>
+                    Cancel
+                    </Button>
+                </DialogClose>
+                <Button type="submit" disabled={isSendingResetLink}>
+                  {isSendingResetLink && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  Send Reset Link
+                </Button>
+              </DialogFooter>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
+
     </div>
   );
 }
+
