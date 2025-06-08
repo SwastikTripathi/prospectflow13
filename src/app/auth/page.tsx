@@ -80,6 +80,40 @@ const GoogleIcon = () => (
   </svg>
 );
 
+// Helper function to construct the redirect URL for /auth path
+// This function is designed to be used in Server Actions where process.env is reliable.
+function getAuthRedirectUrl(): string | undefined {
+    const siteURL = process.env.NEXT_PUBLIC_SITE_URL;
+
+    if (!siteURL) {
+        console.warn(
+            '[AuthPage getAuthRedirectUrl] NEXT_PUBLIC_SITE_URL is not set. Email links might not point to /auth. Supabase will use its dashboard default Site URL.'
+        );
+        return undefined; // Let Supabase use its default
+    }
+
+    try {
+        const baseUrl = new URL(siteURL); // Throws if siteURL is not a valid absolute URL
+        
+        // Correctly append /auth to the existing path or root
+        let path = baseUrl.pathname;
+        if (path === '/' || path === '') { // If root or empty path
+            path = '/auth';
+        } else {
+            // Remove trailing slash if exists, then append /auth
+            path = path.replace(/\/$/, '') + '/auth'; 
+        }
+        baseUrl.pathname = path;
+        return baseUrl.toString();
+    } catch (e) {
+        console.error(
+            `[AuthPage getAuthRedirectUrl] Invalid NEXT_PUBLIC_SITE_URL ('${siteURL}'). Email links will use Supabase defaults. Error:`, e
+        );
+        return undefined; // Let Supabase use its default
+    }
+}
+
+
 export default function AuthPage() {
   const router = useRouter();
   const pathname = usePathname();
@@ -145,7 +179,7 @@ export default function AuthPage() {
           setIsCheckingAuth(false);
           return;
         }
-        if (session && !isPasswordRecoveryMode) { // Don't redirect if in recovery mode
+        if (session && !isPasswordRecoveryMode) { 
           router.replace('/');
         } else {
           setIsCheckingAuth(false);
@@ -166,14 +200,12 @@ export default function AuthPage() {
         } else if (!session && !hasAuthCodeInQuery && !hasAccessTokenInHash && !isPasswordRecoveryMode) {
           setIsCheckingAuth(false);
         }
-        // If in password recovery mode, or code/token in URL, loader might need to stay or be handled differently
       } else if (event === 'SIGNED_OUT') {
         setIsCheckingAuth(false);
-        setIsPasswordRecoveryMode(false); // Exit recovery mode on sign out
+        setIsPasswordRecoveryMode(false); 
       } else if (event === 'PASSWORD_RECOVERY') {
         setIsPasswordRecoveryMode(true);
         toast({ title: "Set New Password", description: "Please enter and confirm your new password below."});
-        // isCheckingAuth should become false after Supabase client processes recovery state, allowing UI to render
         setIsCheckingAuth(false);
       }
     });
@@ -216,30 +248,23 @@ export default function AuthPage() {
     setAuthError(null);
     setShowConfirmationMessage(false);
 
-    const siteURL = process.env.NEXT_PUBLIC_SITE_URL || (typeof window !== 'undefined' ? window.location.origin : '');
-    if (!siteURL) {
-      toast({ title: 'Configuration Error', description: 'Site URL is not configured. Cannot proceed with sign up.', variant: 'destructive' });
-      setIsLoading(false);
-      return;
-    }
+    const signUpRedirectURL = getAuthRedirectUrl();
 
-    let signUpRedirectURL = '';
-    try {
-        const url = new URL(siteURL);
-        url.pathname = '/auth';
-        signUpRedirectURL = url.toString();
-    } catch (e) {
-        toast({ title: 'Configuration Error', description: 'Invalid Site URL configured. Cannot proceed with sign up.', variant: 'destructive' });
+    if (!signUpRedirectURL && process.env.NEXT_PUBLIC_SITE_URL) {
+        // This case means NEXT_PUBLIC_SITE_URL was invalid, getAuthRedirectUrl logged an error.
+        // We shouldn't proceed if we can't form a valid redirect URL and SITE_URL was intended.
+        toast({ title: 'Configuration Error', description: 'Site URL is improperly configured. Cannot proceed with sign up.', variant: 'destructive' });
         setIsLoading(false);
         return;
     }
+    // If signUpRedirectURL is undefined, Supabase will use its dashboard default.
     
     try {
       const { data, error } = await supabase.auth.signUp({
         email: values.email,
         password: values.password,
         options: {
-          emailRedirectTo: signUpRedirectURL,
+          emailRedirectTo: signUpRedirectURL, // Will be undefined if getAuthRedirectUrl returned undefined
         },
       });
 
@@ -268,21 +293,14 @@ export default function AuthPage() {
   const handleGoogleSignIn = async () => {
     setIsGoogleLoading(true);
     setAuthError(null);
-
-    const siteURL = process.env.NEXT_PUBLIC_SITE_URL || (typeof window !== 'undefined' ? window.location.origin : '');
-    if (!siteURL) {
-      toast({ title: 'Configuration Error', description: 'Could not determine site URL. Google Sign-In aborted.', variant: 'destructive' });
-      setIsGoogleLoading(false);
-      return;
-    }
     
-    let googleRedirectURL = '';
-    try {
-        const url = new URL(siteURL);
-        url.pathname = pathname; 
-        googleRedirectURL = url.toString();
-    } catch (e) {
-        toast({ title: 'Configuration Error', description: 'Invalid Site URL for Google Sign-In.', variant: 'destructive' });
+    // For OAuth, redirectTo should be where the user lands after Google auth.
+    // This could be the current page, or a specific post-auth processing page.
+    // Using getAuthRedirectUrl() might be appropriate if you want them on /auth page.
+    const googleRedirectURL = getAuthRedirectUrl(); 
+    
+    if (!googleRedirectURL && process.env.NEXT_PUBLIC_SITE_URL) {
+        toast({ title: 'Configuration Error', description: 'Site URL for Google Sign-In is improperly configured.', variant: 'destructive' });
         setIsGoogleLoading(false);
         return;
     }
@@ -290,7 +308,7 @@ export default function AuthPage() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: googleRedirectURL,
+        redirectTo: googleRedirectURL, // if undefined, Supabase uses default.
       },
     });
     if (error) {
@@ -303,26 +321,22 @@ export default function AuthPage() {
   const handleForgotPasswordRequest = async (values: ForgotPasswordFormValues) => {
     setIsSendingResetLink(true);
     setAuthError(null);
-    // IMPORTANT: For the password reset link in the email to point to YOUR_APP_URL/auth,
-    // you must configure this in your Supabase project's email template for "Reset Password".
-    // The `redirectTo` option in `resetPasswordForEmail` in the code is for where the user is sent *after a successful password update using that link*.
-    // We want the *link itself* to go to /auth.
-    const siteURL = process.env.NEXT_PUBLIC_SITE_URL || (typeof window !== 'undefined' ? window.location.origin : '');
-    let resetLinkRedirectTo = '';
-    if (siteURL) {
-        try {
-            const url = new URL(siteURL);
-            url.pathname = '/auth'; // This makes the link sent in email target /auth page
-            resetLinkRedirectTo = url.toString();
-        } catch (e) {
-            // If siteURL is invalid, don't set redirectTo, Supabase will use its default
-            console.warn("Could not construct password reset link with /auth, Supabase will use default.");
-        }
+    
+    const resetLinkRedirectTo = getAuthRedirectUrl();
+    console.log(`[AuthPage handleForgotPasswordRequest] Constructed redirectTo for password reset: ${resetLinkRedirectTo}`);
+
+
+    if (!resetLinkRedirectTo && process.env.NEXT_PUBLIC_SITE_URL) {
+        // This implies NEXT_PUBLIC_SITE_URL was invalid.
+        toast({ title: 'Configuration Error', description: 'Site URL for password reset is improperly configured.', variant: 'destructive' });
+        setIsSendingResetLink(false);
+        return;
     }
+    // If resetLinkRedirectTo is undefined, Supabase will use its dashboard default for the link's base path.
 
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(values.email, {
-        redirectTo: resetLinkRedirectTo || undefined // if resetLinkRedirectTo is empty, let Supabase handle it
+        redirectTo: resetLinkRedirectTo // Pass undefined if not properly constructed
       });
       if (error) {
         setAuthError(error.message);
@@ -350,8 +364,8 @@ export default function AuthPage() {
       } else {
         toast({ title: 'Password Reset Successful!', description: 'You can now sign in with your new password.' });
         setIsPasswordRecoveryMode(false);
-        setDefaultTab('signin'); // Switch to sign-in tab
-        signInForm.setValue('email', supabase.auth.currentUser?.email || ''); // Pre-fill email if available
+        setDefaultTab('signin'); 
+        signInForm.setValue('email', supabase.auth.currentUser?.email || ''); 
       }
     } catch (error: any) {
       setAuthError(error.message || 'An unexpected error occurred.');
@@ -713,3 +727,5 @@ export default function AuthPage() {
     </div>
   );
 }
+
+    
