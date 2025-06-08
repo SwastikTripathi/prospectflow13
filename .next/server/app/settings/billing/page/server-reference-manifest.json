@@ -1,0 +1,27 @@
+{
+  "node": {
+    "402edba9fe28ed1f99e9aa5584bdfb941b9b1340f8": {
+      "workers": {
+        "app/settings/billing/page": {
+          "moduleId": "[project]/.next-internal/server/app/settings/billing/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/actions/razorpayActions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/settings/billing/page": "action-browser"
+      }
+    },
+    "4063fc159fae8b2b1f5f90d6167db9886cece6ea3d": {
+      "workers": {
+        "app/settings/billing/page": {
+          "moduleId": "[project]/.next-internal/server/app/settings/billing/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/actions/razorpayActions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/settings/billing/page": "action-browser"
+      }
+    }
+  },
+  "edge": {}
+}
