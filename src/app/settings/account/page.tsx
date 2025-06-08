@@ -22,6 +22,7 @@ import { Loader2, UserCircle, Settings as SettingsIcon, SlidersHorizontal, MailQ
 import type { Json } from '@/lib/database.types';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { useRouter } from 'next/navigation';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const USAGE_PREFERENCES: { value: UsagePreference; label: string }[] = [
   { value: 'job_hunt', label: 'Job Hunting / Career Opportunities' },
@@ -131,94 +132,122 @@ export default function AccountSettingsPage() {
 
   const fetchAccountData = useCallback(async (user: User) => {
     setIsFetchingSettings(true);
+    console.log(`[AccountSettingsPage fetchAccountData] ENTERED. User param ID: ${user.id}. isFetchingSettings set to true.`);
     try {
+      console.log(`[AccountSettingsPage fetchAccountData] Fetching settings from Supabase for user ${user.id}`);
       const { data: settingsData, error: settingsError } = await supabase
         .from('user_settings')
         .select('*')
         .eq('user_id', user.id)
         .single();
+      console.log(`[AccountSettingsPage fetchAccountData] Supabase settings fetch complete. Error:`, settingsError, "Data:", !!settingsData);
 
-      if (settingsError && settingsError.code !== 'PGRST116') throw settingsError;
+
+      if (settingsError && settingsError.code !== 'PGRST116') { // PGRST116 means no rows found, which is fine
+        console.error("[AccountSettingsPage fetchAccountData] Error fetching user_settings:", settingsError);
+        throw settingsError;
+      }
 
       const fetchedSettings = settingsData as UserSettings | null;
-      setUserSettings(fetchedSettings);
+      setUserSettings(fetchedSettings); // Update state
 
-      const currentTemplates = fetchedSettings?.default_email_templates
-        ? (fetchedSettings.default_email_templates as DefaultFollowUpTemplates)
-        : defaultAllTemplates;
-
-      settingsForm.reset({
-        displayName: fetchedSettings?.full_name || user.user_metadata?.full_name || '',
-        usagePreference: fetchedSettings?.usage_preference || 'job_hunt',
-        cadenceFu1: (fetchedSettings?.follow_up_cadence_days as [number,number,number])?.[0] ?? defaultCadence[0],
-        cadenceFu2: (fetchedSettings?.follow_up_cadence_days as [number,number,number])?.[1] ?? defaultCadence[1],
-        cadenceFu3: (fetchedSettings?.follow_up_cadence_days as [number,number,number])?.[2] ?? defaultCadence[2],
+      // Prepare values for form reset, ensuring all fields have fallbacks to defaultFormValues
+      const resetData: AccountSettingsFormValues = {
+        ...defaultFormValues, // Start with all defaults
+        displayName: fetchedSettings?.full_name ?? user.user_metadata?.full_name ?? defaultFormValues.displayName,
+        usagePreference: fetchedSettings?.usage_preference ?? defaultFormValues.usagePreference,
+        cadenceFu1: (fetchedSettings?.follow_up_cadence_days as [number,number,number] | null)?.[0] ?? defaultFormValues.cadenceFu1,
+        cadenceFu2: (fetchedSettings?.follow_up_cadence_days as [number,number,number] | null)?.[1] ?? defaultFormValues.cadenceFu2,
+        cadenceFu3: (fetchedSettings?.follow_up_cadence_days as [number,number,number] | null)?.[2] ?? defaultFormValues.cadenceFu3,
         defaultEmailTemplates: {
           followUp1: {
-            subject: currentTemplates.followUp1?.subject || '',
-            openingLine: currentTemplates.followUp1?.openingLine || '',
+            subject: (fetchedSettings?.default_email_templates as DefaultFollowUpTemplates | null)?.followUp1?.subject ?? defaultFormValues.defaultEmailTemplates.followUp1.subject,
+            openingLine: (fetchedSettings?.default_email_templates as DefaultFollowUpTemplates | null)?.followUp1?.openingLine ?? defaultFormValues.defaultEmailTemplates.followUp1.openingLine,
           },
           followUp2: {
-            subject: currentTemplates.followUp2?.subject || '',
-            openingLine: currentTemplates.followUp2?.openingLine || '',
+            subject: (fetchedSettings?.default_email_templates as DefaultFollowUpTemplates | null)?.followUp2?.subject ?? defaultFormValues.defaultEmailTemplates.followUp2.subject,
+            openingLine: (fetchedSettings?.default_email_templates as DefaultFollowUpTemplates | null)?.followUp2?.openingLine ?? defaultFormValues.defaultEmailTemplates.followUp2.openingLine,
           },
           followUp3: {
-            subject: currentTemplates.followUp3?.subject || '',
-            openingLine: currentTemplates.followUp3?.openingLine || '',
+            subject: (fetchedSettings?.default_email_templates as DefaultFollowUpTemplates | null)?.followUp3?.subject ?? defaultFormValues.defaultEmailTemplates.followUp3.subject,
+            openingLine: (fetchedSettings?.default_email_templates as DefaultFollowUpTemplates | null)?.followUp3?.openingLine ?? defaultFormValues.defaultEmailTemplates.followUp3.openingLine,
           },
-          sharedSignature: currentTemplates.sharedSignature || '',
+          sharedSignature: (fetchedSettings?.default_email_templates as DefaultFollowUpTemplates | null)?.sharedSignature ?? defaultFormValues.defaultEmailTemplates.sharedSignature,
         },
-        ageRange: fetchedSettings?.age_range || '',
-        country: fetchedSettings?.country || '',
-        annualIncome: fetchedSettings?.annual_income || '',
-        incomeCurrency: fetchedSettings?.income_currency || '',
-        currentRole: fetchedSettings?.current_role || '',
-      });
+        ageRange: fetchedSettings?.age_range ?? defaultFormValues.ageRange,
+        country: fetchedSettings?.country ?? defaultFormValues.country,
+        annualIncome: fetchedSettings?.annual_income ?? defaultFormValues.annualIncome,
+        incomeCurrency: fetchedSettings?.income_currency ?? defaultFormValues.incomeCurrency,
+        currentRole: fetchedSettings?.current_role ?? defaultFormValues.currentRole,
+      };
+      
+      // Ensure annualIncome is a number or empty string for the form control, not null
+      if (resetData.annualIncome === null) {
+          resetData.annualIncome = '';
+      }
+      if (resetData.incomeCurrency === null) {
+          resetData.incomeCurrency = '';
+      }
+
+
+      console.log("[AccountSettingsPage fetchAccountData] Resetting form with values:", resetData);
+      settingsForm.reset(resetData);
 
     } catch (error: any) {
-      toast({ title: 'Error Fetching Settings', description: error.message, variant: 'destructive' });
+      console.error("[AccountSettingsPage fetchAccountData] CATCH block error:", error);
+      toast({ title: 'Error Fetching Settings', description: error.message || "Could not load your settings.", variant: 'destructive' });
+      // Fallback to default form values if fetch fails catastrophically
+      settingsForm.reset(defaultFormValues);
     } finally {
+      console.log("[AccountSettingsPage fetchAccountData] FINALLY block. Setting isFetchingSettings: false, hasFetchedData: true");
       setIsFetchingSettings(false);
       setHasFetchedData(true);
     }
   }, [toast, settingsForm]);
 
+
   useEffect(() => {
+    console.log(`[AccountSettingsPage] Auth useEffect RUNNING. Initial isLoadingAuth: ${isLoadingAuth}`);
     setIsLoadingAuth(true);
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log(`[AccountSettingsPage] onAuthStateChange EVENT: ${event} Session User ID: ${session?.user?.id}`);
       const user = session?.user ?? null;
       if (user?.id !== previousUserIdRef.current) {
+        console.log(`[AccountSettingsPage] Auth useEffect - User updated. Previous: ${previousUserIdRef.current}, New: ${user?.id}. Resetting hasFetchedData.`);
         setHasFetchedData(false);
-        setUserSettings(null);
-        settingsForm.reset(defaultFormValues);
+        setUserSettings(null); // Reset settings if user changes
+        settingsForm.reset(defaultFormValues); // Reset form to defaults if user changes or logs out
       }
       setCurrentUser(user);
       previousUserIdRef.current = user?.id;
       setIsLoadingAuth(false);
+      console.log(`[AccountSettingsPage] Auth useEffect FINISHED. isLoadingAuth set to false. currentUser ID: ${user?.id}`);
     });
 
+    // Initial check
     supabase.auth.getUser().then(({ data: { user } }) => {
-      if (user?.id !== previousUserIdRef.current) {
+      console.log(`[AccountSettingsPage] Initial getUser() processed. Session User ID: ${user?.id}`);
+       if (user?.id !== previousUserIdRef.current) {
         setHasFetchedData(false);
         setUserSettings(null);
         settingsForm.reset(defaultFormValues);
       }
       setCurrentUser(user);
       previousUserIdRef.current = user?.id;
-      setIsLoadingAuth(false);
+      setIsLoadingAuth(false); // Ensure this is set after initial check too
     });
     return () => authListener.subscription.unsubscribe();
-  }, [settingsForm]);
+  }, [settingsForm]); // Added settingsForm to deps as it's used in the effect
 
   useEffect(() => {
+    console.log(`[AccountSettingsPage] Data Fetch useEffect RUNNING. currentUser ID: ${currentUser?.id}, isLoadingAuth: ${isLoadingAuth}, hasFetchedData: ${hasFetchedData}`);
     if (currentUser && !isLoadingAuth && !hasFetchedData) {
+      console.log(`[AccountSettingsPage] Data Fetch useEffect - CONDITIONS MET, calling fetchAccountData with currentUser: ${currentUser.id}`);
       fetchAccountData(currentUser);
-    } else if (!currentUser && !isLoadingAuth) {
-      setUserSettings(null);
-      settingsForm.reset(defaultFormValues);
-      setHasFetchedData(true); // Mark as "fetched" as there's nothing to fetch for a null user
+    } else {
+      console.log(`[AccountSettingsPage] Data Fetch useEffect - Conditions NOT MET (isLoadingAuth is ${isLoadingAuth}, currentUser is ${currentUser ? 'defined' : 'null'}, hasFetchedData is ${hasFetchedData}).`);
     }
-  }, [currentUser, isLoadingAuth, hasFetchedData, fetchAccountData, settingsForm]);
+  }, [currentUser, isLoadingAuth, hasFetchedData, fetchAccountData]);
 
 
   const onSettingsSubmit = async (values: AccountSettingsFormValues) => {
@@ -226,7 +255,7 @@ export default function AccountSettingsPage() {
       toast({ title: 'Not Authenticated', description: 'Please log in.', variant: 'destructive' });
       return;
     }
-    setIsFetchingSettings(true); // Use this for the submit operation as well
+    setIsFetchingSettings(true); 
     try {
       const settingsDataToUpsert = {
         user_id: currentUser.id,
@@ -256,8 +285,6 @@ export default function AccountSettingsPage() {
       }
 
       toast({ title: 'Settings Updated', description: 'Your account settings have been saved.' });
-      // Optionally re-fetch or update local state if needed, though upsert should mean data is fresh
-      // await fetchAccountData(currentUser); // Re-fetch to confirm and update form with potentially processed values
       setUserSettings(prev => ({...(prev || {} as UserSettings), ...settingsDataToUpsert, user_id: currentUser.id}));
       
     } catch (error: any) {
@@ -345,7 +372,6 @@ export default function AccountSettingsPage() {
      return <AppLayout><Card><CardHeader><CardTitle>Access Denied</CardTitle></CardHeader><CardContent><p>Please log in to access account settings.</p><Button asChild className="mt-4"><Link href="/auth">Sign In</Link></Button></CardContent></Card></AppLayout>;
   }
 
-  // Show skeletons or disabled form while fetching initial settings for this user
   const showSettingsLoader = isFetchingSettings && !hasFetchedData;
 
 
@@ -753,4 +779,5 @@ const SkeletonItem: React.FC<{label: string, type?: 'input' | 'select' | 'textar
   </FormItem>
 );
 
+    
     
