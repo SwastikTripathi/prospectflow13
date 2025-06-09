@@ -1,10 +1,24 @@
 
 'use client';
 
-import React from 'react'; 
+import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Briefcase, Users, Building2, Star, Edit3, Rss } from 'lucide-react';
+import {
+  Home,
+  Briefcase,
+  Users,
+  Building2,
+  Star,
+  Edit3,
+  Rss,
+  Settings, // Keep existing Settings icon
+  CreditCard, // For Billing
+  UserCircle, // For Profile
+  SlidersHorizontal, // For Preferences/Cadence
+  MailQuestion, // For Email Customization
+  KeyRound, // For Security
+} from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
   SidebarMenu,
@@ -17,17 +31,17 @@ import {
 } from '@/components/ui/sidebar';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import type { JobOpening } from '@/lib/types';
-import { supabase } from '@/lib/supabaseClient'; 
-import { useEffect, useState } from 'react'; 
-import { OWNER_EMAIL } from '@/lib/config'; 
+import { supabase } from '@/lib/supabaseClient';
+import { useEffect, useState } from 'react';
+import { OWNER_EMAIL } from '@/lib/config';
 
 interface NavItem {
   href: string;
   label: string;
   icon: React.ElementType;
   disabled?: boolean;
-  separator?: boolean; 
-  ownerOnly?: boolean; 
+  separator?: boolean;
+  ownerOnly?: boolean;
 }
 
 const mainNavItems: NavItem[] = [
@@ -35,6 +49,14 @@ const mainNavItems: NavItem[] = [
   { href: '/job-openings', label: 'Job Openings', icon: Briefcase },
   { href: '/contacts', label: 'Contacts', icon: Users },
   { href: '/companies', label: 'Companies', icon: Building2 },
+];
+
+const settingsNavItems: NavItem[] = [
+  { href: '/settings/account#profile-details', label: 'Profile Details', icon: UserCircle },
+  { href: '/settings/account#usage-preferences', label: 'Usage & Cadence', icon: SlidersHorizontal },
+  { href: '/settings/account#email-customization', label: 'Email Customization', icon: MailQuestion },
+  { href: '/settings/account#security', label: 'Password & Security', icon: KeyRound },
+  { href: '/settings/billing', label: 'Billing & Plan', icon: CreditCard, separator: true },
 ];
 
 const blogNavItems: NavItem[] = [
@@ -82,17 +104,18 @@ export function SidebarNav({ favoriteJobOpenings = [] }: SidebarNavProps) {
 
   const isCollapsedDesktop = sidebarState === 'collapsed' && !isMobile;
   const isExpandedDesktop = sidebarState === 'expanded' && !isMobile;
+  const isSettingsPage = pathname.startsWith('/settings');
 
   const renderNavItems = (items: NavItem[], groupLabel?: string) => {
     const filteredItems = items.filter(item => !item.ownerOnly || (item.ownerOnly && isOwner));
-    
-    if (filteredItems.length === 0 && groupLabel && items.every(item => item.ownerOnly)) return null; 
+
+    if (filteredItems.length === 0 && groupLabel && items.every(item => item.ownerOnly)) return null;
     if (filteredItems.length === 0 && !groupLabel) return null;
 
 
     return (
         <SidebarGroup>
-        {groupLabel && (
+        {groupLabel && !isSettingsPage && ( // Only show group label if not settings page or specific conditions
             <SidebarGroupLabel className="group-data-[collapsible=icon]:sr-only">
             {groupLabel}
             </SidebarGroupLabel>
@@ -100,11 +123,11 @@ export function SidebarNav({ favoriteJobOpenings = [] }: SidebarNavProps) {
         <SidebarMenu>
             {filteredItems.map((item) => (
             <React.Fragment key={item.label}>
-                {item.separator && item.ownerOnly && isOwner && <SidebarSeparator className="my-1" />}
+                {item.separator && ((isSettingsPage && item.href === '/settings/billing') || (item.ownerOnly && isOwner && !isSettingsPage)) && <SidebarSeparator className="my-1" />}
                 <SidebarMenuItem>
                 <SidebarMenuButton
                     asChild
-                    isActive={pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href))}
+                    isActive={pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href) && item.href.split('#')[0] === pathname.split('#')[0])}
                     className={cn(item.disabled && "cursor-not-allowed opacity-50")}
                     tooltip={isCollapsedDesktop ? { children: item.label, side: "right", align: "center" } : undefined}
                 >
@@ -129,8 +152,8 @@ export function SidebarNav({ favoriteJobOpenings = [] }: SidebarNavProps) {
         </SidebarGroup>
     );
   };
-  
-  if (isLoadingUser && !isCollapsedDesktop) { 
+
+  if (isLoadingUser && !isCollapsedDesktop) {
     return (
       <div className="space-y-2 p-2">
         {[...Array(4)].map((_, i) => (
@@ -146,12 +169,12 @@ export function SidebarNav({ favoriteJobOpenings = [] }: SidebarNavProps) {
 
   return (
     <div className="flex flex-col h-full">
-      <div> 
-        {renderNavItems(mainNavItems)}
+      <div>
+        {isSettingsPage ? renderNavItems(settingsNavItems) : renderNavItems(mainNavItems)}
         {isOwner && renderNavItems(blogNavItems, "Blog Management")}
       </div>
 
-      {favoriteJobOpenings && favoriteJobOpenings.length > 0 && (
+      {favoriteJobOpenings && favoriteJobOpenings.length > 0 && !isSettingsPage && ( // Hide favorites on settings pages
         <>
           <SidebarSeparator />
           <SidebarGroup className="flex flex-col flex-1 min-h-0">

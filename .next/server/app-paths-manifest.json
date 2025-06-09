@@ -1,5 +1,7 @@
 {
+  "/auth/page": "app/auth/page.js",
   "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/job-openings/page": "app/job-openings/page.js",
   "/landing/page": "app/landing/page.js",
   "/page": "app/page.js"
 }

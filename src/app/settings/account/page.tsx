@@ -2,7 +2,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import Link from 'next/link'; // Added Link import
+import Link from 'next/link';
 import { AppLayout } from "@/components/layout/AppLayout";
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -65,7 +65,6 @@ const accountSettingsSchema = z.object({
     }),
     sharedSignature: z.string().max(500, "Signature too long").optional(),
   }),
-  // Onboarding fields
   ageRange: z.string().min(1, "Age range is required"),
   country: z.string().min(1, "Country is required").max(100, "Country name too long"),
   annualIncome: z.coerce.number().positive("Income must be positive").optional().or(z.literal('')),
@@ -146,7 +145,7 @@ export default function AccountSettingsPage() {
 
       const fetchedSettings = settingsData as UserSettings | null;
       setUserSettings(fetchedSettings);
-
+      
       const resetData: AccountSettingsFormValues = {
         ...defaultFormValues,
         displayName: fetchedSettings?.full_name ?? user.user_metadata?.full_name ?? defaultFormValues.displayName,
@@ -171,18 +170,10 @@ export default function AccountSettingsPage() {
         },
         ageRange: fetchedSettings?.age_range ?? defaultFormValues.ageRange,
         country: fetchedSettings?.country ?? defaultFormValues.country,
-        annualIncome: fetchedSettings?.annual_income ?? defaultFormValues.annualIncome,
-        incomeCurrency: fetchedSettings?.income_currency ?? defaultFormValues.incomeCurrency,
+        annualIncome: fetchedSettings?.annual_income === null ? '' : (fetchedSettings?.annual_income ?? defaultFormValues.annualIncome),
+        incomeCurrency: fetchedSettings?.income_currency === null ? '' : (fetchedSettings?.income_currency ?? defaultFormValues.incomeCurrency),
         currentRole: fetchedSettings?.current_role ?? defaultFormValues.currentRole,
       };
-
-      if (resetData.annualIncome === null) {
-          resetData.annualIncome = '';
-      }
-      if (resetData.incomeCurrency === null) {
-          resetData.incomeCurrency = '';
-      }
-
       settingsForm.reset(resetData);
 
     } catch (error: any) {
@@ -200,7 +191,7 @@ export default function AccountSettingsPage() {
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       const user = session?.user ?? null;
       if (user?.id !== previousUserIdRef.current) {
-        setHasFetchedData(false);
+        setHasFetchedData(false); // Reset fetch status if user ID changes
         setUserSettings(null);
         settingsForm.reset(defaultFormValues);
       }
@@ -209,6 +200,7 @@ export default function AccountSettingsPage() {
       setIsLoadingAuth(false);
     });
 
+    // Initial fetch for current user on mount
     supabase.auth.getUser().then(({ data: { user } }) => {
        if (user?.id !== previousUserIdRef.current) {
         setHasFetchedData(false);
@@ -219,15 +211,17 @@ export default function AccountSettingsPage() {
       previousUserIdRef.current = user?.id;
       setIsLoadingAuth(false);
     });
+
     return () => authListener.subscription.unsubscribe();
-  }, [settingsForm]);
+  }, [settingsForm]); // Add settingsForm to dependencies if it might change, or ensure stability
+
 
   useEffect(() => {
     if (currentUser && !isLoadingAuth && !hasFetchedData) {
       fetchAccountData(currentUser);
     } else if (!currentUser && !isLoadingAuth) {
-        setIsFetchingSettings(false); // Ensure this is false if no user
-        setHasFetchedData(true); // Mark as "attempted" for no user
+        setIsFetchingSettings(false);
+        setHasFetchedData(true);
     }
   }, [currentUser, isLoadingAuth, hasFetchedData, fetchAccountData]);
 
@@ -237,7 +231,7 @@ export default function AccountSettingsPage() {
       toast({ title: 'Not Authenticated', description: 'Please log in.', variant: 'destructive' });
       return;
     }
-    setIsFetchingSettings(true); 
+    setIsFetchingSettings(true); // Use isFetchingSettings to indicate submission process
     try {
       const settingsDataToUpsert = {
         user_id: currentUser.id,
@@ -250,24 +244,28 @@ export default function AccountSettingsPage() {
         annual_income: values.annualIncome ? Number(values.annualIncome) : null,
         income_currency: values.incomeCurrency || null,
         current_role: values.currentRole,
-        onboarding_complete: userSettings?.onboarding_complete ?? true,
+        onboarding_complete: userSettings?.onboarding_complete ?? true, // Preserve existing or set true
       };
+      // Upsert settings
       const { error: settingsUpsertError } = await supabase
         .from('user_settings')
         .upsert(settingsDataToUpsert, { onConflict: 'user_id' });
+
       if (settingsUpsertError) throw settingsUpsertError;
 
+      // Update Supabase Auth user_metadata if displayName changed
       if (currentUser.user_metadata?.full_name !== values.displayName) {
           const { error: userUpdateError } = await supabase.auth.updateUser({
               data: { full_name: values.displayName || '' }
           });
           if (userUpdateError) {
+            // Log this, but don't necessarily fail the whole operation if auth update fails
             console.warn("Could not update Supabase Auth user_metadata.full_name:", userUpdateError.message);
           }
       }
 
       toast({ title: 'Settings Updated', description: 'Your account settings have been saved.' });
-      setUserSettings(prev => ({...(prev || {} as UserSettings), ...settingsDataToUpsert, user_id: currentUser.id}));
+      setUserSettings(prev => ({...(prev || {} as UserSettings), ...settingsDataToUpsert, user_id: currentUser.id})); // Update local state
       
     } catch (error: any) {
       toast({ title: 'Error Saving Settings', description: error.message, variant: 'destructive' });
@@ -307,15 +305,18 @@ export default function AccountSettingsPage() {
     }
     setIsDeletingAccount(true);
     try {
+      // Order of deletion might matter depending on foreign key constraints (e.g., delete dependent records first)
       const tablesToDeleteFrom = [
-        'follow_ups',
-        'job_opening_contacts',
-        'job_openings',
-        'contacts',
+        'follow_ups', // Depends on job_openings
+        'job_opening_contacts', // Depends on job_openings and contacts
+        'job_openings', // Depends on companies
+        'contacts', // Depends on companies
         'companies',
         'user_settings',
-        'user_subscriptions',
-        'posts',
+        'user_subscriptions', // If you store subscription info directly tied to user_id
+        'invoices', // If you store invoices
+        'posts', // If users create posts
+        // Add any other tables that have a user_id foreign key
       ];
 
       for (const tableName of tablesToDeleteFrom) {
@@ -324,22 +325,28 @@ export default function AccountSettingsPage() {
           .delete()
           .eq('user_id', currentUser.id);
         if (error) {
-          throw new Error(`Failed to delete data from ${tableName}. ${error.message}`);
+          // Log or handle error, but continue trying to delete from other tables
+          console.error(`Failed to delete data from ${tableName}. ${error.message}`);
+          // Optionally, accumulate errors and show a more comprehensive message at the end
         }
       }
 
+      // After attempting to delete all application data, sign out the user
       const { error: signOutError } = await supabase.auth.signOut();
-      if (signOutError) {}
+      if (signOutError) {
+        // Log this, user might still be technically "logged in" on client if this fails
+        console.error("Error signing out after data deletion:", signOutError.message);
+      }
 
       toast({
         title: 'Account Data Deleted',
         description: 'All your application data has been successfully deleted. You have been signed out. Your authentication record still exists but is no longer associated with any application data.',
         duration: 10000,
       });
-      router.push('/landing');
+      router.push('/landing'); // Redirect to landing page
 
-    } catch (error: any) {
-      toast({ title: 'Account Deletion Failed', description: error.message || 'An unexpected error occurred.', variant: 'destructive' });
+    } catch (error: any) { // This catch might be less likely to be hit if individual deletes handle errors
+      toast({ title: 'Account Deletion Failed', description: error.message || 'An unexpected error occurred during account deletion.', variant: 'destructive' });
     } finally {
       setIsDeletingAccount(false);
       setIsDeleteStep2Open(false);
@@ -347,13 +354,16 @@ export default function AccountSettingsPage() {
     }
   };
 
+  // Initial full-page loader
   if (isLoadingAuth) {
     return <AppLayout><div className="flex justify-center items-center h-64"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div></AppLayout>;
   }
+  // If auth check is done, but no user
   if (!currentUser) {
      return <AppLayout><Card><CardHeader><CardTitle>Access Denied</CardTitle></CardHeader><CardContent><p>Please log in to access account settings.</p><Button asChild className="mt-4"><Link href="/auth">Sign In</Link></Button></CardContent></Card></AppLayout>;
   }
 
+  // If user is present, but initial settings data is still being fetched for the first time
   const showSettingsLoader = isFetchingSettings && !hasFetchedData;
 
 
@@ -370,7 +380,7 @@ export default function AccountSettingsPage() {
 
         <Form {...settingsForm}>
           <form onSubmit={settingsForm.handleSubmit(onSettingsSubmit)} className="space-y-8">
-            <Card className="shadow-lg">
+            <Card className="shadow-lg" id="profile-details">
               <CardHeader>
                 <CardTitle className="font-headline flex items-center"><UserCircle className="mr-2 h-5 w-5 text-primary"/> Profile</CardTitle>
                 <CardDescription>Update your display name and general profile information.</CardDescription>
@@ -478,12 +488,12 @@ export default function AccountSettingsPage() {
               </CardContent>
             </Card>
 
-            <Card className="shadow-lg">
+            <Card className="shadow-lg" id="usage-preferences">
               <CardHeader>
-                <CardTitle className="font-headline flex items-center"><SlidersHorizontal className="mr-2 h-5 w-5 text-primary"/> Usage Preference</CardTitle>
-                <CardDescription>This feature is coming soon. Your selection here will help tailor your experience in the future.</CardDescription>
+                <CardTitle className="font-headline flex items-center"><SlidersHorizontal className="mr-2 h-5 w-5 text-primary"/> Usage Preference & Cadence</CardTitle>
+                <CardDescription>Customize how you use ProspectFlow and set default follow-up timings.</CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="space-y-6">
                  {showSettingsLoader ? <SkeletonItem label="Primary Usage" type="select" /> : (
                 <FormField
                   control={settingsForm.control}
@@ -505,64 +515,58 @@ export default function AccountSettingsPage() {
                           ))}
                         </SelectContent>
                       </Select>
+                       <p className="text-xs text-muted-foreground pt-1">This feature is coming soon and will tailor your experience.</p>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
                  )}
+                 <div className="grid md:grid-cols-3 gap-4">
+                    {showSettingsLoader ? <> <SkeletonItem label="Follow-up 1 (days)" /> <SkeletonItem label="Follow-up 2 (days)" /> <SkeletonItem label="Follow-up 3 (days)" /> </> : (
+                    <>
+                    <FormField
+                    control={settingsForm.control}
+                    name="cadenceFu1"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Follow-up 1 (days after initial)</FormLabel>
+                        <FormControl><Input type="number" min="1" max="90" {...field} disabled={isFetchingSettings || settingsForm.formState.isSubmitting} /></FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                    />
+                    <FormField
+                    control={settingsForm.control}
+                    name="cadenceFu2"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Follow-up 2 (days after initial)</FormLabel>
+                        <FormControl><Input type="number" min="1" max="90" {...field} disabled={isFetchingSettings || settingsForm.formState.isSubmitting} /></FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                    />
+                    <FormField
+                    control={settingsForm.control}
+                    name="cadenceFu3"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Follow-up 3 (days after initial)</FormLabel>
+                        <FormControl><Input type="number" min="1" max="90" {...field} disabled={isFetchingSettings || settingsForm.formState.isSubmitting} /></FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                    />
+                    </>
+                    )}
+                 </div>
+                  {settingsForm.formState.errors?.cadenceFu2?.type === 'manual' && (
+                    <p className="text-sm font-medium text-destructive pt-1">{settingsForm.formState.errors.cadenceFu2.message}</p>
+                 )}
               </CardContent>
             </Card>
 
-            <Card className="shadow-lg">
-              <CardHeader>
-                <CardTitle className="font-headline flex items-center"><SlidersHorizontal className="mr-2 h-5 w-5 text-primary"/> Follow-up Cadence</CardTitle>
-                <CardDescription>Set the default number of days after the initial email for each follow-up. Must be sequential.</CardDescription>
-              </CardHeader>
-              <CardContent className="grid md:grid-cols-3 gap-4">
-                {showSettingsLoader ? <> <SkeletonItem label="Follow-up 1 (days)" /> <SkeletonItem label="Follow-up 2 (days)" /> <SkeletonItem label="Follow-up 3 (days)" /> </> : (
-                <>
-                <FormField
-                  control={settingsForm.control}
-                  name="cadenceFu1"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Follow-up 1 (days after initial)</FormLabel>
-                      <FormControl><Input type="number" min="1" max="90" {...field} disabled={isFetchingSettings || settingsForm.formState.isSubmitting} /></FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={settingsForm.control}
-                  name="cadenceFu2"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Follow-up 2 (days after initial)</FormLabel>
-                      <FormControl><Input type="number" min="1" max="90" {...field} disabled={isFetchingSettings || settingsForm.formState.isSubmitting} /></FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={settingsForm.control}
-                  name="cadenceFu3"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Follow-up 3 (days after initial)</FormLabel>
-                      <FormControl><Input type="number" min="1" max="90" {...field} disabled={isFetchingSettings || settingsForm.formState.isSubmitting} /></FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                </>
-                )}
-              </CardContent>
-               {settingsForm.formState.errors?.cadenceFu2?.type === 'manual' && (
-                  <CardFooter><p className="text-sm font-medium text-destructive">{settingsForm.formState.errors.cadenceFu2.message}</p></CardFooter>
-                )}
-            </Card>
-
-            <Card className="shadow-lg">
+            <Card className="shadow-lg" id="email-customization">
               <CardHeader>
                 <CardTitle className="font-headline flex items-center"><MailQuestion className="mr-2 h-5 w-5 text-primary"/> Default Email Templates</CardTitle>
                 <CardDescription>Set default content for your follow-up emails. These will pre-fill when creating a new job opening.</CardDescription>
@@ -630,7 +634,7 @@ export default function AccountSettingsPage() {
 
         <Form {...passwordForm}>
           <form onSubmit={passwordForm.handleSubmit(onPasswordSubmit)} className="space-y-8">
-            <Card className="shadow-lg">
+            <Card className="shadow-lg" id="security">
               <CardHeader>
                 <CardTitle className="font-headline flex items-center"><KeyRound className="mr-2 h-5 w-5 text-primary"/> Change Password</CardTitle>
                 <CardDescription>Update your account password. Choose a strong, unique password.</CardDescription>
@@ -753,13 +757,9 @@ export default function AccountSettingsPage() {
   );
 }
 
-// Helper for skeleton UI
 const SkeletonItem: React.FC<{label: string, type?: 'input' | 'select' | 'textarea'}> = ({label, type = 'input'}) => (
   <FormItem>
     <FormLabel><Label>{label}</Label></FormLabel>
     <Skeleton className={type === 'textarea' ? "h-20 w-full" : "h-10 w-full"} />
   </FormItem>
 );
-
-    
-    
