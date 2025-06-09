@@ -202,7 +202,7 @@ export function PublicNavbar({ activeLink }: PublicNavbarProps) {
                 <Link href="/auth">Sign In</Link>
               </Button>
               <Button asChild className="shadow-md rounded-full h-9 px-4 text-sm">
-                <Link href="/auth?action=signup">Get Started Free.</Link>
+                <Link href="/auth?action=signup">Get Started Free</Link>
               </Button>
             </>
           )}

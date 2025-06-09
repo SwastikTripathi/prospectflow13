@@ -1,14 +1,5 @@
 {
-  "/auth/page": "app/auth/page.js",
-  "/blog/[slug]/page": "app/blog/[slug]/page.js",
-  "/blog/create/page": "app/blog/create/page.js",
-  "/blog/page": "app/blog/page.js",
-  "/companies/page": "app/companies/page.js",
-  "/contacts/page": "app/contacts/page.js",
   "/favicon.ico/route": "app/favicon.ico/route.js",
-  "/job-openings/page": "app/job-openings/page.js",
   "/landing/page": "app/landing/page.js",
-  "/page": "app/page.js",
-  "/settings/account/page": "app/settings/account/page.js",
-  "/settings/billing/page": "app/settings/billing/page.js"
+  "/page": "app/page.js"
 }

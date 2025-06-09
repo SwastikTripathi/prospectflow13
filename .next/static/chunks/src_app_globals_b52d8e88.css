@@ -1187,10 +1187,6 @@ body {
   pointer-events: auto;
 }
 
-.visible {
-  visibility: visible;
-}
-
 .invisible {
   visibility: hidden;
 }
@@ -1548,10 +1544,6 @@ body {
   margin-top: auto;
 }
 
-.ml-4 {
-  margin-left: 1rem;
-}
-
 .line-clamp-3 {
   overflow: hidden;
   display: -webkit-box;
@@ -1644,6 +1636,10 @@ body {
   height: .625rem;
 }
 
+.h-20 {
+  height: 5rem;
+}
+
 .h-3 {
   height: .75rem;
 }
@@ -1710,10 +1706,6 @@ body {
 
 .h-svh {
   height: 100svh;
-}
-
-.h-20 {
-  height: 5rem;
 }
 
 .max-h-96 {
