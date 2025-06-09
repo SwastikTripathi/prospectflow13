@@ -21,7 +21,7 @@ import { Logo } from '../icons/Logo';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { HoverCard, HoverCardTrigger, HoverCardContent } from '@/components/ui/hover-card';
-import { LogOut, Loader2, Settings, CreditCard, Home } from 'lucide-react';
+import { LogOut, Loader2, Settings, CreditCard, Home, LayoutDashboard } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Around } from "@theme-toggles/react"
 import "@theme-toggles/react/css/Around.css"
@@ -64,67 +64,69 @@ export function AppLayout({ children }: { children: ReactNode }) {
   const [userSettings, setUserSettings] = useState<UserSettings | null>(null);
   const [isLoadingAuth, setIsLoadingAuth] = useState(true);
   const [isLoadingSettings, setIsLoadingSettings] = useState(true);
+  const [settingsAndFavoritesFetchedOnceRef, setSettingsAndFavoritesFetchedOnceRef] = useState(false);
   const [theme, setTheme] = React.useState<'light' | 'dark'>('light');
   const [favoriteJobOpenings, setFavoriteJobOpenings] = useState<JobOpening[]>([]);
   const [showOnboardingForm, setShowOnboardingForm] = useState(false);
   const [onboardingCheckComplete, setOnboardingCheckComplete] = useState(false);
   const previousUserIdRef = useRef<string | undefined>();
+  const appLayoutConsolePrefix = "[AppLayout]";
 
   const isPublicPath = PUBLIC_PATHS.includes(pathname) || BLOG_PATHS_REGEX.test(pathname);
-  // console.log(`[AppLayout] Render. Path: ${pathname}, IsPublic: ${isPublicPath}`);
-  // console.log(`[AppLayout] Current states: isLoadingAuth: ${isLoadingAuth}, isLoadingSettings: ${isLoadingSettings}, user: ${user?.id}, userSettings: ${!!userSettings}, showOnboardingForm: ${showOnboardingForm}, onboardingCheckComplete: ${onboardingCheckComplete}`);
+  // console.log(`${appLayoutConsolePrefix} Render. Path: ${pathname}, IsPublic: ${isPublicPath}`);
+  // console.log(`${appLayoutConsolePrefix} Current states: isLoadingAuth: ${isLoadingAuth}, isLoadingSettings: ${isLoadingSettings}, user: ${user?.id}, userSettings: ${!!userSettings}, showOnboardingForm: ${showOnboardingForm}, onboardingCheckComplete: ${onboardingCheckComplete}`);
 
 
   const fetchUserDataAndSettings = useCallback(async (userId: string) => {
-    console.log(`[AppLayout fetchUserDataAndSettings] Called for user: ${userId}. Setting isLoadingSettings: true, setOnboardingCheckComplete: false`);
+    // console.log(`${appLayoutConsolePrefix} fetchUserDataAndSettings] Called for user: ${userId}. Setting isLoadingSettings: true, setOnboardingCheckComplete: false`);
     setIsLoadingSettings(true);
     setOnboardingCheckComplete(false);
     try {
-      console.log(`[AppLayout fetchUserDataAndSettings] Fetching settings and favorites for user: ${userId}`);
+      // console.log(`${appLayoutConsolePrefix} fetchUserDataAndSettings] Fetching settings and favorites for user: ${userId}`);
       const [settingsResult, favoritesResult] = await Promise.all([
         supabase.from('user_settings').select('*').eq('user_id', userId).single(),
         supabase.from('job_openings').select('id, role_title, company_name_cache, favorited_at, is_favorite').eq('user_id', userId).eq('is_favorite', true).order('favorited_at', { ascending: true, nulls: 'last' })
       ]);
-      console.log(`[AppLayout fetchUserDataAndSettings] API calls completed for user: ${userId}`);
+      // console.log(`${appLayoutConsolePrefix} fetchUserDataAndSettings] API calls completed for user: ${userId}`);
 
       const { data: settingsData, error: settingsError } = settingsResult;
-      console.log(`[AppLayout fetchUserDataAndSettings] Settings result: data: ${!!settingsData}, error:`, settingsError);
+      // console.log(`${appLayoutConsolePrefix} fetchUserDataAndSettings] Settings result: data: ${!!settingsData}, error:`, settingsError);
 
 
       if (settingsError && settingsError.code !== 'PGRST116') {
-        console.error("[AppLayout fetchUserDataAndSettings] Error fetching user settings (non-PGRST116):", settingsError);
+        console.error(`${appLayoutConsolePrefix} fetchUserDataAndSettings] Error fetching user settings (non-PGRST116):`, settingsError);
         toast({ title: 'Profile Load Error', description: `Could not load profile. (Code: ${settingsError.code})`, variant: 'destructive', duration: 7000 });
         setShowOnboardingForm(false);
       } else if (!settingsData && (!settingsError || settingsError.code !== 'PGRST116')) {
-        console.error("[AppLayout fetchUserDataAndSettings] Unexpected: No settings data and no (or non-PGRST116) error. Potential issue with SELECT query or RLS.", settingsError);
+        console.error(`${appLayoutConsolePrefix} fetchUserDataAndSettings] Unexpected: No settings data and no (or non-PGRST116) error. Potential issue with SELECT query or RLS.`, settingsError);
         toast({ title: 'Profile Access Issue', description: 'Could not verify your profile settings. Please try again or contact support.', variant: 'destructive', duration: 7000 });
         setShowOnboardingForm(false);
       } else {
         const fetchedSettings = settingsData as UserSettings | null;
         setUserSettings(fetchedSettings);
-        console.log(`[AppLayout fetchUserDataAndSettings] User settings set:`, fetchedSettings);
+        // console.log(`${appLayoutConsolePrefix} fetchUserDataAndSettings] User settings set:`, fetchedSettings);
         if (!fetchedSettings || fetchedSettings.onboarding_complete === false || fetchedSettings.onboarding_complete === null) {
-          console.log(`[AppLayout fetchUserDataAndSettings] Onboarding not complete or settings missing. setShowOnboardingForm: true`);
+          // console.log(`${appLayoutConsolePrefix} fetchUserDataAndSettings] Onboarding not complete or settings missing. setShowOnboardingForm: true`);
           setShowOnboardingForm(true);
         } else {
-          console.log(`[AppLayout fetchUserDataAndSettings] Onboarding complete. setShowOnboardingForm: false`);
+          // console.log(`${appLayoutConsolePrefix} fetchUserDataAndSettings] Onboarding complete. setShowOnboardingForm: false`);
           setShowOnboardingForm(false);
         }
       }
 
       const { data: favoritesData, error: favoritesError } = favoritesResult;
-      console.log(`[AppLayout fetchUserDataAndSettings] Favorites result: data: ${!!favoritesData}, error:`, favoritesError);
+      // console.log(`${appLayoutConsolePrefix} fetchUserDataAndSettings] Favorites result: data: ${!!favoritesData}, error:`, favoritesError);
       if (favoritesError) {
-         console.error("[AppLayout fetchUserDataAndSettings] Error fetching favorite job openings:", favoritesError.message);
+         console.error(`${appLayoutConsolePrefix} fetchUserDataAndSettings] Error fetching favorite job openings:`, favoritesError.message);
          setFavoriteJobOpenings([]);
       } else {
          setFavoriteJobOpenings(favoritesData as JobOpening[] || []);
       }
 
     } catch (error: any) {
-      console.error("[AppLayout fetchUserDataAndSettings] CATCH BLOCK ERROR:", error);
+      console.error(`${appLayoutConsolePrefix} fetchUserDataAndSettings] CATCH BLOCK ERROR:`, error);
       if (error.name === 'AuthApiError' && error.message.includes('Invalid Refresh Token')) {
-        console.log("[AppLayout fetchUserDataAndSettings] Invalid Refresh Token detected. Signing out.");
+        // console.log(`${appLayoutConsolePrefix} fetchUserDataAndSettings] Invalid Refresh Token detected. Signing out.`);
         toast({
           title: 'Session Invalid',
           description: 'Your session is invalid. Please sign in again.',
@@ -138,71 +140,73 @@ export function AppLayout({ children }: { children: ReactNode }) {
       setShowOnboardingForm(false);
       setFavoriteJobOpenings([]);
     } finally {
-      console.log(`[AppLayout fetchUserDataAndSettings] FINALLY block. Setting isLoadingSettings: false, setOnboardingCheckComplete: true`);
+      // console.log(`${appLayoutConsolePrefix} fetchUserDataAndSettings] FINALLY block. Setting isLoadingSettings: false, setOnboardingCheckComplete: true, setSettingsAndFavoritesFetchedOnceRef: true`);
       setIsLoadingSettings(false);
       setOnboardingCheckComplete(true);
+      setSettingsAndFavoritesFetchedOnceRef(true);
     }
   }, [toast]);
 
 
-  const processUserSession = useCallback((sessionUser: User | null) => { // Removed async as fetchUserDataAndSettings is not awaited
+  const processUserSession = useCallback((sessionUser: User | null) => {
     const currentPreviousUserId = previousUserIdRef.current;
     const newUserId = sessionUser?.id;
-    console.log(`[AppLayout processUserSession] Called. newUserId: ${newUserId}, currentPreviousUserId: ${currentPreviousUserId}`);
+    // console.log(`${appLayoutConsolePrefix} processUserSession] Called. newUserId: ${newUserId}, currentPreviousUserId: ${currentPreviousUserId}`);
 
     setUser(sessionUser);
-    console.log(`[AppLayout processUserSession] setUser called with user: ${sessionUser?.id}`);
+    // console.log(`${appLayoutConsolePrefix} processUserSession] setUser called with user: ${sessionUser?.id}`);
 
     if (newUserId !== currentPreviousUserId) {
-      console.log(`[AppLayout processUserSession] User ID changed or first load. Old: ${currentPreviousUserId}, New: ${newUserId}. Resetting related states.`);
+      // console.log(`${appLayoutConsolePrefix} processUserSession] User ID changed or first load. Old: ${currentPreviousUserId}, New: ${newUserId}. Resetting related states.`);
       previousUserIdRef.current = newUserId;
       setFavoriteJobOpenings([]);
       setUserSettings(null);
       setShowOnboardingForm(false);
-      setOnboardingCheckComplete(false); // Reset this
+      setOnboardingCheckComplete(false);
       setIsLoadingSettings(true);
+      setSettingsAndFavoritesFetchedOnceRef(false); // Reset fetch attempt flag for new user
 
       if (sessionUser) {
-        console.log(`[AppLayout processUserSession] New user session. Triggering fetchUserDataAndSettings for ${newUserId} (not awaiting).`);
-        fetchUserDataAndSettings(sessionUser.id); // Call but DON'T await
+        // console.log(`${appLayoutConsolePrefix} processUserSession] New user session. Triggering fetchUserDataAndSettings for ${newUserId}.`);
+        fetchUserDataAndSettings(sessionUser.id);
       } else {
-        console.log(`[AppLayout processUserSession] No user session (user is null after change/first load). Setting loading settings false, onboarding complete true.`);
+        // console.log(`${appLayoutConsolePrefix} processUserSession] No user session (user is null after change/first load). Setting loading settings false, onboarding complete true.`);
         setIsLoadingSettings(false);
         setOnboardingCheckComplete(true);
+        setSettingsAndFavoritesFetchedOnceRef(true); // Mark as "fetched" for no user
       }
-    } else if (!sessionUser) {
-        console.log(`[AppLayout processUserSession] No user session (user is null and was already null or unchanged). Setting loading states to false, onboarding complete true.`);
-        setIsLoadingSettings(false);
-        setOnboardingCheckComplete(true);
-    } else {
-      // User ID is the same, user is not null
-      if (!userSettings && !isLoadingSettings && !onboardingCheckComplete) {
-        console.log(`[AppLayout processUserSession] User same (${newUserId}), but settings not loaded and not currently loading. Triggering fetchUserDataAndSettings (not awaiting).`);
-        fetchUserDataAndSettings(sessionUser.id); // Call but DON'T await
-      } else {
-         console.log(`[AppLayout processUserSession] User same (${newUserId}). Settings already loaded or being loaded. onboardingCheckComplete: ${onboardingCheckComplete}, isLoadingSettings: ${isLoadingSettings}`);
-      }
+    } else if (sessionUser && !settingsAndFavoritesFetchedOnceRef && !isLoadingSettings) {
+      // Same user, but initial fetch for this user hasn't been attempted/completed.
+      // This covers cases where the component might re-render before the initial fetch completes.
+      // console.log(`${appLayoutConsolePrefix} processUserSession] User same (${newUserId}), but settings/favorites not yet fetched. Triggering fetch.`);
+      fetchUserDataAndSettings(sessionUser.id);
+    }
+     else {
+      // User ID is the same, or user is null and was already null.
+      // If user exists, assume data is either loading or already fetched.
+      // If user is null, related states are already cleared.
+      // console.log(`${appLayoutConsolePrefix} processUserSession] User same or null and no new fetch needed. User: ${newUserId}, settingsAndFavoritesFetchedOnceRef: ${settingsAndFavoritesFetchedOnceRef}, isLoadingSettings: ${isLoadingSettings}`);
     }
 
-    console.log(`[AppLayout processUserSession] Setting isLoadingAuth: false. User ID processed: ${sessionUser?.id}`);
-    setIsLoadingAuth(false); // This will now run much sooner.
+    // console.log(`${appLayoutConsolePrefix} processUserSession] Setting isLoadingAuth: false. User ID processed: ${sessionUser?.id}`);
+    setIsLoadingAuth(false);
 
-  }, [fetchUserDataAndSettings, userSettings, isLoadingSettings, onboardingCheckComplete]);
+  }, [fetchUserDataAndSettings, isLoadingSettings, settingsAndFavoritesFetchedOnceRef]);
 
   useEffect(() => {
-    console.log("[AppLayout Main Auth useEffect] Running.");
+    // console.log(`${appLayoutConsolePrefix} Main Auth useEffect] Running.`);
     const storedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
     const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     const initialTheme = storedTheme || (systemPrefersDark ? 'dark' : 'light');
     setTheme(initialTheme);
     document.documentElement.classList.toggle('dark', initialTheme === 'dark');
-    console.log(`[AppLayout Main Auth useEffect] Initial theme set to: ${initialTheme}`);
+    // console.log(`${appLayoutConsolePrefix} Main Auth useEffect] Initial theme set to: ${initialTheme}`);
     setIsLoadingAuth(true);
 
     const handleSessionResult = (session: Session | null, error?: any) => {
-      console.log(`[AppLayout Main Auth useEffect - handleSessionResult] Session: ${!!session}, Error:`, error);
+      // console.log(`${appLayoutConsolePrefix} Main Auth useEffect - handleSessionResult] Session: ${!!session}, Error:`, error);
       if (error) {
-        console.error("[AppLayout handleSessionResult] Error processing session:", error);
+        console.error(`${appLayoutConsolePrefix} handleSessionResult] Error processing session:`, error);
         if (error.name === 'AuthApiError' && error.message.includes("Invalid Refresh Token")) {
           toast({
             title: 'Session Invalid',
@@ -216,21 +220,19 @@ export function AppLayout({ children }: { children: ReactNode }) {
       processUserSession(session?.user ?? null);
     };
 
-    // No explicit getSession() call here, relying on onAuthStateChange for INITIAL_SESSION
-    // console.log("[AppLayout Main Auth useEffect] Relying on onAuthStateChange for initial session.");
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event: AuthChangeEvent, session: Session | null) => {
-        console.log(`[AppLayout onAuthStateChange] Event: ${event}, Session User ID: ${session?.user?.id}`);
+        // console.log(`${appLayoutConsolePrefix} onAuthStateChange] Event: ${event}, Session User ID: ${session?.user?.id}`);
         if (event === 'TOKEN_REFRESHED' && !session) {
-          console.warn("[AppLayout onAuthStateChange] TOKEN_REFRESHED but no session. Potential invalid session.");
+          console.warn(`${appLayoutConsolePrefix} onAuthStateChange] TOKEN_REFRESHED but no session. Potential invalid session.`);
           toast({
             title: 'Session Expired',
             description: 'Your session has expired. Please sign in again.',
             variant: 'destructive',
           });
         } else if (event === 'SIGNED_OUT') {
-           console.log("[AppLayout onAuthStateChange] SIGNED_OUT event.");
+           // console.log(`${appLayoutConsolePrefix} onAuthStateChange] SIGNED_OUT event.`);
            const activeToasts = (toast as any).toasts || []; // Type assertion if toasts property isn't directly on useToast return
            if (!activeToasts.some((t: any) => t.title === 'Session Expired' || t.title === 'Session Invalid')) {
              toast({ title: 'Signed Out', description: 'You have been signed out.' });
@@ -239,46 +241,42 @@ export function AppLayout({ children }: { children: ReactNode }) {
         processUserSession(session?.user ?? null);
       }
     );
-    console.log("[AppLayout Main Auth useEffect] Subscribed to onAuthStateChange.");
+    // console.log(`${appLayoutConsolePrefix} Main Auth useEffect] Subscribed to onAuthStateChange.`);
 
     return () => {
-      console.log("[AppLayout Main Auth useEffect] Unsubscribing from onAuthStateChange.");
+      // console.log(`${appLayoutConsolePrefix} Main Auth useEffect] Unsubscribing from onAuthStateChange.`);
       subscription?.unsubscribe();
     };
-  }, [processUserSession, toast]); // processUserSession is now a dependency
+  }, [processUserSession, toast]);
 
   useEffect(() => {
-    console.log(`[AppLayout Redirect useEffect] Running. isLoadingAuth: ${isLoadingAuth}, isPublicPath: ${isPublicPath}, user: ${!!user}, userSettings.onboarding_complete: ${userSettings?.onboarding_complete}, pathname: ${pathname}, onboardingCheckComplete: ${onboardingCheckComplete}`);
-    if (!isLoadingAuth && !isPublicPath) { // Only act if auth check is done
+    // console.log(`${appLayoutConsolePrefix} Redirect useEffect] Running. isLoadingAuth: ${isLoadingAuth}, isPublicPath: ${isPublicPath}, user: ${!!user}, userSettings.onboarding_complete: ${userSettings?.onboarding_complete}, pathname: ${pathname}, onboardingCheckComplete: ${onboardingCheckComplete}`);
+    if (!isLoadingAuth && !isPublicPath) {
       if (!user) {
-        console.log("[AppLayout Redirect useEffect] Not authenticated and not public path. Redirecting to /landing.");
+        // console.log(`${appLayoutConsolePrefix} Redirect useEffect] Not authenticated and not public path. Redirecting to /landing.`);
         router.push('/landing');
       }
-      // If user exists but onboarding not complete, the OnboardingForm will be shown by the main render logic.
-      // No explicit redirect for onboarding here, as AppLayout handles displaying it.
     } else if (!isLoadingAuth && user && onboardingCheckComplete && userSettings?.onboarding_complete && isPublicPath && !BLOG_PATHS_REGEX.test(pathname)) {
-      console.log("[AppLayout Redirect useEffect] Authenticated, onboarding complete, on public non-blog path. Redirecting to /.");
+      // console.log(`${appLayoutConsolePrefix} Redirect useEffect] Authenticated, onboarding complete, on public non-blog path. Redirecting to /.`);
       router.push('/');
     }
   }, [user, isLoadingAuth, isPublicPath, pathname, router, userSettings, onboardingCheckComplete]);
 
 
   const handleSignOut = async () => {
-    console.log("[AppLayout handleSignOut] Initiated.");
-    // setIsLoadingAuth(true); // Will be handled by onAuthStateChange
+    // console.log(`${appLayoutConsolePrefix} handleSignOut] Initiated.`);
     await supabase.auth.signOut();
-    console.log("[AppLayout handleSignOut] Supabase signOut complete. onAuthStateChange will trigger user update.");
+    // console.log(`${appLayoutConsolePrefix} handleSignOut] Supabase signOut complete. onAuthStateChange will trigger user update.`);
   };
 
   const handleOnboardingComplete = async () => {
-    console.log("[AppLayout handleOnboardingComplete] Initiated.");
-    setShowOnboardingForm(false); // Immediately hide form
+    // console.log(`${appLayoutConsolePrefix} handleOnboardingComplete] Initiated.`);
+    setShowOnboardingForm(false);
     if (user) {
-      console.log("[AppLayout handleOnboardingComplete] User exists, re-fetching user data and settings AFTER onboarding.");
-      // No need to set isLoadingSettings true here, fetchUserDataAndSettings does it
-      await fetchUserDataAndSettings(user.id); // Re-fetch to get updated onboarding_complete status
+      // console.log(`${appLayoutConsolePrefix} handleOnboardingComplete] User exists, re-fetching user data and settings AFTER onboarding.`);
+      await fetchUserDataAndSettings(user.id);
     } else {
-      console.warn("[AppLayout handleOnboardingComplete] Called but no user found. This shouldn't happen.");
+      console.warn(`${appLayoutConsolePrefix} handleOnboardingComplete] Called but no user found. This shouldn't happen.`);
     }
   };
 
@@ -287,23 +285,22 @@ export function AppLayout({ children }: { children: ReactNode }) {
         const newTheme = prevTheme === 'light' ? 'dark' : 'light';
         document.documentElement.classList.toggle('dark', newTheme === 'dark');
         localStorage.setItem('theme', newTheme);
-        console.log(`[AppLayout toggleTheme] Theme changed to: ${newTheme}`);
+        // console.log(`${appLayoutConsolePrefix} toggleTheme] Theme changed to: ${newTheme}`);
         return newTheme;
     });
   };
 
-  // Refined isAppLoading check
   const isAppLoading = isLoadingAuth || (user != null && (isLoadingSettings || !onboardingCheckComplete));
-  console.log(`[AppLayout] Calculated isAppLoading: ${isAppLoading} (isLoadingAuth: ${isLoadingAuth}, user: ${!!user}, isLoadingSettings: ${isLoadingSettings}, !onboardingCheckComplete: ${!onboardingCheckComplete})`);
+  // console.log(`${appLayoutConsolePrefix} Calculated isAppLoading: ${isAppLoading} (isLoadingAuth: ${isLoadingAuth}, user: ${!!user}, isLoadingSettings: ${isLoadingSettings}, !onboardingCheckComplete: ${!onboardingCheckComplete})`);
 
 
   if (isPublicPath) {
-     console.log("[AppLayout] Rendering public path children directly.");
+     // console.log(`${appLayoutConsolePrefix} Rendering public path children directly.`);
      return <>{children}</>;
   }
 
   if (isAppLoading) {
-    console.log("[AppLayout] Rendering main app loader because isAppLoading is true.");
+    // console.log(`${appLayoutConsolePrefix} Rendering main app loader because isAppLoading is true.`);
     return (
       <div className="flex h-screen w-screen items-center justify-center bg-background">
         <Loader2 className="h-12 w-12 animate-spin text-primary" />
@@ -313,7 +310,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
 
 
   if (onboardingCheckComplete && showOnboardingForm && user) {
-    console.log("[AppLayout] Rendering OnboardingForm.");
+    // console.log(`${appLayoutConsolePrefix} Rendering OnboardingForm.`);
     return (
          <OnboardingForm
               user={user}
@@ -325,11 +322,12 @@ export function AppLayout({ children }: { children: ReactNode }) {
             />
     );
   }
-  console.log("[AppLayout] Rendering main SidebarProvider layout.");
+  // console.log(`${appLayoutConsolePrefix} Rendering main SidebarProvider layout.`);
 
   const userDisplayNameToShow = userSettings?.full_name || user?.user_metadata?.full_name || user?.email || 'User';
   const userInitials = getInitials(userDisplayNameToShow, user?.email);
   const showDashboardLinkInMenu = !HIDE_DASHBOARD_LINK_PATHS.includes(pathname);
+  const menuItemClass = "relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50";
 
   return (
     <SidebarProvider defaultOpen>
@@ -394,27 +392,27 @@ export function AppLayout({ children }: { children: ReactNode }) {
                     </div>
                     <div className="my-1 h-px bg-muted" />
                     <Link href="/landing" passHref legacyBehavior>
-                        <a className={cn("relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors data-[disabled]:pointer-events-none data-[disabled]:opacity-50", "cursor-pointer hover:bg-accent hover:text-accent-foreground")}>
+                        <a className={cn(menuItemClass, "cursor-pointer")}>
                         <Home className="mr-2 h-4 w-4" />
                         <span>Homepage</span>
                         </a>
                     </Link>
                     {showDashboardLinkInMenu && (
                          <Link href="/" passHref legacyBehavior>
-                            <a className={cn("relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors data-[disabled]:pointer-events-none data-[disabled]:opacity-50", "cursor-pointer hover:bg-accent hover:text-accent-foreground")}>
-                            <Home className="mr-2 h-4 w-4" /> {}
+                            <a className={cn(menuItemClass, "cursor-pointer")}>
+                            <LayoutDashboard className="mr-2 h-4 w-4" />
                             <span>Dashboard</span>
                             </a>
                         </Link>
                     )}
                     <Link href="/settings/account" passHref legacyBehavior>
-                        <a className={cn("relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors data-[disabled]:pointer-events-none data-[disabled]:opacity-50", "cursor-pointer hover:bg-accent hover:text-accent-foreground")}>
+                        <a className={cn(menuItemClass, "cursor-pointer")}>
                         <Settings className="mr-2 h-4 w-4" />
-                        <span>Account Settings</span>
+                        <span>Settings</span>
                         </a>
                     </Link>
                     <Link href="/settings/billing" passHref legacyBehavior>
-                        <a className={cn("relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors data-[disabled]:pointer-events-none data-[disabled]:opacity-50", "cursor-pointer hover:bg-accent hover:text-accent-foreground")}>
+                        <a className={cn(menuItemClass, "cursor-pointer")}>
                         <CreditCard className="mr-2 h-4 w-4" />
                         <span>Billing &amp; Plan</span>
                         </a>
@@ -422,7 +420,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
                     <div className="my-1 h-px bg-muted" />
                     <button
                         onClick={handleSignOut}
-                        className={cn("relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors data-[disabled]:pointer-events-none data-[disabled]:opacity-50", "text-destructive hover:bg-destructive/20 hover:text-destructive focus:bg-destructive/20 focus:text-destructive cursor-pointer w-full")}
+                        className={cn(menuItemClass, "text-destructive hover:bg-destructive/20 hover:text-destructive focus:bg-destructive/20 focus:text-destructive cursor-pointer w-full")}
                     >
                         <LogOut className="mr-2 h-4 w-4" />
                         <span>Sign Out</span>

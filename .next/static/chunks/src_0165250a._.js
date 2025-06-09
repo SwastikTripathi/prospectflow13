@@ -1361,6 +1361,11 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$re
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$star$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Star$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/star.js [app-client] (ecmascript) <export default as Star>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$pen$2d$line$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Edit3$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/pen-line.js [app-client] (ecmascript) <export default as Edit3>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$rss$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Rss$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/rss.js [app-client] (ecmascript) <export default as Rss>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$credit$2d$card$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__CreditCard$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/credit-card.js [app-client] (ecmascript) <export default as CreditCard>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$circle$2d$user$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__UserCircle$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/circle-user.js [app-client] (ecmascript) <export default as UserCircle>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$sliders$2d$horizontal$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__SlidersHorizontal$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/sliders-horizontal.js [app-client] (ecmascript) <export default as SlidersHorizontal>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$mail$2d$question$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__MailQuestion$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/mail-question.js [app-client] (ecmascript) <export default as MailQuestion>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$key$2d$round$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__KeyRound$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/key-round.js [app-client] (ecmascript) <export default as KeyRound>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/lib/utils.ts [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/components/ui/sidebar.tsx [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$tooltip$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/components/ui/tooltip.tsx [app-client] (ecmascript)");
@@ -1399,6 +1404,34 @@ const mainNavItems = [
         href: '/companies',
         label: 'Companies',
         icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$building$2d$2$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Building2$3e$__["Building2"]
+    }
+];
+const settingsNavItems = [
+    {
+        href: '/settings/account#profile-details',
+        label: 'Profile Details',
+        icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$circle$2d$user$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__UserCircle$3e$__["UserCircle"]
+    },
+    {
+        href: '/settings/account#usage-preferences',
+        label: 'Usage & Cadence',
+        icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$sliders$2d$horizontal$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__SlidersHorizontal$3e$__["SlidersHorizontal"]
+    },
+    {
+        href: '/settings/account#email-customization',
+        label: 'Email Customization',
+        icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$mail$2d$question$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__MailQuestion$3e$__["MailQuestion"]
+    },
+    {
+        href: '/settings/account#security',
+        label: 'Password & Security',
+        icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$key$2d$round$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__KeyRound$3e$__["KeyRound"]
+    },
+    {
+        href: '/settings/billing',
+        label: 'Billing & Plan',
+        icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$credit$2d$card$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__CreditCard$3e$__["CreditCard"],
+        separator: true
     }
 ];
 const blogNavItems = [
@@ -1456,34 +1489,35 @@ function SidebarNav({ favoriteJobOpenings = [] }) {
     }["SidebarNav.useEffect"], []);
     const isCollapsedDesktop = sidebarState === 'collapsed' && !isMobile;
     const isExpandedDesktop = sidebarState === 'expanded' && !isMobile;
+    const isSettingsPage = pathname.startsWith('/settings');
     const renderNavItems = (items, groupLabel)=>{
         const filteredItems = items.filter((item)=>!item.ownerOnly || item.ownerOnly && isOwner);
         if (filteredItems.length === 0 && groupLabel && items.every((item)=>item.ownerOnly)) return null;
         if (filteredItems.length === 0 && !groupLabel) return null;
         return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SidebarGroup"], {
             children: [
-                groupLabel && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SidebarGroupLabel"], {
+                groupLabel && !isSettingsPage && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SidebarGroupLabel"], {
                     className: "group-data-[collapsible=icon]:sr-only",
                     children: groupLabel
                 }, void 0, false, {
                     fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                    lineNumber: 96,
+                    lineNumber: 119,
                     columnNumber: 13
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SidebarMenu"], {
                     children: filteredItems.map((item)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].Fragment, {
                             children: [
-                                item.separator && item.ownerOnly && isOwner && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SidebarSeparator"], {
+                                item.separator && (isSettingsPage && item.href === '/settings/billing' || item.ownerOnly && isOwner && !isSettingsPage) && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SidebarSeparator"], {
                                     className: "my-1"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                    lineNumber: 103,
-                                    columnNumber: 65
+                                    lineNumber: 126,
+                                    columnNumber: 145
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SidebarMenuItem"], {
                                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SidebarMenuButton"], {
                                         asChild: true,
-                                        isActive: pathname === item.href || item.href !== '/' && pathname.startsWith(item.href),
+                                        isActive: pathname === item.href || item.href !== '/' && pathname.startsWith(item.href) && item.href.split('#')[0] === pathname.split('#')[0],
                                         className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])(item.disabled && "cursor-not-allowed opacity-50"),
                                         tooltip: isCollapsedDesktop ? {
                                             children: item.label,
@@ -1502,47 +1536,47 @@ function SidebarNav({ favoriteJobOpenings = [] }) {
                                             children: [
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(item.icon, {}, void 0, false, {
                                                     fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                                    lineNumber: 121,
+                                                    lineNumber: 144,
                                                     columnNumber: 21
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                     children: item.label
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                                    lineNumber: 122,
+                                                    lineNumber: 145,
                                                     columnNumber: 21
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                            lineNumber: 111,
+                                            lineNumber: 134,
                                             columnNumber: 21
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                        lineNumber: 105,
+                                        lineNumber: 128,
                                         columnNumber: 17
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                    lineNumber: 104,
+                                    lineNumber: 127,
                                     columnNumber: 17
                                 }, this)
                             ]
                         }, item.label, true, {
                             fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                            lineNumber: 102,
+                            lineNumber: 125,
                             columnNumber: 13
                         }, this))
                 }, void 0, false, {
                     fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                    lineNumber: 100,
+                    lineNumber: 123,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/components/layout/SidebarNav.tsx",
-            lineNumber: 94,
+            lineNumber: 117,
             columnNumber: 9
         }, this);
     };
@@ -1558,25 +1592,25 @@ function SidebarNav({ favoriteJobOpenings = [] }) {
                             className: "h-5 w-5 rounded bg-muted"
                         }, void 0, false, {
                             fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                            lineNumber: 138,
+                            lineNumber: 161,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             className: "h-4 w-3/4 rounded bg-muted"
                         }, void 0, false, {
                             fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                            lineNumber: 139,
+                            lineNumber: 162,
                             columnNumber: 13
                         }, this)
                     ]
                 }, i, true, {
                     fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                    lineNumber: 137,
+                    lineNumber: 160,
                     columnNumber: 11
                 }, this))
         }, void 0, false, {
             fileName: "[project]/src/components/layout/SidebarNav.tsx",
-            lineNumber: 135,
+            lineNumber: 158,
             columnNumber: 7
         }, this);
     }
@@ -1585,19 +1619,19 @@ function SidebarNav({ favoriteJobOpenings = [] }) {
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 children: [
-                    renderNavItems(mainNavItems),
+                    isSettingsPage ? renderNavItems(settingsNavItems) : renderNavItems(mainNavItems),
                     isOwner && renderNavItems(blogNavItems, "Blog Management")
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                lineNumber: 149,
+                lineNumber: 172,
                 columnNumber: 7
             }, this),
-            favoriteJobOpenings && favoriteJobOpenings.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
+            favoriteJobOpenings && favoriteJobOpenings.length > 0 && !isSettingsPage && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SidebarSeparator"], {}, void 0, false, {
                         fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                        lineNumber: 156,
+                        lineNumber: 179,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SidebarGroup"], {
@@ -1608,7 +1642,7 @@ function SidebarNav({ favoriteJobOpenings = [] }) {
                                 children: "Favorites"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                lineNumber: 158,
+                                lineNumber: 181,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1639,7 +1673,7 @@ function SidebarNav({ favoriteJobOpenings = [] }) {
                                                                             className: "text-yellow-500 flex-shrink-0"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                                                            lineNumber: 176,
+                                                                            lineNumber: 199,
                                                                             columnNumber: 33
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1647,23 +1681,23 @@ function SidebarNav({ favoriteJobOpenings = [] }) {
                                                                             children: favoriteDisplayName
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                                                            lineNumber: 177,
+                                                                            lineNumber: 200,
                                                                             columnNumber: 33
                                                                         }, this)
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                                                    lineNumber: 175,
+                                                                    lineNumber: 198,
                                                                     columnNumber: 31
                                                                 }, this)
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                                                lineNumber: 170,
+                                                                lineNumber: 193,
                                                                 columnNumber: 29
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                                            lineNumber: 169,
+                                                            lineNumber: 192,
                                                             columnNumber: 27
                                                         }, this),
                                                         isExpandedDesktop && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$tooltip$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TooltipContent"], {
@@ -1674,40 +1708,40 @@ function SidebarNav({ favoriteJobOpenings = [] }) {
                                                             children: favoriteDisplayName
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                                            lineNumber: 184,
+                                                            lineNumber: 207,
                                                             columnNumber: 29
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                                    lineNumber: 168,
+                                                    lineNumber: 191,
                                                     columnNumber: 25
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                                lineNumber: 167,
+                                                lineNumber: 190,
                                                 columnNumber: 23
                                             }, this)
                                         }, opening.id, false, {
                                             fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                            lineNumber: 166,
+                                            lineNumber: 189,
                                             columnNumber: 21
                                         }, this);
                                     })
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                    lineNumber: 162,
+                                    lineNumber: 185,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                lineNumber: 161,
+                                lineNumber: 184,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                        lineNumber: 157,
+                        lineNumber: 180,
                         columnNumber: 11
                     }, this)
                 ]
@@ -1715,7 +1749,7 @@ function SidebarNav({ favoriteJobOpenings = [] }) {
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/layout/SidebarNav.tsx",
-        lineNumber: 148,
+        lineNumber: 171,
         columnNumber: 5
     }, this);
 }
@@ -5403,7 +5437,7 @@ __turbopack_context__.s({
 });
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/index.js [app-client] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/client/app-dir/link.js [app-client] (ecmascript)"); // Added Link import
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/client/app-dir/link.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$layout$2f$AppLayout$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/components/layout/AppLayout.tsx [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/components/ui/button.tsx [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/components/ui/card.tsx [app-client] (ecmascript)");
@@ -5537,7 +5571,6 @@ const accountSettingsSchema = (0, __TURBOPACK__imported__module__$5b$project$5d2
         }),
         sharedSignature: (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["string"])().max(500, "Signature too long").optional()
     }),
-    // Onboarding fields
     ageRange: (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["string"])().min(1, "Age range is required"),
     country: (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["string"])().min(1, "Country is required").max(100, "Country name too long"),
     annualIncome: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["coerce"].number().positive("Income must be positive").optional().or((0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$zod$2f$lib$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["literal"])('')),
@@ -5631,16 +5664,10 @@ function AccountSettingsPage() {
                     },
                     ageRange: fetchedSettings?.age_range ?? defaultFormValues.ageRange,
                     country: fetchedSettings?.country ?? defaultFormValues.country,
-                    annualIncome: fetchedSettings?.annual_income ?? defaultFormValues.annualIncome,
-                    incomeCurrency: fetchedSettings?.income_currency ?? defaultFormValues.incomeCurrency,
+                    annualIncome: fetchedSettings?.annual_income === null ? '' : fetchedSettings?.annual_income ?? defaultFormValues.annualIncome,
+                    incomeCurrency: fetchedSettings?.income_currency === null ? '' : fetchedSettings?.income_currency ?? defaultFormValues.incomeCurrency,
                     currentRole: fetchedSettings?.current_role ?? defaultFormValues.currentRole
                 };
-                if (resetData.annualIncome === null) {
-                    resetData.annualIncome = '';
-                }
-                if (resetData.incomeCurrency === null) {
-                    resetData.incomeCurrency = '';
-                }
                 settingsForm.reset(resetData);
             } catch (error) {
                 toast({
@@ -5665,7 +5692,7 @@ function AccountSettingsPage() {
                 "AccountSettingsPage.useEffect": (event, session)=>{
                     const user = session?.user ?? null;
                     if (user?.id !== previousUserIdRef.current) {
-                        setHasFetchedData(false);
+                        setHasFetchedData(false); // Reset fetch status if user ID changes
                         setUserSettings(null);
                         settingsForm.reset(defaultFormValues);
                     }
@@ -5674,6 +5701,7 @@ function AccountSettingsPage() {
                     setIsLoadingAuth(false);
                 }
             }["AccountSettingsPage.useEffect"]);
+            // Initial fetch for current user on mount
             __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].auth.getUser().then({
                 "AccountSettingsPage.useEffect": ({ data: { user } })=>{
                     if (user?.id !== previousUserIdRef.current) {
@@ -5692,14 +5720,14 @@ function AccountSettingsPage() {
         }
     }["AccountSettingsPage.useEffect"], [
         settingsForm
-    ]);
+    ]); // Add settingsForm to dependencies if it might change, or ensure stability
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "AccountSettingsPage.useEffect": ()=>{
             if (currentUser && !isLoadingAuth && !hasFetchedData) {
                 fetchAccountData(currentUser);
             } else if (!currentUser && !isLoadingAuth) {
-                setIsFetchingSettings(false); // Ensure this is false if no user
-                setHasFetchedData(true); // Mark as "attempted" for no user
+                setIsFetchingSettings(false);
+                setHasFetchedData(true);
             }
         }
     }["AccountSettingsPage.useEffect"], [
@@ -5717,7 +5745,7 @@ function AccountSettingsPage() {
             });
             return;
         }
-        setIsFetchingSettings(true);
+        setIsFetchingSettings(true); // Use isFetchingSettings to indicate submission process
         try {
             const settingsDataToUpsert = {
                 user_id: currentUser.id,
@@ -5736,10 +5764,12 @@ function AccountSettingsPage() {
                 current_role: values.currentRole,
                 onboarding_complete: userSettings?.onboarding_complete ?? true
             };
+            // Upsert settings
             const { error: settingsUpsertError } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].from('user_settings').upsert(settingsDataToUpsert, {
                 onConflict: 'user_id'
             });
             if (settingsUpsertError) throw settingsUpsertError;
+            // Update Supabase Auth user_metadata if displayName changed
             if (currentUser.user_metadata?.full_name !== values.displayName) {
                 const { error: userUpdateError } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].auth.updateUser({
                     data: {
@@ -5747,6 +5777,7 @@ function AccountSettingsPage() {
                     }
                 });
                 if (userUpdateError) {
+                    // Log this, but don't necessarily fail the whole operation if auth update fails
                     console.warn("Could not update Supabase Auth user_metadata.full_name:", userUpdateError.message);
                 }
             }
@@ -5758,7 +5789,7 @@ function AccountSettingsPage() {
                     ...prev || {},
                     ...settingsDataToUpsert,
                     user_id: currentUser.id
-                }));
+                })); // Update local state
         } catch (error) {
             toast({
                 title: 'Error Saving Settings',
@@ -5815,6 +5846,7 @@ function AccountSettingsPage() {
         }
         setIsDeletingAccount(true);
         try {
+            // Order of deletion might matter depending on foreign key constraints (e.g., delete dependent records first)
             const tablesToDeleteFrom = [
                 'follow_ups',
                 'job_opening_contacts',
@@ -5823,26 +5855,33 @@ function AccountSettingsPage() {
                 'companies',
                 'user_settings',
                 'user_subscriptions',
+                'invoices',
                 'posts'
             ];
             for (const tableName of tablesToDeleteFrom){
                 const { error } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].from(tableName).delete().eq('user_id', currentUser.id);
                 if (error) {
-                    throw new Error(`Failed to delete data from ${tableName}. ${error.message}`);
+                    // Log or handle error, but continue trying to delete from other tables
+                    console.error(`Failed to delete data from ${tableName}. ${error.message}`);
+                // Optionally, accumulate errors and show a more comprehensive message at the end
                 }
             }
+            // After attempting to delete all application data, sign out the user
             const { error: signOutError } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].auth.signOut();
-            if (signOutError) {}
+            if (signOutError) {
+                // Log this, user might still be technically "logged in" on client if this fails
+                console.error("Error signing out after data deletion:", signOutError.message);
+            }
             toast({
                 title: 'Account Data Deleted',
                 description: 'All your application data has been successfully deleted. You have been signed out. Your authentication record still exists but is no longer associated with any application data.',
                 duration: 10000
             });
-            router.push('/landing');
+            router.push('/landing'); // Redirect to landing page
         } catch (error) {
             toast({
                 title: 'Account Deletion Failed',
-                description: error.message || 'An unexpected error occurred.',
+                description: error.message || 'An unexpected error occurred during account deletion.',
                 variant: 'destructive'
             });
         } finally{
@@ -5851,6 +5890,7 @@ function AccountSettingsPage() {
             setDeleteConfirmationInput('');
         }
     };
+    // Initial full-page loader
     if (isLoadingAuth) {
         return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$layout$2f$AppLayout$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AppLayout"], {
             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5859,20 +5899,21 @@ function AccountSettingsPage() {
                     className: "h-12 w-12 animate-spin text-primary"
                 }, void 0, false, {
                     fileName: "[project]/src/app/settings/account/page.tsx",
-                    lineNumber: 351,
+                    lineNumber: 359,
                     columnNumber: 78
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/settings/account/page.tsx",
-                lineNumber: 351,
+                lineNumber: 359,
                 columnNumber: 23
             }, this)
         }, void 0, false, {
             fileName: "[project]/src/app/settings/account/page.tsx",
-            lineNumber: 351,
+            lineNumber: 359,
             columnNumber: 12
         }, this);
     }
+    // If auth check is done, but no user
     if (!currentUser) {
         return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$layout$2f$AppLayout$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AppLayout"], {
             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
@@ -5882,12 +5923,12 @@ function AccountSettingsPage() {
                             children: "Access Denied"
                         }, void 0, false, {
                             fileName: "[project]/src/app/settings/account/page.tsx",
-                            lineNumber: 354,
+                            lineNumber: 363,
                             columnNumber: 42
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/app/settings/account/page.tsx",
-                        lineNumber: 354,
+                        lineNumber: 363,
                         columnNumber: 30
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -5896,7 +5937,7 @@ function AccountSettingsPage() {
                                 children: "Please log in to access account settings."
                             }, void 0, false, {
                                 fileName: "[project]/src/app/settings/account/page.tsx",
-                                lineNumber: 354,
+                                lineNumber: 363,
                                 columnNumber: 104
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -5907,32 +5948,33 @@ function AccountSettingsPage() {
                                     children: "Sign In"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/settings/account/page.tsx",
-                                    lineNumber: 354,
+                                    lineNumber: 363,
                                     columnNumber: 185
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/app/settings/account/page.tsx",
-                                lineNumber: 354,
+                                lineNumber: 363,
                                 columnNumber: 152
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/settings/account/page.tsx",
-                        lineNumber: 354,
+                        lineNumber: 363,
                         columnNumber: 91
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/settings/account/page.tsx",
-                lineNumber: 354,
+                lineNumber: 363,
                 columnNumber: 24
             }, this)
         }, void 0, false, {
             fileName: "[project]/src/app/settings/account/page.tsx",
-            lineNumber: 354,
+            lineNumber: 363,
             columnNumber: 13
         }, this);
     }
+    // If user is present, but initial settings data is still being fetched for the first time
     const showSettingsLoader = isFetchingSettings && !hasFetchedData;
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$layout$2f$AppLayout$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AppLayout"], {
         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5947,14 +5989,14 @@ function AccountSettingsPage() {
                                     className: "mr-3 h-7 w-7 text-primary"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/settings/account/page.tsx",
-                                    lineNumber: 365,
+                                    lineNumber: 375,
                                     columnNumber: 13
                                 }, this),
                                 "Account Settings"
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/settings/account/page.tsx",
-                            lineNumber: 364,
+                            lineNumber: 374,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -5962,13 +6004,13 @@ function AccountSettingsPage() {
                             children: "Manage your profile, preferences, and application settings."
                         }, void 0, false, {
                             fileName: "[project]/src/app/settings/account/page.tsx",
-                            lineNumber: 368,
+                            lineNumber: 378,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/settings/account/page.tsx",
-                    lineNumber: 363,
+                    lineNumber: 373,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Form"], {
@@ -5979,6 +6021,7 @@ function AccountSettingsPage() {
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
                                 className: "shadow-lg",
+                                id: "profile-details",
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardHeader"], {
                                         children: [
@@ -5989,27 +6032,27 @@ function AccountSettingsPage() {
                                                         className: "mr-2 h-5 w-5 text-primary"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/settings/account/page.tsx",
-                                                        lineNumber: 375,
+                                                        lineNumber: 385,
                                                         columnNumber: 72
                                                     }, this),
                                                     " Profile"
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/settings/account/page.tsx",
-                                                lineNumber: 375,
+                                                lineNumber: 385,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardDescription"], {
                                                 children: "Update your display name and general profile information."
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/settings/account/page.tsx",
-                                                lineNumber: 376,
+                                                lineNumber: 386,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/settings/account/page.tsx",
-                                        lineNumber: 374,
+                                        lineNumber: 384,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -6020,14 +6063,14 @@ function AccountSettingsPage() {
                                                     label: "Display Name"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/settings/account/page.tsx",
-                                                    lineNumber: 381,
+                                                    lineNumber: 391,
                                                     columnNumber: 21
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(SkeletonItem, {
                                                     label: "Current Role/Profession"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/settings/account/page.tsx",
-                                                    lineNumber: 382,
+                                                    lineNumber: 392,
                                                     columnNumber: 21
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6038,20 +6081,20 @@ function AccountSettingsPage() {
                                                             type: "select"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/settings/account/page.tsx",
-                                                            lineNumber: 384,
+                                                            lineNumber: 394,
                                                             columnNumber: 23
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(SkeletonItem, {
                                                             label: "Country of Residence"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/settings/account/page.tsx",
-                                                            lineNumber: 385,
+                                                            lineNumber: 395,
                                                             columnNumber: 23
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/settings/account/page.tsx",
-                                                    lineNumber: 383,
+                                                    lineNumber: 393,
                                                     columnNumber: 21
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6061,7 +6104,7 @@ function AccountSettingsPage() {
                                                             label: "Annual Income (Optional)"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/settings/account/page.tsx",
-                                                            lineNumber: 388,
+                                                            lineNumber: 398,
                                                             columnNumber: 23
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(SkeletonItem, {
@@ -6069,13 +6112,13 @@ function AccountSettingsPage() {
                                                             type: "select"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/settings/account/page.tsx",
-                                                            lineNumber: 389,
+                                                            lineNumber: 399,
                                                             columnNumber: 23
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/settings/account/page.tsx",
-                                                    lineNumber: 387,
+                                                    lineNumber: 397,
                                                     columnNumber: 22
                                                 }, this)
                                             ]
@@ -6090,7 +6133,7 @@ function AccountSettingsPage() {
                                                                     children: "Display Name"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                    lineNumber: 399,
+                                                                    lineNumber: 409,
                                                                     columnNumber: 23
                                                                 }, void 0),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormControl"], {
@@ -6100,28 +6143,28 @@ function AccountSettingsPage() {
                                                                         disabled: isFetchingSettings || settingsForm.formState.isSubmitting
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                        lineNumber: 401,
+                                                                        lineNumber: 411,
                                                                         columnNumber: 25
                                                                     }, void 0)
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                    lineNumber: 400,
+                                                                    lineNumber: 410,
                                                                     columnNumber: 23
                                                                 }, void 0),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormMessage"], {}, void 0, false, {
                                                                     fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                    lineNumber: 403,
+                                                                    lineNumber: 413,
                                                                     columnNumber: 23
                                                                 }, void 0)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/settings/account/page.tsx",
-                                                            lineNumber: 398,
+                                                            lineNumber: 408,
                                                             columnNumber: 21
                                                         }, void 0)
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/settings/account/page.tsx",
-                                                    lineNumber: 394,
+                                                    lineNumber: 404,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormField"], {
@@ -6133,7 +6176,7 @@ function AccountSettingsPage() {
                                                                     children: "Current Role/Profession"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                    lineNumber: 412,
+                                                                    lineNumber: 422,
                                                                     columnNumber: 23
                                                                 }, void 0),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormControl"], {
@@ -6143,28 +6186,28 @@ function AccountSettingsPage() {
                                                                         disabled: isFetchingSettings || settingsForm.formState.isSubmitting
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                        lineNumber: 413,
+                                                                        lineNumber: 423,
                                                                         columnNumber: 36
                                                                     }, void 0)
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                    lineNumber: 413,
+                                                                    lineNumber: 423,
                                                                     columnNumber: 23
                                                                 }, void 0),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormMessage"], {}, void 0, false, {
                                                                     fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                    lineNumber: 414,
+                                                                    lineNumber: 424,
                                                                     columnNumber: 23
                                                                 }, void 0)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/settings/account/page.tsx",
-                                                            lineNumber: 411,
+                                                            lineNumber: 421,
                                                             columnNumber: 21
                                                         }, void 0)
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/settings/account/page.tsx",
-                                                    lineNumber: 407,
+                                                    lineNumber: 417,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6179,7 +6222,7 @@ function AccountSettingsPage() {
                                                                             children: "Age Range"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                            lineNumber: 424,
+                                                                            lineNumber: 434,
                                                                             columnNumber: 29
                                                                         }, void 0),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Select"], {
@@ -6193,17 +6236,17 @@ function AccountSettingsPage() {
                                                                                             placeholder: "Select your age range"
                                                                                         }, void 0, false, {
                                                                                             fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                                            lineNumber: 426,
+                                                                                            lineNumber: 436,
                                                                                             columnNumber: 57
                                                                                         }, void 0)
                                                                                     }, void 0, false, {
                                                                                         fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                                        lineNumber: 426,
+                                                                                        lineNumber: 436,
                                                                                         columnNumber: 42
                                                                                     }, void 0)
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                                    lineNumber: 426,
+                                                                                    lineNumber: 436,
                                                                                     columnNumber: 29
                                                                                 }, void 0),
                                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectContent"], {
@@ -6212,34 +6255,34 @@ function AccountSettingsPage() {
                                                                                             children: range
                                                                                         }, range, false, {
                                                                                             fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                                            lineNumber: 428,
+                                                                                            lineNumber: 438,
                                                                                             columnNumber: 58
                                                                                         }, void 0))
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                                    lineNumber: 427,
+                                                                                    lineNumber: 437,
                                                                                     columnNumber: 29
                                                                                 }, void 0)
                                                                             ]
                                                                         }, void 0, true, {
                                                                             fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                            lineNumber: 425,
+                                                                            lineNumber: 435,
                                                                             columnNumber: 29
                                                                         }, void 0),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormMessage"], {}, void 0, false, {
                                                                             fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                            lineNumber: 431,
+                                                                            lineNumber: 441,
                                                                             columnNumber: 29
                                                                         }, void 0)
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                    lineNumber: 423,
+                                                                    lineNumber: 433,
                                                                     columnNumber: 25
                                                                 }, void 0)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/settings/account/page.tsx",
-                                                            lineNumber: 419,
+                                                            lineNumber: 429,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormField"], {
@@ -6251,7 +6294,7 @@ function AccountSettingsPage() {
                                                                             children: "Country of Residence"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                            lineNumber: 440,
+                                                                            lineNumber: 450,
                                                                             columnNumber: 29
                                                                         }, void 0),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormControl"], {
@@ -6261,34 +6304,34 @@ function AccountSettingsPage() {
                                                                                 disabled: isFetchingSettings || settingsForm.formState.isSubmitting
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                                lineNumber: 441,
+                                                                                lineNumber: 451,
                                                                                 columnNumber: 42
                                                                             }, void 0)
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                            lineNumber: 441,
+                                                                            lineNumber: 451,
                                                                             columnNumber: 29
                                                                         }, void 0),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormMessage"], {}, void 0, false, {
                                                                             fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                            lineNumber: 442,
+                                                                            lineNumber: 452,
                                                                             columnNumber: 29
                                                                         }, void 0)
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                    lineNumber: 439,
+                                                                    lineNumber: 449,
                                                                     columnNumber: 25
                                                                 }, void 0)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/settings/account/page.tsx",
-                                                            lineNumber: 435,
+                                                            lineNumber: 445,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/settings/account/page.tsx",
-                                                    lineNumber: 418,
+                                                    lineNumber: 428,
                                                     columnNumber: 18
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6303,7 +6346,7 @@ function AccountSettingsPage() {
                                                                             children: "Annual Income (Optional)"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                            lineNumber: 453,
+                                                                            lineNumber: 463,
                                                                             columnNumber: 29
                                                                         }, void 0),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormControl"], {
@@ -6315,28 +6358,28 @@ function AccountSettingsPage() {
                                                                                 disabled: isFetchingSettings || settingsForm.formState.isSubmitting
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                                lineNumber: 454,
+                                                                                lineNumber: 464,
                                                                                 columnNumber: 42
                                                                             }, void 0)
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                            lineNumber: 454,
+                                                                            lineNumber: 464,
                                                                             columnNumber: 29
                                                                         }, void 0),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormMessage"], {}, void 0, false, {
                                                                             fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                            lineNumber: 455,
+                                                                            lineNumber: 465,
                                                                             columnNumber: 29
                                                                         }, void 0)
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                    lineNumber: 452,
+                                                                    lineNumber: 462,
                                                                     columnNumber: 25
                                                                 }, void 0)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/settings/account/page.tsx",
-                                                            lineNumber: 448,
+                                                            lineNumber: 458,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormField"], {
@@ -6348,7 +6391,7 @@ function AccountSettingsPage() {
                                                                             children: "Income Currency (Optional)"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                            lineNumber: 464,
+                                                                            lineNumber: 474,
                                                                             columnNumber: 29
                                                                         }, void 0),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Select"], {
@@ -6362,17 +6405,17 @@ function AccountSettingsPage() {
                                                                                             placeholder: "Select currency"
                                                                                         }, void 0, false, {
                                                                                             fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                                            lineNumber: 466,
+                                                                                            lineNumber: 476,
                                                                                             columnNumber: 57
                                                                                         }, void 0)
                                                                                     }, void 0, false, {
                                                                                         fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                                        lineNumber: 466,
+                                                                                        lineNumber: 476,
                                                                                         columnNumber: 42
                                                                                     }, void 0)
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                                    lineNumber: 466,
+                                                                                    lineNumber: 476,
                                                                                     columnNumber: 29
                                                                                 }, void 0),
                                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectContent"], {
@@ -6381,57 +6424,58 @@ function AccountSettingsPage() {
                                                                                             children: currency
                                                                                         }, currency, false, {
                                                                                             fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                                            lineNumber: 468,
+                                                                                            lineNumber: 478,
                                                                                             columnNumber: 61
                                                                                         }, void 0))
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                                    lineNumber: 467,
+                                                                                    lineNumber: 477,
                                                                                     columnNumber: 29
                                                                                 }, void 0)
                                                                             ]
                                                                         }, void 0, true, {
                                                                             fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                            lineNumber: 465,
+                                                                            lineNumber: 475,
                                                                             columnNumber: 29
                                                                         }, void 0),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormMessage"], {}, void 0, false, {
                                                                             fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                            lineNumber: 471,
+                                                                            lineNumber: 481,
                                                                             columnNumber: 29
                                                                         }, void 0)
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                    lineNumber: 463,
+                                                                    lineNumber: 473,
                                                                     columnNumber: 25
                                                                 }, void 0)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/settings/account/page.tsx",
-                                                            lineNumber: 459,
+                                                            lineNumber: 469,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/settings/account/page.tsx",
-                                                    lineNumber: 447,
+                                                    lineNumber: 457,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true)
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/settings/account/page.tsx",
-                                        lineNumber: 378,
+                                        lineNumber: 388,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/settings/account/page.tsx",
-                                lineNumber: 373,
+                                lineNumber: 383,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
                                 className: "shadow-lg",
+                                id: "usage-preferences",
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardHeader"], {
                                         children: [
@@ -6442,351 +6486,316 @@ function AccountSettingsPage() {
                                                         className: "mr-2 h-5 w-5 text-primary"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/settings/account/page.tsx",
-                                                        lineNumber: 483,
+                                                        lineNumber: 493,
                                                         columnNumber: 72
                                                     }, this),
-                                                    " Usage Preference"
+                                                    " Usage Preference & Cadence"
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/settings/account/page.tsx",
-                                                lineNumber: 483,
+                                                lineNumber: 493,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardDescription"], {
-                                                children: "This feature is coming soon. Your selection here will help tailor your experience in the future."
+                                                children: "Customize how you use ProspectFlow and set default follow-up timings."
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/settings/account/page.tsx",
-                                                lineNumber: 484,
+                                                lineNumber: 494,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/settings/account/page.tsx",
-                                        lineNumber: 482,
+                                        lineNumber: 492,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
-                                        children: showSettingsLoader ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(SkeletonItem, {
-                                            label: "Primary Usage",
-                                            type: "select"
-                                        }, void 0, false, {
-                                            fileName: "[project]/src/app/settings/account/page.tsx",
-                                            lineNumber: 487,
-                                            columnNumber: 40
-                                        }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormField"], {
-                                            control: settingsForm.control,
-                                            name: "usagePreference",
-                                            render: ({ field })=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormItem"], {
-                                                    children: [
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormLabel"], {
-                                                            children: "Primary Usage"
-                                                        }, void 0, false, {
-                                                            fileName: "[project]/src/app/settings/account/page.tsx",
-                                                            lineNumber: 493,
-                                                            columnNumber: 23
-                                                        }, void 0),
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Select"], {
-                                                            onValueChange: field.onChange,
-                                                            value: field.value,
-                                                            disabled: true || isFetchingSettings,
-                                                            children: [
-                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormControl"], {
-                                                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectTrigger"], {
-                                                                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectValue"], {
-                                                                            placeholder: "Select your primary goal"
+                                        className: "space-y-6",
+                                        children: [
+                                            showSettingsLoader ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(SkeletonItem, {
+                                                label: "Primary Usage",
+                                                type: "select"
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/app/settings/account/page.tsx",
+                                                lineNumber: 497,
+                                                columnNumber: 40
+                                            }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormField"], {
+                                                control: settingsForm.control,
+                                                name: "usagePreference",
+                                                render: ({ field })=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormItem"], {
+                                                        children: [
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormLabel"], {
+                                                                children: "Primary Usage"
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/src/app/settings/account/page.tsx",
+                                                                lineNumber: 503,
+                                                                columnNumber: 23
+                                                            }, void 0),
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Select"], {
+                                                                onValueChange: field.onChange,
+                                                                value: field.value,
+                                                                disabled: true || isFetchingSettings,
+                                                                children: [
+                                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormControl"], {
+                                                                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectTrigger"], {
+                                                                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectValue"], {
+                                                                                placeholder: "Select your primary goal"
+                                                                            }, void 0, false, {
+                                                                                fileName: "[project]/src/app/settings/account/page.tsx",
+                                                                                lineNumber: 510,
+                                                                                columnNumber: 42
+                                                                            }, void 0)
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                            lineNumber: 500,
-                                                                            columnNumber: 42
+                                                                            lineNumber: 510,
+                                                                            columnNumber: 27
                                                                         }, void 0)
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                        lineNumber: 500,
-                                                                        columnNumber: 27
+                                                                        lineNumber: 509,
+                                                                        columnNumber: 25
+                                                                    }, void 0),
+                                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectContent"], {
+                                                                        children: USAGE_PREFERENCES.map((pref)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectItem"], {
+                                                                                value: pref.value,
+                                                                                children: pref.label
+                                                                            }, pref.value, false, {
+                                                                                fileName: "[project]/src/app/settings/account/page.tsx",
+                                                                                lineNumber: 514,
+                                                                                columnNumber: 29
+                                                                            }, void 0))
+                                                                    }, void 0, false, {
+                                                                        fileName: "[project]/src/app/settings/account/page.tsx",
+                                                                        lineNumber: 512,
+                                                                        columnNumber: 25
                                                                     }, void 0)
-                                                                }, void 0, false, {
-                                                                    fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                    lineNumber: 499,
-                                                                    columnNumber: 25
-                                                                }, void 0),
-                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectContent"], {
-                                                                    children: USAGE_PREFERENCES.map((pref)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SelectItem"], {
-                                                                            value: pref.value,
-                                                                            children: pref.label
-                                                                        }, pref.value, false, {
-                                                                            fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                            lineNumber: 504,
-                                                                            columnNumber: 29
-                                                                        }, void 0))
-                                                                }, void 0, false, {
-                                                                    fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                    lineNumber: 502,
-                                                                    columnNumber: 25
-                                                                }, void 0)
-                                                            ]
-                                                        }, void 0, true, {
-                                                            fileName: "[project]/src/app/settings/account/page.tsx",
-                                                            lineNumber: 494,
-                                                            columnNumber: 23
-                                                        }, void 0),
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormMessage"], {}, void 0, false, {
-                                                            fileName: "[project]/src/app/settings/account/page.tsx",
-                                                            lineNumber: 508,
-                                                            columnNumber: 23
-                                                        }, void 0)
-                                                    ]
-                                                }, void 0, true, {
-                                                    fileName: "[project]/src/app/settings/account/page.tsx",
-                                                    lineNumber: 492,
-                                                    columnNumber: 21
-                                                }, void 0)
-                                        }, void 0, false, {
-                                            fileName: "[project]/src/app/settings/account/page.tsx",
-                                            lineNumber: 488,
-                                            columnNumber: 17
-                                        }, this)
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/app/settings/account/page.tsx",
-                                        lineNumber: 486,
-                                        columnNumber: 15
-                                    }, this)
-                                ]
-                            }, void 0, true, {
-                                fileName: "[project]/src/app/settings/account/page.tsx",
-                                lineNumber: 481,
-                                columnNumber: 13
-                            }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
-                                className: "shadow-lg",
-                                children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardHeader"], {
-                                        children: [
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardTitle"], {
-                                                className: "font-headline flex items-center",
-                                                children: [
-                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$sliders$2d$horizontal$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__SlidersHorizontal$3e$__["SlidersHorizontal"], {
-                                                        className: "mr-2 h-5 w-5 text-primary"
-                                                    }, void 0, false, {
+                                                                ]
+                                                            }, void 0, true, {
+                                                                fileName: "[project]/src/app/settings/account/page.tsx",
+                                                                lineNumber: 504,
+                                                                columnNumber: 23
+                                                            }, void 0),
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                                className: "text-xs text-muted-foreground pt-1",
+                                                                children: "This feature is coming soon and will tailor your experience."
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/src/app/settings/account/page.tsx",
+                                                                lineNumber: 518,
+                                                                columnNumber: 24
+                                                            }, void 0),
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormMessage"], {}, void 0, false, {
+                                                                fileName: "[project]/src/app/settings/account/page.tsx",
+                                                                lineNumber: 519,
+                                                                columnNumber: 23
+                                                            }, void 0)
+                                                        ]
+                                                    }, void 0, true, {
                                                         fileName: "[project]/src/app/settings/account/page.tsx",
-                                                        lineNumber: 518,
-                                                        columnNumber: 72
-                                                    }, this),
-                                                    " Follow-up Cadence"
-                                                ]
-                                            }, void 0, true, {
-                                                fileName: "[project]/src/app/settings/account/page.tsx",
-                                                lineNumber: 518,
-                                                columnNumber: 17
-                                            }, this),
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardDescription"], {
-                                                children: "Set the default number of days after the initial email for each follow-up. Must be sequential."
+                                                        lineNumber: 502,
+                                                        columnNumber: 21
+                                                    }, void 0)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/settings/account/page.tsx",
-                                                lineNumber: 519,
+                                                lineNumber: 498,
                                                 columnNumber: 17
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                className: "grid md:grid-cols-3 gap-4",
+                                                children: showSettingsLoader ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
+                                                    children: [
+                                                        " ",
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(SkeletonItem, {
+                                                            label: "Follow-up 1 (days)"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/app/settings/account/page.tsx",
+                                                            lineNumber: 525,
+                                                            columnNumber: 46
+                                                        }, this),
+                                                        " ",
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(SkeletonItem, {
+                                                            label: "Follow-up 2 (days)"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/app/settings/account/page.tsx",
+                                                            lineNumber: 525,
+                                                            columnNumber: 90
+                                                        }, this),
+                                                        " ",
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(SkeletonItem, {
+                                                            label: "Follow-up 3 (days)"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/app/settings/account/page.tsx",
+                                                            lineNumber: 525,
+                                                            columnNumber: 134
+                                                        }, this),
+                                                        " "
+                                                    ]
+                                                }, void 0, true) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
+                                                    children: [
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormField"], {
+                                                            control: settingsForm.control,
+                                                            name: "cadenceFu1",
+                                                            render: ({ field })=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormItem"], {
+                                                                    children: [
+                                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormLabel"], {
+                                                                            children: "Follow-up 1 (days after initial)"
+                                                                        }, void 0, false, {
+                                                                            fileName: "[project]/src/app/settings/account/page.tsx",
+                                                                            lineNumber: 532,
+                                                                            columnNumber: 25
+                                                                        }, void 0),
+                                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormControl"], {
+                                                                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
+                                                                                type: "number",
+                                                                                min: "1",
+                                                                                max: "90",
+                                                                                ...field,
+                                                                                disabled: isFetchingSettings || settingsForm.formState.isSubmitting
+                                                                            }, void 0, false, {
+                                                                                fileName: "[project]/src/app/settings/account/page.tsx",
+                                                                                lineNumber: 533,
+                                                                                columnNumber: 38
+                                                                            }, void 0)
+                                                                        }, void 0, false, {
+                                                                            fileName: "[project]/src/app/settings/account/page.tsx",
+                                                                            lineNumber: 533,
+                                                                            columnNumber: 25
+                                                                        }, void 0),
+                                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormMessage"], {}, void 0, false, {
+                                                                            fileName: "[project]/src/app/settings/account/page.tsx",
+                                                                            lineNumber: 534,
+                                                                            columnNumber: 25
+                                                                        }, void 0)
+                                                                    ]
+                                                                }, void 0, true, {
+                                                                    fileName: "[project]/src/app/settings/account/page.tsx",
+                                                                    lineNumber: 531,
+                                                                    columnNumber: 25
+                                                                }, void 0)
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/app/settings/account/page.tsx",
+                                                            lineNumber: 527,
+                                                            columnNumber: 21
+                                                        }, this),
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormField"], {
+                                                            control: settingsForm.control,
+                                                            name: "cadenceFu2",
+                                                            render: ({ field })=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormItem"], {
+                                                                    children: [
+                                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormLabel"], {
+                                                                            children: "Follow-up 2 (days after initial)"
+                                                                        }, void 0, false, {
+                                                                            fileName: "[project]/src/app/settings/account/page.tsx",
+                                                                            lineNumber: 543,
+                                                                            columnNumber: 25
+                                                                        }, void 0),
+                                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormControl"], {
+                                                                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
+                                                                                type: "number",
+                                                                                min: "1",
+                                                                                max: "90",
+                                                                                ...field,
+                                                                                disabled: isFetchingSettings || settingsForm.formState.isSubmitting
+                                                                            }, void 0, false, {
+                                                                                fileName: "[project]/src/app/settings/account/page.tsx",
+                                                                                lineNumber: 544,
+                                                                                columnNumber: 38
+                                                                            }, void 0)
+                                                                        }, void 0, false, {
+                                                                            fileName: "[project]/src/app/settings/account/page.tsx",
+                                                                            lineNumber: 544,
+                                                                            columnNumber: 25
+                                                                        }, void 0),
+                                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormMessage"], {}, void 0, false, {
+                                                                            fileName: "[project]/src/app/settings/account/page.tsx",
+                                                                            lineNumber: 545,
+                                                                            columnNumber: 25
+                                                                        }, void 0)
+                                                                    ]
+                                                                }, void 0, true, {
+                                                                    fileName: "[project]/src/app/settings/account/page.tsx",
+                                                                    lineNumber: 542,
+                                                                    columnNumber: 25
+                                                                }, void 0)
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/app/settings/account/page.tsx",
+                                                            lineNumber: 538,
+                                                            columnNumber: 21
+                                                        }, this),
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormField"], {
+                                                            control: settingsForm.control,
+                                                            name: "cadenceFu3",
+                                                            render: ({ field })=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormItem"], {
+                                                                    children: [
+                                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormLabel"], {
+                                                                            children: "Follow-up 3 (days after initial)"
+                                                                        }, void 0, false, {
+                                                                            fileName: "[project]/src/app/settings/account/page.tsx",
+                                                                            lineNumber: 554,
+                                                                            columnNumber: 25
+                                                                        }, void 0),
+                                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormControl"], {
+                                                                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
+                                                                                type: "number",
+                                                                                min: "1",
+                                                                                max: "90",
+                                                                                ...field,
+                                                                                disabled: isFetchingSettings || settingsForm.formState.isSubmitting
+                                                                            }, void 0, false, {
+                                                                                fileName: "[project]/src/app/settings/account/page.tsx",
+                                                                                lineNumber: 555,
+                                                                                columnNumber: 38
+                                                                            }, void 0)
+                                                                        }, void 0, false, {
+                                                                            fileName: "[project]/src/app/settings/account/page.tsx",
+                                                                            lineNumber: 555,
+                                                                            columnNumber: 25
+                                                                        }, void 0),
+                                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormMessage"], {}, void 0, false, {
+                                                                            fileName: "[project]/src/app/settings/account/page.tsx",
+                                                                            lineNumber: 556,
+                                                                            columnNumber: 25
+                                                                        }, void 0)
+                                                                    ]
+                                                                }, void 0, true, {
+                                                                    fileName: "[project]/src/app/settings/account/page.tsx",
+                                                                    lineNumber: 553,
+                                                                    columnNumber: 25
+                                                                }, void 0)
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/app/settings/account/page.tsx",
+                                                            lineNumber: 549,
+                                                            columnNumber: 21
+                                                        }, this)
+                                                    ]
+                                                }, void 0, true)
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/app/settings/account/page.tsx",
+                                                lineNumber: 524,
+                                                columnNumber: 18
+                                            }, this),
+                                            settingsForm.formState.errors?.cadenceFu2?.type === 'manual' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                className: "text-sm font-medium text-destructive pt-1",
+                                                children: settingsForm.formState.errors.cadenceFu2.message
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/app/settings/account/page.tsx",
+                                                lineNumber: 564,
+                                                columnNumber: 21
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/settings/account/page.tsx",
-                                        lineNumber: 517,
+                                        lineNumber: 496,
                                         columnNumber: 15
-                                    }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
-                                        className: "grid md:grid-cols-3 gap-4",
-                                        children: showSettingsLoader ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
-                                            children: [
-                                                " ",
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(SkeletonItem, {
-                                                    label: "Follow-up 1 (days)"
-                                                }, void 0, false, {
-                                                    fileName: "[project]/src/app/settings/account/page.tsx",
-                                                    lineNumber: 522,
-                                                    columnNumber: 42
-                                                }, this),
-                                                " ",
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(SkeletonItem, {
-                                                    label: "Follow-up 2 (days)"
-                                                }, void 0, false, {
-                                                    fileName: "[project]/src/app/settings/account/page.tsx",
-                                                    lineNumber: 522,
-                                                    columnNumber: 86
-                                                }, this),
-                                                " ",
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(SkeletonItem, {
-                                                    label: "Follow-up 3 (days)"
-                                                }, void 0, false, {
-                                                    fileName: "[project]/src/app/settings/account/page.tsx",
-                                                    lineNumber: 522,
-                                                    columnNumber: 130
-                                                }, this),
-                                                " "
-                                            ]
-                                        }, void 0, true) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
-                                            children: [
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormField"], {
-                                                    control: settingsForm.control,
-                                                    name: "cadenceFu1",
-                                                    render: ({ field })=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormItem"], {
-                                                            children: [
-                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormLabel"], {
-                                                                    children: "Follow-up 1 (days after initial)"
-                                                                }, void 0, false, {
-                                                                    fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                    lineNumber: 529,
-                                                                    columnNumber: 23
-                                                                }, void 0),
-                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormControl"], {
-                                                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
-                                                                        type: "number",
-                                                                        min: "1",
-                                                                        max: "90",
-                                                                        ...field,
-                                                                        disabled: isFetchingSettings || settingsForm.formState.isSubmitting
-                                                                    }, void 0, false, {
-                                                                        fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                        lineNumber: 530,
-                                                                        columnNumber: 36
-                                                                    }, void 0)
-                                                                }, void 0, false, {
-                                                                    fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                    lineNumber: 530,
-                                                                    columnNumber: 23
-                                                                }, void 0),
-                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormMessage"], {}, void 0, false, {
-                                                                    fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                    lineNumber: 531,
-                                                                    columnNumber: 23
-                                                                }, void 0)
-                                                            ]
-                                                        }, void 0, true, {
-                                                            fileName: "[project]/src/app/settings/account/page.tsx",
-                                                            lineNumber: 528,
-                                                            columnNumber: 21
-                                                        }, void 0)
-                                                }, void 0, false, {
-                                                    fileName: "[project]/src/app/settings/account/page.tsx",
-                                                    lineNumber: 524,
-                                                    columnNumber: 17
-                                                }, this),
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormField"], {
-                                                    control: settingsForm.control,
-                                                    name: "cadenceFu2",
-                                                    render: ({ field })=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormItem"], {
-                                                            children: [
-                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormLabel"], {
-                                                                    children: "Follow-up 2 (days after initial)"
-                                                                }, void 0, false, {
-                                                                    fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                    lineNumber: 540,
-                                                                    columnNumber: 23
-                                                                }, void 0),
-                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormControl"], {
-                                                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
-                                                                        type: "number",
-                                                                        min: "1",
-                                                                        max: "90",
-                                                                        ...field,
-                                                                        disabled: isFetchingSettings || settingsForm.formState.isSubmitting
-                                                                    }, void 0, false, {
-                                                                        fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                        lineNumber: 541,
-                                                                        columnNumber: 36
-                                                                    }, void 0)
-                                                                }, void 0, false, {
-                                                                    fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                    lineNumber: 541,
-                                                                    columnNumber: 23
-                                                                }, void 0),
-                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormMessage"], {}, void 0, false, {
-                                                                    fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                    lineNumber: 542,
-                                                                    columnNumber: 23
-                                                                }, void 0)
-                                                            ]
-                                                        }, void 0, true, {
-                                                            fileName: "[project]/src/app/settings/account/page.tsx",
-                                                            lineNumber: 539,
-                                                            columnNumber: 21
-                                                        }, void 0)
-                                                }, void 0, false, {
-                                                    fileName: "[project]/src/app/settings/account/page.tsx",
-                                                    lineNumber: 535,
-                                                    columnNumber: 17
-                                                }, this),
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormField"], {
-                                                    control: settingsForm.control,
-                                                    name: "cadenceFu3",
-                                                    render: ({ field })=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormItem"], {
-                                                            children: [
-                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormLabel"], {
-                                                                    children: "Follow-up 3 (days after initial)"
-                                                                }, void 0, false, {
-                                                                    fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                    lineNumber: 551,
-                                                                    columnNumber: 23
-                                                                }, void 0),
-                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormControl"], {
-                                                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
-                                                                        type: "number",
-                                                                        min: "1",
-                                                                        max: "90",
-                                                                        ...field,
-                                                                        disabled: isFetchingSettings || settingsForm.formState.isSubmitting
-                                                                    }, void 0, false, {
-                                                                        fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                        lineNumber: 552,
-                                                                        columnNumber: 36
-                                                                    }, void 0)
-                                                                }, void 0, false, {
-                                                                    fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                    lineNumber: 552,
-                                                                    columnNumber: 23
-                                                                }, void 0),
-                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormMessage"], {}, void 0, false, {
-                                                                    fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                    lineNumber: 553,
-                                                                    columnNumber: 23
-                                                                }, void 0)
-                                                            ]
-                                                        }, void 0, true, {
-                                                            fileName: "[project]/src/app/settings/account/page.tsx",
-                                                            lineNumber: 550,
-                                                            columnNumber: 21
-                                                        }, void 0)
-                                                }, void 0, false, {
-                                                    fileName: "[project]/src/app/settings/account/page.tsx",
-                                                    lineNumber: 546,
-                                                    columnNumber: 17
-                                                }, this)
-                                            ]
-                                        }, void 0, true)
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/app/settings/account/page.tsx",
-                                        lineNumber: 521,
-                                        columnNumber: 15
-                                    }, this),
-                                    settingsForm.formState.errors?.cadenceFu2?.type === 'manual' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardFooter"], {
-                                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                            className: "text-sm font-medium text-destructive",
-                                            children: settingsForm.formState.errors.cadenceFu2.message
-                                        }, void 0, false, {
-                                            fileName: "[project]/src/app/settings/account/page.tsx",
-                                            lineNumber: 561,
-                                            columnNumber: 31
-                                        }, this)
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/app/settings/account/page.tsx",
-                                        lineNumber: 561,
-                                        columnNumber: 19
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/settings/account/page.tsx",
-                                lineNumber: 516,
+                                lineNumber: 491,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
                                 className: "shadow-lg",
+                                id: "email-customization",
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardHeader"], {
                                         children: [
@@ -6797,27 +6806,27 @@ function AccountSettingsPage() {
                                                         className: "mr-2 h-5 w-5 text-primary"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/settings/account/page.tsx",
-                                                        lineNumber: 567,
+                                                        lineNumber: 571,
                                                         columnNumber: 72
                                                     }, this),
                                                     " Default Email Templates"
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/settings/account/page.tsx",
-                                                lineNumber: 567,
+                                                lineNumber: 571,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardDescription"], {
                                                 children: "Set default content for your follow-up emails. These will pre-fill when creating a new job opening."
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/settings/account/page.tsx",
-                                                lineNumber: 568,
+                                                lineNumber: 572,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/settings/account/page.tsx",
-                                        lineNumber: 566,
+                                        lineNumber: 570,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -6829,20 +6838,20 @@ function AccountSettingsPage() {
                                                         className: "h-8 w-full"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/settings/account/page.tsx",
-                                                        lineNumber: 571,
+                                                        lineNumber: 575,
                                                         columnNumber: 66
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$skeleton$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Skeleton"], {
                                                         className: "h-20 w-full"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/settings/account/page.tsx",
-                                                        lineNumber: 571,
+                                                        lineNumber: 575,
                                                         columnNumber: 101
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/settings/account/page.tsx",
-                                                lineNumber: 571,
+                                                lineNumber: 575,
                                                 columnNumber: 39
                                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$accordion$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Accordion"], {
                                                 type: "multiple",
@@ -6862,7 +6871,7 @@ function AccountSettingsPage() {
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                lineNumber: 575,
+                                                                lineNumber: 579,
                                                                 columnNumber: 23
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$accordion$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AccordionContent"], {
@@ -6877,7 +6886,7 @@ function AccountSettingsPage() {
                                                                                         children: "Subject Line"
                                                                                     }, void 0, false, {
                                                                                         fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                                        lineNumber: 582,
+                                                                                        lineNumber: 586,
                                                                                         columnNumber: 31
                                                                                     }, void 0),
                                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormControl"], {
@@ -6888,28 +6897,28 @@ function AccountSettingsPage() {
                                                                                             disabled: isFetchingSettings || settingsForm.formState.isSubmitting
                                                                                         }, void 0, false, {
                                                                                             fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                                            lineNumber: 583,
+                                                                                            lineNumber: 587,
                                                                                             columnNumber: 44
                                                                                         }, void 0)
                                                                                     }, void 0, false, {
                                                                                         fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                                        lineNumber: 583,
+                                                                                        lineNumber: 587,
                                                                                         columnNumber: 31
                                                                                     }, void 0),
                                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormMessage"], {}, void 0, false, {
                                                                                         fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                                        lineNumber: 584,
+                                                                                        lineNumber: 588,
                                                                                         columnNumber: 31
                                                                                     }, void 0)
                                                                                 ]
                                                                             }, void 0, true, {
                                                                                 fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                                lineNumber: 581,
+                                                                                lineNumber: 585,
                                                                                 columnNumber: 29
                                                                             }, void 0)
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                        lineNumber: 577,
+                                                                        lineNumber: 581,
                                                                         columnNumber: 25
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormField"], {
@@ -6921,7 +6930,7 @@ function AccountSettingsPage() {
                                                                                         children: "Opening Line / Main Content"
                                                                                     }, void 0, false, {
                                                                                         fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                                        lineNumber: 593,
+                                                                                        lineNumber: 597,
                                                                                         columnNumber: 31
                                                                                     }, void 0),
                                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormControl"], {
@@ -6933,45 +6942,45 @@ function AccountSettingsPage() {
                                                                                             disabled: isFetchingSettings || settingsForm.formState.isSubmitting
                                                                                         }, void 0, false, {
                                                                                             fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                                            lineNumber: 594,
+                                                                                            lineNumber: 598,
                                                                                             columnNumber: 44
                                                                                         }, void 0)
                                                                                     }, void 0, false, {
                                                                                         fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                                        lineNumber: 594,
+                                                                                        lineNumber: 598,
                                                                                         columnNumber: 31
                                                                                     }, void 0),
                                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormMessage"], {}, void 0, false, {
                                                                                         fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                                        lineNumber: 595,
+                                                                                        lineNumber: 599,
                                                                                         columnNumber: 31
                                                                                     }, void 0)
                                                                                 ]
                                                                             }, void 0, true, {
                                                                                 fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                                lineNumber: 592,
+                                                                                lineNumber: 596,
                                                                                 columnNumber: 29
                                                                             }, void 0)
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                        lineNumber: 588,
+                                                                        lineNumber: 592,
                                                                         columnNumber: 25
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                lineNumber: 576,
+                                                                lineNumber: 580,
                                                                 columnNumber: 23
                                                             }, this)
                                                         ]
                                                     }, fuKey, true, {
                                                         fileName: "[project]/src/app/settings/account/page.tsx",
-                                                        lineNumber: 574,
+                                                        lineNumber: 578,
                                                         columnNumber: 21
                                                     }, this))
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/settings/account/page.tsx",
-                                                lineNumber: 572,
+                                                lineNumber: 576,
                                                 columnNumber: 17
                                             }, this),
                                             showSettingsLoader ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(SkeletonItem, {
@@ -6979,7 +6988,7 @@ function AccountSettingsPage() {
                                                 type: "textarea"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/settings/account/page.tsx",
-                                                lineNumber: 605,
+                                                lineNumber: 609,
                                                 columnNumber: 39
                                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormField"], {
                                                 control: settingsForm.control,
@@ -6993,14 +7002,14 @@ function AccountSettingsPage() {
                                                                         className: "mr-2 h-4 w-4 text-muted-foreground"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                        lineNumber: 611,
+                                                                        lineNumber: 615,
                                                                         columnNumber: 88
                                                                     }, void 0),
                                                                     " Shared Email Signature"
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                lineNumber: 611,
+                                                                lineNumber: 615,
                                                                 columnNumber: 23
                                                             }, void 0),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardDescription"], {
@@ -7008,7 +7017,7 @@ function AccountSettingsPage() {
                                                                 children: "This signature will be appended to all default follow-up email templates."
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                lineNumber: 612,
+                                                                lineNumber: 616,
                                                                 columnNumber: 24
                                                             }, void 0),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormControl"], {
@@ -7020,40 +7029,40 @@ function AccountSettingsPage() {
                                                                     disabled: isFetchingSettings || settingsForm.formState.isSubmitting
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                    lineNumber: 613,
+                                                                    lineNumber: 617,
                                                                     columnNumber: 36
                                                                 }, void 0)
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                lineNumber: 613,
+                                                                lineNumber: 617,
                                                                 columnNumber: 23
                                                             }, void 0),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormMessage"], {}, void 0, false, {
                                                                 fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                lineNumber: 614,
+                                                                lineNumber: 618,
                                                                 columnNumber: 23
                                                             }, void 0)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/settings/account/page.tsx",
-                                                        lineNumber: 610,
+                                                        lineNumber: 614,
                                                         columnNumber: 21
                                                     }, void 0)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/settings/account/page.tsx",
-                                                lineNumber: 606,
+                                                lineNumber: 610,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/settings/account/page.tsx",
-                                        lineNumber: 570,
+                                        lineNumber: 574,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/settings/account/page.tsx",
-                                lineNumber: 565,
+                                lineNumber: 569,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7067,30 +7076,30 @@ function AccountSettingsPage() {
                                             className: "mr-2 h-4 w-4 animate-spin"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/settings/account/page.tsx",
-                                            lineNumber: 624,
+                                            lineNumber: 628,
                                             columnNumber: 82
                                         }, this),
                                         "Save All Settings"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/settings/account/page.tsx",
-                                    lineNumber: 623,
+                                    lineNumber: 627,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/app/settings/account/page.tsx",
-                                lineNumber: 622,
+                                lineNumber: 626,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/settings/account/page.tsx",
-                        lineNumber: 372,
+                        lineNumber: 382,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/app/settings/account/page.tsx",
-                    lineNumber: 371,
+                    lineNumber: 381,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Form"], {
@@ -7100,6 +7109,7 @@ function AccountSettingsPage() {
                         className: "space-y-8",
                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
                             className: "shadow-lg",
+                            id: "security",
                             children: [
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardHeader"], {
                                     children: [
@@ -7110,27 +7120,27 @@ function AccountSettingsPage() {
                                                     className: "mr-2 h-5 w-5 text-primary"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/settings/account/page.tsx",
-                                                    lineNumber: 635,
+                                                    lineNumber: 639,
                                                     columnNumber: 72
                                                 }, this),
                                                 " Change Password"
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/settings/account/page.tsx",
-                                            lineNumber: 635,
+                                            lineNumber: 639,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardDescription"], {
                                             children: "Update your account password. Choose a strong, unique password."
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/settings/account/page.tsx",
-                                            lineNumber: 636,
+                                            lineNumber: 640,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/settings/account/page.tsx",
-                                    lineNumber: 634,
+                                    lineNumber: 638,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -7142,7 +7152,7 @@ function AccountSettingsPage() {
                                                 label: "New Password"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/settings/account/page.tsx",
-                                                lineNumber: 639,
+                                                lineNumber: 643,
                                                 columnNumber: 43
                                             }, this),
                                             " ",
@@ -7150,7 +7160,7 @@ function AccountSettingsPage() {
                                                 label: "Confirm New Password"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/settings/account/page.tsx",
-                                                lineNumber: 639,
+                                                lineNumber: 643,
                                                 columnNumber: 81
                                             }, this),
                                             " "
@@ -7166,7 +7176,7 @@ function AccountSettingsPage() {
                                                                 children: "New Password"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                lineNumber: 646,
+                                                                lineNumber: 650,
                                                                 columnNumber: 23
                                                             }, void 0),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormControl"], {
@@ -7177,28 +7187,28 @@ function AccountSettingsPage() {
                                                                     disabled: isPasswordUpdating || isFetchingSettings
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                    lineNumber: 648,
+                                                                    lineNumber: 652,
                                                                     columnNumber: 25
                                                                 }, void 0)
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                lineNumber: 647,
+                                                                lineNumber: 651,
                                                                 columnNumber: 23
                                                             }, void 0),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormMessage"], {}, void 0, false, {
                                                                 fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                lineNumber: 650,
+                                                                lineNumber: 654,
                                                                 columnNumber: 23
                                                             }, void 0)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/settings/account/page.tsx",
-                                                        lineNumber: 645,
+                                                        lineNumber: 649,
                                                         columnNumber: 21
                                                     }, void 0)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/settings/account/page.tsx",
-                                                lineNumber: 641,
+                                                lineNumber: 645,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormField"], {
@@ -7210,7 +7220,7 @@ function AccountSettingsPage() {
                                                                 children: "Confirm New Password"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                lineNumber: 659,
+                                                                lineNumber: 663,
                                                                 columnNumber: 23
                                                             }, void 0),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormControl"], {
@@ -7221,35 +7231,35 @@ function AccountSettingsPage() {
                                                                     disabled: isPasswordUpdating || isFetchingSettings
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                    lineNumber: 661,
+                                                                    lineNumber: 665,
                                                                     columnNumber: 25
                                                                 }, void 0)
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                lineNumber: 660,
+                                                                lineNumber: 664,
                                                                 columnNumber: 23
                                                             }, void 0),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormMessage"], {}, void 0, false, {
                                                                 fileName: "[project]/src/app/settings/account/page.tsx",
-                                                                lineNumber: 663,
+                                                                lineNumber: 667,
                                                                 columnNumber: 23
                                                             }, void 0)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/settings/account/page.tsx",
-                                                        lineNumber: 658,
+                                                        lineNumber: 662,
                                                         columnNumber: 21
                                                     }, void 0)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/settings/account/page.tsx",
-                                                lineNumber: 654,
+                                                lineNumber: 658,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true)
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/settings/account/page.tsx",
-                                    lineNumber: 638,
+                                    lineNumber: 642,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardFooter"], {
@@ -7261,35 +7271,35 @@ function AccountSettingsPage() {
                                                 className: "mr-2 h-4 w-4 animate-spin"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/settings/account/page.tsx",
-                                                lineNumber: 672,
+                                                lineNumber: 676,
                                                 columnNumber: 42
                                             }, this),
                                             "Update Password"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/settings/account/page.tsx",
-                                        lineNumber: 671,
+                                        lineNumber: 675,
                                         columnNumber: 17
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/settings/account/page.tsx",
-                                    lineNumber: 670,
+                                    lineNumber: 674,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/settings/account/page.tsx",
-                            lineNumber: 633,
+                            lineNumber: 637,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/app/settings/account/page.tsx",
-                        lineNumber: 632,
+                        lineNumber: 636,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/app/settings/account/page.tsx",
-                    lineNumber: 631,
+                    lineNumber: 635,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
@@ -7304,14 +7314,14 @@ function AccountSettingsPage() {
                                             className: "mr-2 h-5 w-5"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/settings/account/page.tsx",
-                                            lineNumber: 682,
+                                            lineNumber: 686,
                                             columnNumber: 85
                                         }, this),
                                         " Danger Zone"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/settings/account/page.tsx",
-                                    lineNumber: 682,
+                                    lineNumber: 686,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardDescription"], {
@@ -7319,13 +7329,13 @@ function AccountSettingsPage() {
                                     children: "Account deletion is permanent and cannot be undone."
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/settings/account/page.tsx",
-                                    lineNumber: 683,
+                                    lineNumber: 687,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/settings/account/page.tsx",
-                            lineNumber: 681,
+                            lineNumber: 685,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -7335,7 +7345,7 @@ function AccountSettingsPage() {
                                     children: "Deleting your account will permanently remove all your associated data, including: job openings, contacts, companies, follow-up schedules, email templates, user settings, and subscription information. Your authentication record will remain but will no longer be associated with any application data."
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/settings/account/page.tsx",
-                                    lineNumber: 686,
+                                    lineNumber: 690,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -7347,32 +7357,32 @@ function AccountSettingsPage() {
                                             className: "mr-2 h-4 w-4 animate-spin"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/settings/account/page.tsx",
-                                            lineNumber: 692,
+                                            lineNumber: 696,
                                             columnNumber: 36
                                         }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$trash$2d$2$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Trash2$3e$__["Trash2"], {
                                             className: "mr-2 h-4 w-4"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/settings/account/page.tsx",
-                                            lineNumber: 692,
+                                            lineNumber: 696,
                                             columnNumber: 88
                                         }, this),
                                         "Delete My Account"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/settings/account/page.tsx",
-                                    lineNumber: 691,
+                                    lineNumber: 695,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/settings/account/page.tsx",
-                            lineNumber: 685,
+                            lineNumber: 689,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/settings/account/page.tsx",
-                    lineNumber: 680,
+                    lineNumber: 684,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$alert$2d$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AlertDialog"], {
@@ -7386,7 +7396,7 @@ function AccountSettingsPage() {
                                         children: "Are you absolutely sure?"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/settings/account/page.tsx",
-                                        lineNumber: 701,
+                                        lineNumber: 705,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$alert$2d$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AlertDialogDescription"], {
@@ -7396,31 +7406,31 @@ function AccountSettingsPage() {
                                                 children: "permanently deleted"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/settings/account/page.tsx",
-                                                lineNumber: 705,
+                                                lineNumber: 709,
                                                 columnNumber: 50
                                             }, this),
                                             ". Your authentication record will remain, but will be disassociated from all application data.",
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("br", {}, void 0, false, {
                                                 fileName: "[project]/src/app/settings/account/page.tsx",
-                                                lineNumber: 707,
+                                                lineNumber: 711,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("br", {}, void 0, false, {
                                                 fileName: "[project]/src/app/settings/account/page.tsx",
-                                                lineNumber: 707,
+                                                lineNumber: 711,
                                                 columnNumber: 23
                                             }, this),
                                             "Are you sure you want to proceed?"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/settings/account/page.tsx",
-                                        lineNumber: 702,
+                                        lineNumber: 706,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/settings/account/page.tsx",
-                                lineNumber: 700,
+                                lineNumber: 704,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$alert$2d$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AlertDialogFooter"], {
@@ -7430,7 +7440,7 @@ function AccountSettingsPage() {
                                         children: "Cancel"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/settings/account/page.tsx",
-                                        lineNumber: 712,
+                                        lineNumber: 716,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$alert$2d$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AlertDialogAction"], {
@@ -7439,24 +7449,24 @@ function AccountSettingsPage() {
                                         children: "I understand, proceed to delete"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/settings/account/page.tsx",
-                                        lineNumber: 713,
+                                        lineNumber: 717,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/settings/account/page.tsx",
-                                lineNumber: 711,
+                                lineNumber: 715,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/settings/account/page.tsx",
-                        lineNumber: 699,
+                        lineNumber: 703,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/app/settings/account/page.tsx",
-                    lineNumber: 698,
+                    lineNumber: 702,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$alert$2d$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AlertDialog"], {
@@ -7470,7 +7480,7 @@ function AccountSettingsPage() {
                                         children: "Final Confirmation Required"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/settings/account/page.tsx",
-                                        lineNumber: 723,
+                                        lineNumber: 727,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$alert$2d$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AlertDialogDescription"], {
@@ -7478,7 +7488,7 @@ function AccountSettingsPage() {
                                             "To confirm permanent deletion of your account and all associated data, please type the following phrase exactly as shown below:",
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("br", {}, void 0, false, {
                                                 fileName: "[project]/src/app/settings/account/page.tsx",
-                                                lineNumber: 726,
+                                                lineNumber: 730,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("strong", {
@@ -7486,19 +7496,19 @@ function AccountSettingsPage() {
                                                 children: DELETE_CONFIRMATION_PHRASE
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/settings/account/page.tsx",
-                                                lineNumber: 727,
+                                                lineNumber: 731,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/settings/account/page.tsx",
-                                        lineNumber: 724,
+                                        lineNumber: 728,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/settings/account/page.tsx",
-                                lineNumber: 722,
+                                lineNumber: 726,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
@@ -7509,7 +7519,7 @@ function AccountSettingsPage() {
                                 className: "border-destructive focus-visible:ring-destructive"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/settings/account/page.tsx",
-                                lineNumber: 730,
+                                lineNumber: 734,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$alert$2d$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AlertDialogFooter"], {
@@ -7519,7 +7529,7 @@ function AccountSettingsPage() {
                                         children: "Cancel"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/settings/account/page.tsx",
-                                        lineNumber: 738,
+                                        lineNumber: 742,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$alert$2d$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AlertDialogAction"], {
@@ -7531,42 +7541,42 @@ function AccountSettingsPage() {
                                                 className: "mr-2 h-4 w-4 animate-spin"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/settings/account/page.tsx",
-                                                lineNumber: 744,
+                                                lineNumber: 748,
                                                 columnNumber: 38
                                             }, this) : null,
                                             "Confirm Permanent Deletion"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/settings/account/page.tsx",
-                                        lineNumber: 739,
+                                        lineNumber: 743,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/settings/account/page.tsx",
-                                lineNumber: 737,
+                                lineNumber: 741,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/settings/account/page.tsx",
-                        lineNumber: 721,
+                        lineNumber: 725,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/app/settings/account/page.tsx",
-                    lineNumber: 720,
+                    lineNumber: 724,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/app/settings/account/page.tsx",
-            lineNumber: 362,
+            lineNumber: 372,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/app/settings/account/page.tsx",
-        lineNumber: 361,
+        lineNumber: 371,
         columnNumber: 5
     }, this);
 }
@@ -7579,7 +7589,6 @@ _s(AccountSettingsPage, "ycbApkXBJOZ/gpfg+FkBSuDY+ns=", false, function() {
     ];
 });
 _c = AccountSettingsPage;
-// Helper for skeleton UI
 const SkeletonItem = ({ label, type = 'input' })=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormItem"], {
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormLabel"], {
@@ -7587,25 +7596,25 @@ const SkeletonItem = ({ label, type = 'input' })=>/*#__PURE__*/ (0, __TURBOPACK_
                     children: label
                 }, void 0, false, {
                     fileName: "[project]/src/app/settings/account/page.tsx",
-                    lineNumber: 759,
+                    lineNumber: 762,
                     columnNumber: 16
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/settings/account/page.tsx",
-                lineNumber: 759,
+                lineNumber: 762,
                 columnNumber: 5
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$skeleton$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Skeleton"], {
                 className: type === 'textarea' ? "h-20 w-full" : "h-10 w-full"
             }, void 0, false, {
                 fileName: "[project]/src/app/settings/account/page.tsx",
-                lineNumber: 760,
+                lineNumber: 763,
                 columnNumber: 5
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/settings/account/page.tsx",
-        lineNumber: 758,
+        lineNumber: 761,
         columnNumber: 3
     }, this);
 _c1 = SkeletonItem;

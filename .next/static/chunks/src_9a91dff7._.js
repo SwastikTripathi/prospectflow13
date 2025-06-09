@@ -1354,7 +1354,6 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/index.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/client/app-dir/link.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/navigation.js [app-client] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$house$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Home$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/house.js [app-client] (ecmascript) <export default as Home>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$briefcase$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Briefcase$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/briefcase.js [app-client] (ecmascript) <export default as Briefcase>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$users$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Users$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/users.js [app-client] (ecmascript) <export default as Users>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$building$2d$2$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Building2$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/building-2.js [app-client] (ecmascript) <export default as Building2>");
@@ -1366,6 +1365,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$re
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$sliders$2d$horizontal$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__SlidersHorizontal$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/sliders-horizontal.js [app-client] (ecmascript) <export default as SlidersHorizontal>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$mail$2d$question$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__MailQuestion$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/mail-question.js [app-client] (ecmascript) <export default as MailQuestion>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$key$2d$round$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__KeyRound$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/key-round.js [app-client] (ecmascript) <export default as KeyRound>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$layout$2d$dashboard$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__LayoutDashboard$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/layout-dashboard.js [app-client] (ecmascript) <export default as LayoutDashboard>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/lib/utils.ts [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/components/ui/sidebar.tsx [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$tooltip$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/components/ui/tooltip.tsx [app-client] (ecmascript)");
@@ -1388,7 +1388,7 @@ const mainNavItems = [
     {
         href: '/',
         label: 'Dashboard',
-        icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$house$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Home$3e$__["Home"]
+        icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$layout$2d$dashboard$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__LayoutDashboard$3e$__["LayoutDashboard"]
     },
     {
         href: '/job-openings',
@@ -1406,7 +1406,7 @@ const mainNavItems = [
         icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$building$2d$2$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Building2$3e$__["Building2"]
     }
 ];
-const settingsNavItems = [
+const settingsBaseNavItems = [
     {
         href: '/settings/account#profile-details',
         label: 'Profile Details',
@@ -1490,6 +1490,15 @@ function SidebarNav({ favoriteJobOpenings = [] }) {
     const isCollapsedDesktop = sidebarState === 'collapsed' && !isMobile;
     const isExpandedDesktop = sidebarState === 'expanded' && !isMobile;
     const isSettingsPage = pathname.startsWith('/settings');
+    const settingsNavItemsWithBack = [
+        {
+            href: '/',
+            label: 'Back to Dashboard',
+            icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$layout$2d$dashboard$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__LayoutDashboard$3e$__["LayoutDashboard"],
+            separator: true
+        },
+        ...settingsBaseNavItems
+    ];
     const renderNavItems = (items, groupLabel)=>{
         const filteredItems = items.filter((item)=>!item.ownerOnly || item.ownerOnly && isOwner);
         if (filteredItems.length === 0 && groupLabel && items.every((item)=>item.ownerOnly)) return null;
@@ -1501,18 +1510,18 @@ function SidebarNav({ favoriteJobOpenings = [] }) {
                     children: groupLabel
                 }, void 0, false, {
                     fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                    lineNumber: 119,
+                    lineNumber: 126,
                     columnNumber: 13
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SidebarMenu"], {
                     children: filteredItems.map((item)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].Fragment, {
                             children: [
-                                item.separator && (isSettingsPage && item.href === '/settings/billing' || item.ownerOnly && isOwner && !isSettingsPage) && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SidebarSeparator"], {
+                                item.separator && (isSettingsPage && (item.href === '/settings/billing' || item.href === '/') || item.ownerOnly && isOwner && !isSettingsPage) && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SidebarSeparator"], {
                                     className: "my-1"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                    lineNumber: 126,
-                                    columnNumber: 145
+                                    lineNumber: 136,
+                                    columnNumber: 18
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SidebarMenuItem"], {
                                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SidebarMenuButton"], {
@@ -1536,47 +1545,47 @@ function SidebarNav({ favoriteJobOpenings = [] }) {
                                             children: [
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(item.icon, {}, void 0, false, {
                                                     fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                                    lineNumber: 144,
+                                                    lineNumber: 154,
                                                     columnNumber: 21
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                     children: item.label
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                                    lineNumber: 145,
+                                                    lineNumber: 155,
                                                     columnNumber: 21
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                            lineNumber: 134,
+                                            lineNumber: 144,
                                             columnNumber: 21
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                        lineNumber: 128,
+                                        lineNumber: 138,
                                         columnNumber: 17
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                    lineNumber: 127,
+                                    lineNumber: 137,
                                     columnNumber: 17
                                 }, this)
                             ]
                         }, item.label, true, {
                             fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                            lineNumber: 125,
+                            lineNumber: 132,
                             columnNumber: 13
                         }, this))
                 }, void 0, false, {
                     fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                    lineNumber: 123,
+                    lineNumber: 130,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/components/layout/SidebarNav.tsx",
-            lineNumber: 117,
+            lineNumber: 124,
             columnNumber: 9
         }, this);
     };
@@ -1592,25 +1601,25 @@ function SidebarNav({ favoriteJobOpenings = [] }) {
                             className: "h-5 w-5 rounded bg-muted"
                         }, void 0, false, {
                             fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                            lineNumber: 161,
+                            lineNumber: 171,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             className: "h-4 w-3/4 rounded bg-muted"
                         }, void 0, false, {
                             fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                            lineNumber: 162,
+                            lineNumber: 172,
                             columnNumber: 13
                         }, this)
                     ]
                 }, i, true, {
                     fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                    lineNumber: 160,
+                    lineNumber: 170,
                     columnNumber: 11
                 }, this))
         }, void 0, false, {
             fileName: "[project]/src/components/layout/SidebarNav.tsx",
-            lineNumber: 158,
+            lineNumber: 168,
             columnNumber: 7
         }, this);
     }
@@ -1619,19 +1628,19 @@ function SidebarNav({ favoriteJobOpenings = [] }) {
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 children: [
-                    isSettingsPage ? renderNavItems(settingsNavItems) : renderNavItems(mainNavItems),
+                    isSettingsPage ? renderNavItems(settingsNavItemsWithBack) : renderNavItems(mainNavItems),
                     isOwner && renderNavItems(blogNavItems, "Blog Management")
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                lineNumber: 172,
+                lineNumber: 182,
                 columnNumber: 7
             }, this),
             favoriteJobOpenings && favoriteJobOpenings.length > 0 && !isSettingsPage && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SidebarSeparator"], {}, void 0, false, {
                         fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                        lineNumber: 179,
+                        lineNumber: 189,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SidebarGroup"], {
@@ -1642,7 +1651,7 @@ function SidebarNav({ favoriteJobOpenings = [] }) {
                                 children: "Favorites"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                lineNumber: 181,
+                                lineNumber: 191,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1673,7 +1682,7 @@ function SidebarNav({ favoriteJobOpenings = [] }) {
                                                                             className: "text-yellow-500 flex-shrink-0"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                                                            lineNumber: 199,
+                                                                            lineNumber: 209,
                                                                             columnNumber: 33
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1681,23 +1690,23 @@ function SidebarNav({ favoriteJobOpenings = [] }) {
                                                                             children: favoriteDisplayName
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                                                            lineNumber: 200,
+                                                                            lineNumber: 210,
                                                                             columnNumber: 33
                                                                         }, this)
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                                                    lineNumber: 198,
+                                                                    lineNumber: 208,
                                                                     columnNumber: 31
                                                                 }, this)
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                                                lineNumber: 193,
+                                                                lineNumber: 203,
                                                                 columnNumber: 29
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                                            lineNumber: 192,
+                                                            lineNumber: 202,
                                                             columnNumber: 27
                                                         }, this),
                                                         isExpandedDesktop && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$tooltip$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TooltipContent"], {
@@ -1708,40 +1717,40 @@ function SidebarNav({ favoriteJobOpenings = [] }) {
                                                             children: favoriteDisplayName
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                                            lineNumber: 207,
+                                                            lineNumber: 217,
                                                             columnNumber: 29
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                                    lineNumber: 191,
+                                                    lineNumber: 201,
                                                     columnNumber: 25
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                                lineNumber: 190,
+                                                lineNumber: 200,
                                                 columnNumber: 23
                                             }, this)
                                         }, opening.id, false, {
                                             fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                            lineNumber: 189,
+                                            lineNumber: 199,
                                             columnNumber: 21
                                         }, this);
                                     })
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                    lineNumber: 185,
+                                    lineNumber: 195,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                lineNumber: 184,
+                                lineNumber: 194,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                        lineNumber: 180,
+                        lineNumber: 190,
                         columnNumber: 11
                     }, this)
                 ]
@@ -1749,7 +1758,7 @@ function SidebarNav({ favoriteJobOpenings = [] }) {
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/layout/SidebarNav.tsx",
-        lineNumber: 171,
+        lineNumber: 181,
         columnNumber: 5
     }, this);
 }
@@ -4259,6 +4268,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$re
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$settings$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Settings$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/settings.js [app-client] (ecmascript) <export default as Settings>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$credit$2d$card$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__CreditCard$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/credit-card.js [app-client] (ecmascript) <export default as CreditCard>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$house$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Home$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/house.js [app-client] (ecmascript) <export default as Home>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$layout$2d$dashboard$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__LayoutDashboard$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/layout-dashboard.js [app-client] (ecmascript) <export default as LayoutDashboard>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hooks$2f$use$2d$toast$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/hooks/use-toast.ts [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$theme$2d$toggles$2f$react$2f$dist$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@theme-toggles/react/dist/index.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/lib/utils.ts [app-client] (ecmascript)");
@@ -4332,21 +4342,23 @@ function AppLayout({ children }) {
     const [userSettings, setUserSettings] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
     const [isLoadingAuth, setIsLoadingAuth] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(true);
     const [isLoadingSettings, setIsLoadingSettings] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(true);
+    const [settingsAndFavoritesFetchedOnceRef, setSettingsAndFavoritesFetchedOnceRef] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const [theme, setTheme] = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].useState('light');
     const [favoriteJobOpenings, setFavoriteJobOpenings] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])([]);
     const [showOnboardingForm, setShowOnboardingForm] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const [onboardingCheckComplete, setOnboardingCheckComplete] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const previousUserIdRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])();
+    const appLayoutConsolePrefix = "[AppLayout]";
     const isPublicPath = PUBLIC_PATHS.includes(pathname) || BLOG_PATHS_REGEX.test(pathname);
-    // console.log(`[AppLayout] Render. Path: ${pathname}, IsPublic: ${isPublicPath}`);
-    // console.log(`[AppLayout] Current states: isLoadingAuth: ${isLoadingAuth}, isLoadingSettings: ${isLoadingSettings}, user: ${user?.id}, userSettings: ${!!userSettings}, showOnboardingForm: ${showOnboardingForm}, onboardingCheckComplete: ${onboardingCheckComplete}`);
+    // console.log(`${appLayoutConsolePrefix} Render. Path: ${pathname}, IsPublic: ${isPublicPath}`);
+    // console.log(`${appLayoutConsolePrefix} Current states: isLoadingAuth: ${isLoadingAuth}, isLoadingSettings: ${isLoadingSettings}, user: ${user?.id}, userSettings: ${!!userSettings}, showOnboardingForm: ${showOnboardingForm}, onboardingCheckComplete: ${onboardingCheckComplete}`);
     const fetchUserDataAndSettings = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useCallback"])({
         "AppLayout.useCallback[fetchUserDataAndSettings]": async (userId)=>{
-            console.log(`[AppLayout fetchUserDataAndSettings] Called for user: ${userId}. Setting isLoadingSettings: true, setOnboardingCheckComplete: false`);
+            // console.log(`${appLayoutConsolePrefix} fetchUserDataAndSettings] Called for user: ${userId}. Setting isLoadingSettings: true, setOnboardingCheckComplete: false`);
             setIsLoadingSettings(true);
             setOnboardingCheckComplete(false);
             try {
-                console.log(`[AppLayout fetchUserDataAndSettings] Fetching settings and favorites for user: ${userId}`);
+                // console.log(`${appLayoutConsolePrefix} fetchUserDataAndSettings] Fetching settings and favorites for user: ${userId}`);
                 const [settingsResult, favoritesResult] = await Promise.all([
                     __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].from('user_settings').select('*').eq('user_id', userId).single(),
                     __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].from('job_openings').select('id, role_title, company_name_cache, favorited_at, is_favorite').eq('user_id', userId).eq('is_favorite', true).order('favorited_at', {
@@ -4354,11 +4366,11 @@ function AppLayout({ children }) {
                         nulls: 'last'
                     })
                 ]);
-                console.log(`[AppLayout fetchUserDataAndSettings] API calls completed for user: ${userId}`);
+                // console.log(`${appLayoutConsolePrefix} fetchUserDataAndSettings] API calls completed for user: ${userId}`);
                 const { data: settingsData, error: settingsError } = settingsResult;
-                console.log(`[AppLayout fetchUserDataAndSettings] Settings result: data: ${!!settingsData}, error:`, settingsError);
+                // console.log(`${appLayoutConsolePrefix} fetchUserDataAndSettings] Settings result: data: ${!!settingsData}, error:`, settingsError);
                 if (settingsError && settingsError.code !== 'PGRST116') {
-                    console.error("[AppLayout fetchUserDataAndSettings] Error fetching user settings (non-PGRST116):", settingsError);
+                    console.error(`${appLayoutConsolePrefix} fetchUserDataAndSettings] Error fetching user settings (non-PGRST116):`, settingsError);
                     toast({
                         title: 'Profile Load Error',
                         description: `Could not load profile. (Code: ${settingsError.code})`,
@@ -4367,7 +4379,7 @@ function AppLayout({ children }) {
                     });
                     setShowOnboardingForm(false);
                 } else if (!settingsData && (!settingsError || settingsError.code !== 'PGRST116')) {
-                    console.error("[AppLayout fetchUserDataAndSettings] Unexpected: No settings data and no (or non-PGRST116) error. Potential issue with SELECT query or RLS.", settingsError);
+                    console.error(`${appLayoutConsolePrefix} fetchUserDataAndSettings] Unexpected: No settings data and no (or non-PGRST116) error. Potential issue with SELECT query or RLS.`, settingsError);
                     toast({
                         title: 'Profile Access Issue',
                         description: 'Could not verify your profile settings. Please try again or contact support.',
@@ -4378,27 +4390,27 @@ function AppLayout({ children }) {
                 } else {
                     const fetchedSettings = settingsData;
                     setUserSettings(fetchedSettings);
-                    console.log(`[AppLayout fetchUserDataAndSettings] User settings set:`, fetchedSettings);
+                    // console.log(`${appLayoutConsolePrefix} fetchUserDataAndSettings] User settings set:`, fetchedSettings);
                     if (!fetchedSettings || fetchedSettings.onboarding_complete === false || fetchedSettings.onboarding_complete === null) {
-                        console.log(`[AppLayout fetchUserDataAndSettings] Onboarding not complete or settings missing. setShowOnboardingForm: true`);
+                        // console.log(`${appLayoutConsolePrefix} fetchUserDataAndSettings] Onboarding not complete or settings missing. setShowOnboardingForm: true`);
                         setShowOnboardingForm(true);
                     } else {
-                        console.log(`[AppLayout fetchUserDataAndSettings] Onboarding complete. setShowOnboardingForm: false`);
+                        // console.log(`${appLayoutConsolePrefix} fetchUserDataAndSettings] Onboarding complete. setShowOnboardingForm: false`);
                         setShowOnboardingForm(false);
                     }
                 }
                 const { data: favoritesData, error: favoritesError } = favoritesResult;
-                console.log(`[AppLayout fetchUserDataAndSettings] Favorites result: data: ${!!favoritesData}, error:`, favoritesError);
+                // console.log(`${appLayoutConsolePrefix} fetchUserDataAndSettings] Favorites result: data: ${!!favoritesData}, error:`, favoritesError);
                 if (favoritesError) {
-                    console.error("[AppLayout fetchUserDataAndSettings] Error fetching favorite job openings:", favoritesError.message);
+                    console.error(`${appLayoutConsolePrefix} fetchUserDataAndSettings] Error fetching favorite job openings:`, favoritesError.message);
                     setFavoriteJobOpenings([]);
                 } else {
                     setFavoriteJobOpenings(favoritesData || []);
                 }
             } catch (error) {
-                console.error("[AppLayout fetchUserDataAndSettings] CATCH BLOCK ERROR:", error);
+                console.error(`${appLayoutConsolePrefix} fetchUserDataAndSettings] CATCH BLOCK ERROR:`, error);
                 if (error.name === 'AuthApiError' && error.message.includes('Invalid Refresh Token')) {
-                    console.log("[AppLayout fetchUserDataAndSettings] Invalid Refresh Token detected. Signing out.");
+                    // console.log(`${appLayoutConsolePrefix} fetchUserDataAndSettings] Invalid Refresh Token detected. Signing out.`);
                     toast({
                         title: 'Session Invalid',
                         description: 'Your session is invalid. Please sign in again.',
@@ -4416,9 +4428,10 @@ function AppLayout({ children }) {
                 setShowOnboardingForm(false);
                 setFavoriteJobOpenings([]);
             } finally{
-                console.log(`[AppLayout fetchUserDataAndSettings] FINALLY block. Setting isLoadingSettings: false, setOnboardingCheckComplete: true`);
+                // console.log(`${appLayoutConsolePrefix} fetchUserDataAndSettings] FINALLY block. Setting isLoadingSettings: false, setOnboardingCheckComplete: true, setSettingsAndFavoritesFetchedOnceRef: true`);
                 setIsLoadingSettings(false);
                 setOnboardingCheckComplete(true);
+                setSettingsAndFavoritesFetchedOnceRef(true);
             }
         }
     }["AppLayout.useCallback[fetchUserDataAndSettings]"], [
@@ -4428,62 +4441,61 @@ function AppLayout({ children }) {
         "AppLayout.useCallback[processUserSession]": (sessionUser)=>{
             const currentPreviousUserId = previousUserIdRef.current;
             const newUserId = sessionUser?.id;
-            console.log(`[AppLayout processUserSession] Called. newUserId: ${newUserId}, currentPreviousUserId: ${currentPreviousUserId}`);
+            // console.log(`${appLayoutConsolePrefix} processUserSession] Called. newUserId: ${newUserId}, currentPreviousUserId: ${currentPreviousUserId}`);
             setUser(sessionUser);
-            console.log(`[AppLayout processUserSession] setUser called with user: ${sessionUser?.id}`);
+            // console.log(`${appLayoutConsolePrefix} processUserSession] setUser called with user: ${sessionUser?.id}`);
             if (newUserId !== currentPreviousUserId) {
-                console.log(`[AppLayout processUserSession] User ID changed or first load. Old: ${currentPreviousUserId}, New: ${newUserId}. Resetting related states.`);
+                // console.log(`${appLayoutConsolePrefix} processUserSession] User ID changed or first load. Old: ${currentPreviousUserId}, New: ${newUserId}. Resetting related states.`);
                 previousUserIdRef.current = newUserId;
                 setFavoriteJobOpenings([]);
                 setUserSettings(null);
                 setShowOnboardingForm(false);
-                setOnboardingCheckComplete(false); // Reset this
+                setOnboardingCheckComplete(false);
                 setIsLoadingSettings(true);
+                setSettingsAndFavoritesFetchedOnceRef(false); // Reset fetch attempt flag for new user
                 if (sessionUser) {
-                    console.log(`[AppLayout processUserSession] New user session. Triggering fetchUserDataAndSettings for ${newUserId} (not awaiting).`);
-                    fetchUserDataAndSettings(sessionUser.id); // Call but DON'T await
+                    // console.log(`${appLayoutConsolePrefix} processUserSession] New user session. Triggering fetchUserDataAndSettings for ${newUserId}.`);
+                    fetchUserDataAndSettings(sessionUser.id);
                 } else {
-                    console.log(`[AppLayout processUserSession] No user session (user is null after change/first load). Setting loading settings false, onboarding complete true.`);
+                    // console.log(`${appLayoutConsolePrefix} processUserSession] No user session (user is null after change/first load). Setting loading settings false, onboarding complete true.`);
                     setIsLoadingSettings(false);
                     setOnboardingCheckComplete(true);
+                    setSettingsAndFavoritesFetchedOnceRef(true); // Mark as "fetched" for no user
                 }
-            } else if (!sessionUser) {
-                console.log(`[AppLayout processUserSession] No user session (user is null and was already null or unchanged). Setting loading states to false, onboarding complete true.`);
-                setIsLoadingSettings(false);
-                setOnboardingCheckComplete(true);
+            } else if (sessionUser && !settingsAndFavoritesFetchedOnceRef && !isLoadingSettings) {
+                // Same user, but initial fetch for this user hasn't been attempted/completed.
+                // This covers cases where the component might re-render before the initial fetch completes.
+                // console.log(`${appLayoutConsolePrefix} processUserSession] User same (${newUserId}), but settings/favorites not yet fetched. Triggering fetch.`);
+                fetchUserDataAndSettings(sessionUser.id);
             } else {
-                // User ID is the same, user is not null
-                if (!userSettings && !isLoadingSettings && !onboardingCheckComplete) {
-                    console.log(`[AppLayout processUserSession] User same (${newUserId}), but settings not loaded and not currently loading. Triggering fetchUserDataAndSettings (not awaiting).`);
-                    fetchUserDataAndSettings(sessionUser.id); // Call but DON'T await
-                } else {
-                    console.log(`[AppLayout processUserSession] User same (${newUserId}). Settings already loaded or being loaded. onboardingCheckComplete: ${onboardingCheckComplete}, isLoadingSettings: ${isLoadingSettings}`);
-                }
+            // User ID is the same, or user is null and was already null.
+            // If user exists, assume data is either loading or already fetched.
+            // If user is null, related states are already cleared.
+            // console.log(`${appLayoutConsolePrefix} processUserSession] User same or null and no new fetch needed. User: ${newUserId}, settingsAndFavoritesFetchedOnceRef: ${settingsAndFavoritesFetchedOnceRef}, isLoadingSettings: ${isLoadingSettings}`);
             }
-            console.log(`[AppLayout processUserSession] Setting isLoadingAuth: false. User ID processed: ${sessionUser?.id}`);
-            setIsLoadingAuth(false); // This will now run much sooner.
+            // console.log(`${appLayoutConsolePrefix} processUserSession] Setting isLoadingAuth: false. User ID processed: ${sessionUser?.id}`);
+            setIsLoadingAuth(false);
         }
     }["AppLayout.useCallback[processUserSession]"], [
         fetchUserDataAndSettings,
-        userSettings,
         isLoadingSettings,
-        onboardingCheckComplete
+        settingsAndFavoritesFetchedOnceRef
     ]);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "AppLayout.useEffect": ()=>{
-            console.log("[AppLayout Main Auth useEffect] Running.");
+            // console.log(`${appLayoutConsolePrefix} Main Auth useEffect] Running.`);
             const storedTheme = localStorage.getItem('theme');
             const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
             const initialTheme = storedTheme || (systemPrefersDark ? 'dark' : 'light');
             setTheme(initialTheme);
             document.documentElement.classList.toggle('dark', initialTheme === 'dark');
-            console.log(`[AppLayout Main Auth useEffect] Initial theme set to: ${initialTheme}`);
+            // console.log(`${appLayoutConsolePrefix} Main Auth useEffect] Initial theme set to: ${initialTheme}`);
             setIsLoadingAuth(true);
             const handleSessionResult = {
                 "AppLayout.useEffect.handleSessionResult": (session, error)=>{
-                    console.log(`[AppLayout Main Auth useEffect - handleSessionResult] Session: ${!!session}, Error:`, error);
+                    // console.log(`${appLayoutConsolePrefix} Main Auth useEffect - handleSessionResult] Session: ${!!session}, Error:`, error);
                     if (error) {
-                        console.error("[AppLayout handleSessionResult] Error processing session:", error);
+                        console.error(`${appLayoutConsolePrefix} handleSessionResult] Error processing session:`, error);
                         if (error.name === 'AuthApiError' && error.message.includes("Invalid Refresh Token")) {
                             toast({
                                 title: 'Session Invalid',
@@ -4499,20 +4511,18 @@ function AppLayout({ children }) {
                     processUserSession(session?.user ?? null);
                 }
             }["AppLayout.useEffect.handleSessionResult"];
-            // No explicit getSession() call here, relying on onAuthStateChange for INITIAL_SESSION
-            // console.log("[AppLayout Main Auth useEffect] Relying on onAuthStateChange for initial session.");
             const { data: { subscription } } = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].auth.onAuthStateChange({
                 "AppLayout.useEffect": (event, session)=>{
-                    console.log(`[AppLayout onAuthStateChange] Event: ${event}, Session User ID: ${session?.user?.id}`);
+                    // console.log(`${appLayoutConsolePrefix} onAuthStateChange] Event: ${event}, Session User ID: ${session?.user?.id}`);
                     if (event === 'TOKEN_REFRESHED' && !session) {
-                        console.warn("[AppLayout onAuthStateChange] TOKEN_REFRESHED but no session. Potential invalid session.");
+                        console.warn(`${appLayoutConsolePrefix} onAuthStateChange] TOKEN_REFRESHED but no session. Potential invalid session.`);
                         toast({
                             title: 'Session Expired',
                             description: 'Your session has expired. Please sign in again.',
                             variant: 'destructive'
                         });
                     } else if (event === 'SIGNED_OUT') {
-                        console.log("[AppLayout onAuthStateChange] SIGNED_OUT event.");
+                        // console.log(`${appLayoutConsolePrefix} onAuthStateChange] SIGNED_OUT event.`);
                         const activeToasts = toast.toasts || []; // Type assertion if toasts property isn't directly on useToast return
                         if (!activeToasts.some({
                             "AppLayout.useEffect": (t)=>t.title === 'Session Expired' || t.title === 'Session Invalid'
@@ -4526,10 +4536,10 @@ function AppLayout({ children }) {
                     processUserSession(session?.user ?? null);
                 }
             }["AppLayout.useEffect"]);
-            console.log("[AppLayout Main Auth useEffect] Subscribed to onAuthStateChange.");
+            // console.log(`${appLayoutConsolePrefix} Main Auth useEffect] Subscribed to onAuthStateChange.`);
             return ({
                 "AppLayout.useEffect": ()=>{
-                    console.log("[AppLayout Main Auth useEffect] Unsubscribing from onAuthStateChange.");
+                    // console.log(`${appLayoutConsolePrefix} Main Auth useEffect] Unsubscribing from onAuthStateChange.`);
                     subscription?.unsubscribe();
                 }
             })["AppLayout.useEffect"];
@@ -4537,19 +4547,17 @@ function AppLayout({ children }) {
     }["AppLayout.useEffect"], [
         processUserSession,
         toast
-    ]); // processUserSession is now a dependency
+    ]);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "AppLayout.useEffect": ()=>{
-            console.log(`[AppLayout Redirect useEffect] Running. isLoadingAuth: ${isLoadingAuth}, isPublicPath: ${isPublicPath}, user: ${!!user}, userSettings.onboarding_complete: ${userSettings?.onboarding_complete}, pathname: ${pathname}, onboardingCheckComplete: ${onboardingCheckComplete}`);
+            // console.log(`${appLayoutConsolePrefix} Redirect useEffect] Running. isLoadingAuth: ${isLoadingAuth}, isPublicPath: ${isPublicPath}, user: ${!!user}, userSettings.onboarding_complete: ${userSettings?.onboarding_complete}, pathname: ${pathname}, onboardingCheckComplete: ${onboardingCheckComplete}`);
             if (!isLoadingAuth && !isPublicPath) {
                 if (!user) {
-                    console.log("[AppLayout Redirect useEffect] Not authenticated and not public path. Redirecting to /landing.");
+                    // console.log(`${appLayoutConsolePrefix} Redirect useEffect] Not authenticated and not public path. Redirecting to /landing.`);
                     router.push('/landing');
                 }
-            // If user exists but onboarding not complete, the OnboardingForm will be shown by the main render logic.
-            // No explicit redirect for onboarding here, as AppLayout handles displaying it.
             } else if (!isLoadingAuth && user && onboardingCheckComplete && userSettings?.onboarding_complete && isPublicPath && !BLOG_PATHS_REGEX.test(pathname)) {
-                console.log("[AppLayout Redirect useEffect] Authenticated, onboarding complete, on public non-blog path. Redirecting to /.");
+                // console.log(`${appLayoutConsolePrefix} Redirect useEffect] Authenticated, onboarding complete, on public non-blog path. Redirecting to /.`);
                 router.push('/');
             }
         }
@@ -4563,20 +4571,18 @@ function AppLayout({ children }) {
         onboardingCheckComplete
     ]);
     const handleSignOut = async ()=>{
-        console.log("[AppLayout handleSignOut] Initiated.");
-        // setIsLoadingAuth(true); // Will be handled by onAuthStateChange
+        // console.log(`${appLayoutConsolePrefix} handleSignOut] Initiated.`);
         await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabaseClient$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["supabase"].auth.signOut();
-        console.log("[AppLayout handleSignOut] Supabase signOut complete. onAuthStateChange will trigger user update.");
+    // console.log(`${appLayoutConsolePrefix} handleSignOut] Supabase signOut complete. onAuthStateChange will trigger user update.`);
     };
     const handleOnboardingComplete = async ()=>{
-        console.log("[AppLayout handleOnboardingComplete] Initiated.");
-        setShowOnboardingForm(false); // Immediately hide form
+        // console.log(`${appLayoutConsolePrefix} handleOnboardingComplete] Initiated.`);
+        setShowOnboardingForm(false);
         if (user) {
-            console.log("[AppLayout handleOnboardingComplete] User exists, re-fetching user data and settings AFTER onboarding.");
-            // No need to set isLoadingSettings true here, fetchUserDataAndSettings does it
-            await fetchUserDataAndSettings(user.id); // Re-fetch to get updated onboarding_complete status
+            // console.log(`${appLayoutConsolePrefix} handleOnboardingComplete] User exists, re-fetching user data and settings AFTER onboarding.`);
+            await fetchUserDataAndSettings(user.id);
         } else {
-            console.warn("[AppLayout handleOnboardingComplete] Called but no user found. This shouldn't happen.");
+            console.warn(`${appLayoutConsolePrefix} handleOnboardingComplete] Called but no user found. This shouldn't happen.`);
         }
     };
     const toggleTheme = ()=>{
@@ -4584,38 +4590,37 @@ function AppLayout({ children }) {
             const newTheme = prevTheme === 'light' ? 'dark' : 'light';
             document.documentElement.classList.toggle('dark', newTheme === 'dark');
             localStorage.setItem('theme', newTheme);
-            console.log(`[AppLayout toggleTheme] Theme changed to: ${newTheme}`);
+            // console.log(`${appLayoutConsolePrefix} toggleTheme] Theme changed to: ${newTheme}`);
             return newTheme;
         });
     };
-    // Refined isAppLoading check
     const isAppLoading = isLoadingAuth || user != null && (isLoadingSettings || !onboardingCheckComplete);
-    console.log(`[AppLayout] Calculated isAppLoading: ${isAppLoading} (isLoadingAuth: ${isLoadingAuth}, user: ${!!user}, isLoadingSettings: ${isLoadingSettings}, !onboardingCheckComplete: ${!onboardingCheckComplete})`);
+    // console.log(`${appLayoutConsolePrefix} Calculated isAppLoading: ${isAppLoading} (isLoadingAuth: ${isLoadingAuth}, user: ${!!user}, isLoadingSettings: ${isLoadingSettings}, !onboardingCheckComplete: ${!onboardingCheckComplete})`);
     if (isPublicPath) {
-        console.log("[AppLayout] Rendering public path children directly.");
+        // console.log(`${appLayoutConsolePrefix} Rendering public path children directly.`);
         return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
             children: children
         }, void 0, false);
     }
     if (isAppLoading) {
-        console.log("[AppLayout] Rendering main app loader because isAppLoading is true.");
+        // console.log(`${appLayoutConsolePrefix} Rendering main app loader because isAppLoading is true.`);
         return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
             className: "flex h-screen w-screen items-center justify-center bg-background",
             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$loader$2d$circle$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Loader2$3e$__["Loader2"], {
                 className: "h-12 w-12 animate-spin text-primary"
             }, void 0, false, {
                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                lineNumber: 309,
+                lineNumber: 306,
                 columnNumber: 9
             }, this)
         }, void 0, false, {
             fileName: "[project]/src/components/layout/AppLayout.tsx",
-            lineNumber: 308,
+            lineNumber: 305,
             columnNumber: 7
         }, this);
     }
     if (onboardingCheckComplete && showOnboardingForm && user) {
-        console.log("[AppLayout] Rendering OnboardingForm.");
+        // console.log(`${appLayoutConsolePrefix} Rendering OnboardingForm.`);
         return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$onboarding$2f$OnboardingForm$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["OnboardingForm"], {
             user: user,
             userId: user.id,
@@ -4625,14 +4630,15 @@ function AppLayout({ children }) {
             onOnboardingComplete: handleOnboardingComplete
         }, void 0, false, {
             fileName: "[project]/src/components/layout/AppLayout.tsx",
-            lineNumber: 318,
+            lineNumber: 315,
             columnNumber: 10
         }, this);
     }
-    console.log("[AppLayout] Rendering main SidebarProvider layout.");
+    // console.log(`${appLayoutConsolePrefix} Rendering main SidebarProvider layout.`);
     const userDisplayNameToShow = userSettings?.full_name || user?.user_metadata?.full_name || user?.email || 'User';
     const userInitials = getInitials(userDisplayNameToShow, user?.email);
     const showDashboardLinkInMenu = !HIDE_DASHBOARD_LINK_PATHS.includes(pathname);
+    const menuItemClass = "relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50";
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SidebarProvider"], {
         defaultOpen: true,
         children: [
@@ -4651,25 +4657,25 @@ function AppLayout({ children }) {
                                     className: "group-data-[collapsible=icon]:hidden"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                    lineNumber: 339,
+                                    lineNumber: 337,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                lineNumber: 338,
+                                lineNumber: 336,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SidebarTrigger"], {
                                 className: "group-data-[collapsible=icon]:hidden md:hidden hover:bg-transparent focus-visible:bg-transparent hover:text-primary"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                lineNumber: 341,
+                                lineNumber: 339,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/layout/AppLayout.tsx",
-                        lineNumber: 337,
+                        lineNumber: 335,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SidebarContent"], {
@@ -4677,12 +4683,12 @@ function AppLayout({ children }) {
                             favoriteJobOpenings: favoriteJobOpenings
                         }, void 0, false, {
                             fileName: "[project]/src/components/layout/AppLayout.tsx",
-                            lineNumber: 344,
+                            lineNumber: 342,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/components/layout/AppLayout.tsx",
-                        lineNumber: 343,
+                        lineNumber: 341,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SidebarFooter"], {
@@ -4692,7 +4698,7 @@ function AppLayout({ children }) {
                                 user: user
                             }, void 0, false, {
                                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                lineNumber: 351,
+                                lineNumber: 349,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4708,24 +4714,24 @@ function AppLayout({ children }) {
                                     }
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                    lineNumber: 353,
+                                    lineNumber: 351,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                lineNumber: 352,
+                                lineNumber: 350,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/layout/AppLayout.tsx",
-                        lineNumber: 346,
+                        lineNumber: 344,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                lineNumber: 336,
+                lineNumber: 334,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SidebarInset"], {
@@ -4740,12 +4746,12 @@ function AppLayout({ children }) {
                                     className: "md:hidden hover:bg-transparent focus-visible:bg-transparent hover:text-primary"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                    lineNumber: 372,
+                                    lineNumber: 370,
                                     columnNumber: 17
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                lineNumber: 371,
+                                lineNumber: 369,
                                 columnNumber: 13
                             }, this),
                             user && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$hover$2d$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["HoverCard"], {
@@ -4765,27 +4771,27 @@ function AppLayout({ children }) {
                                                         className: "h-4 w-4 animate-spin"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                        lineNumber: 383,
+                                                        lineNumber: 381,
                                                         columnNumber: 67
                                                     }, this) : userInitials
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                    lineNumber: 382,
+                                                    lineNumber: 380,
                                                     columnNumber: 25
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                lineNumber: 381,
+                                                lineNumber: 379,
                                                 columnNumber: 25
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                            lineNumber: 377,
+                                            lineNumber: 375,
                                             columnNumber: 21
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                        lineNumber: 376,
+                                        lineNumber: 374,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$hover$2d$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["HoverCardContent"], {
@@ -4802,7 +4808,7 @@ function AppLayout({ children }) {
                                                             children: isLoadingSettings ? "Loading name..." : userDisplayNameToShow
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                            lineNumber: 391,
+                                                            lineNumber: 389,
                                                             columnNumber: 25
                                                         }, this),
                                                         user.email && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -4810,25 +4816,25 @@ function AppLayout({ children }) {
                                                             children: user.email
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                            lineNumber: 392,
+                                                            lineNumber: 390,
                                                             columnNumber: 40
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                    lineNumber: 390,
+                                                    lineNumber: 388,
                                                     columnNumber: 25
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                lineNumber: 389,
+                                                lineNumber: 387,
                                                 columnNumber: 21
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                 className: "my-1 h-px bg-muted"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                lineNumber: 395,
+                                                lineNumber: 393,
                                                 columnNumber: 21
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -4836,31 +4842,31 @@ function AppLayout({ children }) {
                                                 passHref: true,
                                                 legacyBehavior: true,
                                                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
-                                                    className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])("relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors data-[disabled]:pointer-events-none data-[disabled]:opacity-50", "cursor-pointer hover:bg-accent hover:text-accent-foreground"),
+                                                    className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])(menuItemClass, "cursor-pointer"),
                                                     children: [
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$house$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Home$3e$__["Home"], {
                                                             className: "mr-2 h-4 w-4"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                            lineNumber: 398,
+                                                            lineNumber: 396,
                                                             columnNumber: 25
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                             children: "Homepage"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                            lineNumber: 399,
+                                                            lineNumber: 397,
                                                             columnNumber: 25
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                    lineNumber: 397,
+                                                    lineNumber: 395,
                                                     columnNumber: 25
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                lineNumber: 396,
+                                                lineNumber: 394,
                                                 columnNumber: 21
                                             }, this),
                                             showDashboardLinkInMenu && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -4868,32 +4874,31 @@ function AppLayout({ children }) {
                                                 passHref: true,
                                                 legacyBehavior: true,
                                                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
-                                                    className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])("relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors data-[disabled]:pointer-events-none data-[disabled]:opacity-50", "cursor-pointer hover:bg-accent hover:text-accent-foreground"),
+                                                    className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])(menuItemClass, "cursor-pointer"),
                                                     children: [
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$house$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Home$3e$__["Home"], {
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$layout$2d$dashboard$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__LayoutDashboard$3e$__["LayoutDashboard"], {
                                                             className: "mr-2 h-4 w-4"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                            lineNumber: 405,
+                                                            lineNumber: 403,
                                                             columnNumber: 29
                                                         }, this),
-                                                        " ",
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                             children: "Dashboard"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                            lineNumber: 406,
+                                                            lineNumber: 404,
                                                             columnNumber: 29
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                    lineNumber: 404,
+                                                    lineNumber: 402,
                                                     columnNumber: 29
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                lineNumber: 403,
+                                                lineNumber: 401,
                                                 columnNumber: 26
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -4901,31 +4906,31 @@ function AppLayout({ children }) {
                                                 passHref: true,
                                                 legacyBehavior: true,
                                                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
-                                                    className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])("relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors data-[disabled]:pointer-events-none data-[disabled]:opacity-50", "cursor-pointer hover:bg-accent hover:text-accent-foreground"),
+                                                    className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])(menuItemClass, "cursor-pointer"),
                                                     children: [
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$settings$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Settings$3e$__["Settings"], {
                                                             className: "mr-2 h-4 w-4"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                            lineNumber: 412,
+                                                            lineNumber: 410,
                                                             columnNumber: 25
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                            children: "Account Settings"
+                                                            children: "Settings"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                            lineNumber: 413,
+                                                            lineNumber: 411,
                                                             columnNumber: 25
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                    lineNumber: 411,
+                                                    lineNumber: 409,
                                                     columnNumber: 25
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                lineNumber: 410,
+                                                lineNumber: 408,
                                                 columnNumber: 21
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -4933,80 +4938,80 @@ function AppLayout({ children }) {
                                                 passHref: true,
                                                 legacyBehavior: true,
                                                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
-                                                    className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])("relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors data-[disabled]:pointer-events-none data-[disabled]:opacity-50", "cursor-pointer hover:bg-accent hover:text-accent-foreground"),
+                                                    className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])(menuItemClass, "cursor-pointer"),
                                                     children: [
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$credit$2d$card$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__CreditCard$3e$__["CreditCard"], {
                                                             className: "mr-2 h-4 w-4"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                            lineNumber: 418,
+                                                            lineNumber: 416,
                                                             columnNumber: 25
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                             children: "Billing & Plan"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                            lineNumber: 419,
+                                                            lineNumber: 417,
                                                             columnNumber: 25
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                    lineNumber: 417,
+                                                    lineNumber: 415,
                                                     columnNumber: 25
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                lineNumber: 416,
+                                                lineNumber: 414,
                                                 columnNumber: 21
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                 className: "my-1 h-px bg-muted"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                lineNumber: 422,
+                                                lineNumber: 420,
                                                 columnNumber: 21
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                                 onClick: handleSignOut,
-                                                className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])("relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors data-[disabled]:pointer-events-none data-[disabled]:opacity-50", "text-destructive hover:bg-destructive/20 hover:text-destructive focus:bg-destructive/20 focus:text-destructive cursor-pointer w-full"),
+                                                className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])(menuItemClass, "text-destructive hover:bg-destructive/20 hover:text-destructive focus:bg-destructive/20 focus:text-destructive cursor-pointer w-full"),
                                                 children: [
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$log$2d$out$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__LogOut$3e$__["LogOut"], {
                                                         className: "mr-2 h-4 w-4"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                        lineNumber: 427,
+                                                        lineNumber: 425,
                                                         columnNumber: 25
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                         children: "Sign Out"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                        lineNumber: 428,
+                                                        lineNumber: 426,
                                                         columnNumber: 25
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                                lineNumber: 423,
+                                                lineNumber: 421,
                                                 columnNumber: 21
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                        lineNumber: 388,
+                                        lineNumber: 386,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                                lineNumber: 375,
+                                lineNumber: 373,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/layout/AppLayout.tsx",
-                        lineNumber: 370,
+                        lineNumber: 368,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("main", {
@@ -5014,23 +5019,23 @@ function AppLayout({ children }) {
                         children: children
                     }, void 0, false, {
                         fileName: "[project]/src/components/layout/AppLayout.tsx",
-                        lineNumber: 434,
+                        lineNumber: 432,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/layout/AppLayout.tsx",
-                lineNumber: 369,
+                lineNumber: 367,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/layout/AppLayout.tsx",
-        lineNumber: 335,
+        lineNumber: 333,
         columnNumber: 5
     }, this);
 }
-_s(AppLayout, "qEQJsFMxNA0QoZVlsICKY1sD75A=", false, function() {
+_s(AppLayout, "P3q6+yGjy+jVGT4WIQ+2Yt4yPd0=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"],
         __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["usePathname"],

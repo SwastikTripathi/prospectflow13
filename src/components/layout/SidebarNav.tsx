@@ -12,12 +12,13 @@ import {
   Star,
   Edit3,
   Rss,
-  Settings, // Keep existing Settings icon
-  CreditCard, // For Billing
-  UserCircle, // For Profile
-  SlidersHorizontal, // For Preferences/Cadence
-  MailQuestion, // For Email Customization
-  KeyRound, // For Security
+  Settings, 
+  CreditCard, 
+  UserCircle, 
+  SlidersHorizontal, 
+  MailQuestion, 
+  KeyRound,
+  LayoutDashboard, // Added for Dashboard icon
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
@@ -45,13 +46,13 @@ interface NavItem {
 }
 
 const mainNavItems: NavItem[] = [
-  { href: '/', label: 'Dashboard', icon: Home },
+  { href: '/', label: 'Dashboard', icon: LayoutDashboard }, // Changed Home to LayoutDashboard for consistency
   { href: '/job-openings', label: 'Job Openings', icon: Briefcase },
   { href: '/contacts', label: 'Contacts', icon: Users },
   { href: '/companies', label: 'Companies', icon: Building2 },
 ];
 
-const settingsNavItems: NavItem[] = [
+const settingsBaseNavItems: NavItem[] = [
   { href: '/settings/account#profile-details', label: 'Profile Details', icon: UserCircle },
   { href: '/settings/account#usage-preferences', label: 'Usage & Cadence', icon: SlidersHorizontal },
   { href: '/settings/account#email-customization', label: 'Email Customization', icon: MailQuestion },
@@ -106,6 +107,12 @@ export function SidebarNav({ favoriteJobOpenings = [] }: SidebarNavProps) {
   const isExpandedDesktop = sidebarState === 'expanded' && !isMobile;
   const isSettingsPage = pathname.startsWith('/settings');
 
+  const settingsNavItemsWithBack: NavItem[] = [
+    { href: '/', label: 'Back to Dashboard', icon: LayoutDashboard, separator: true }, // Added back to dashboard link
+    ...settingsBaseNavItems,
+  ];
+
+
   const renderNavItems = (items: NavItem[], groupLabel?: string) => {
     const filteredItems = items.filter(item => !item.ownerOnly || (item.ownerOnly && isOwner));
 
@@ -115,7 +122,7 @@ export function SidebarNav({ favoriteJobOpenings = [] }: SidebarNavProps) {
 
     return (
         <SidebarGroup>
-        {groupLabel && !isSettingsPage && ( // Only show group label if not settings page or specific conditions
+        {groupLabel && !isSettingsPage && ( 
             <SidebarGroupLabel className="group-data-[collapsible=icon]:sr-only">
             {groupLabel}
             </SidebarGroupLabel>
@@ -123,7 +130,10 @@ export function SidebarNav({ favoriteJobOpenings = [] }: SidebarNavProps) {
         <SidebarMenu>
             {filteredItems.map((item) => (
             <React.Fragment key={item.label}>
-                {item.separator && ((isSettingsPage && item.href === '/settings/billing') || (item.ownerOnly && isOwner && !isSettingsPage)) && <SidebarSeparator className="my-1" />}
+                {item.separator && 
+                 ((isSettingsPage && (item.href === '/settings/billing' || item.href === '/')) || 
+                  (item.ownerOnly && isOwner && !isSettingsPage)) && 
+                 <SidebarSeparator className="my-1" />}
                 <SidebarMenuItem>
                 <SidebarMenuButton
                     asChild
@@ -170,11 +180,11 @@ export function SidebarNav({ favoriteJobOpenings = [] }: SidebarNavProps) {
   return (
     <div className="flex flex-col h-full">
       <div>
-        {isSettingsPage ? renderNavItems(settingsNavItems) : renderNavItems(mainNavItems)}
+        {isSettingsPage ? renderNavItems(settingsNavItemsWithBack) : renderNavItems(mainNavItems)}
         {isOwner && renderNavItems(blogNavItems, "Blog Management")}
       </div>
 
-      {favoriteJobOpenings && favoriteJobOpenings.length > 0 && !isSettingsPage && ( // Hide favorites on settings pages
+      {favoriteJobOpenings && favoriteJobOpenings.length > 0 && !isSettingsPage && (
         <>
           <SidebarSeparator />
           <SidebarGroup className="flex flex-col flex-1 min-h-0">
