@@ -1293,6 +1293,14 @@ const settingsBaseNavItems = [
         separator: true
     }
 ];
+const settingsNavItemsWithBack = [
+    {
+        href: '/',
+        label: 'Back to Dashboard',
+        icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$layout$2d$dashboard$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__LayoutDashboard$3e$__["LayoutDashboard"]
+    },
+    ...settingsBaseNavItems
+];
 const blogNavItems = [
     {
         href: '/blog',
@@ -1340,15 +1348,6 @@ function SidebarNav({ favoriteJobOpenings = [] }) {
     const isCollapsedDesktop = sidebarState === 'collapsed' && !isMobile;
     const isExpandedDesktop = sidebarState === 'expanded' && !isMobile;
     const isSettingsPage = pathname.startsWith('/settings');
-    const settingsNavItemsWithBack = [
-        {
-            href: '/',
-            label: 'Back to Dashboard',
-            icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$layout$2d$dashboard$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__LayoutDashboard$3e$__["LayoutDashboard"],
-            separator: true
-        },
-        ...settingsBaseNavItems
-    ];
     const renderNavItems = (items, groupLabel)=>{
         const filteredItems = items.filter((item)=>!item.ownerOnly || item.ownerOnly && isOwner);
         if (filteredItems.length === 0 && groupLabel && items.every((item)=>item.ownerOnly)) return null;
@@ -1360,18 +1359,25 @@ function SidebarNav({ favoriteJobOpenings = [] }) {
                     children: groupLabel
                 }, void 0, false, {
                     fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                    lineNumber: 126,
+                    lineNumber: 125,
                     columnNumber: 13
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SidebarMenu"], {
                     children: filteredItems.map((item)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].Fragment, {
                             children: [
-                                item.separator && (isSettingsPage && (item.href === '/settings/billing' || item.href === '/') || item.ownerOnly && isOwner && !isSettingsPage) && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SidebarSeparator"], {
+                                item.separator && isSettingsPage && item.href === '/settings/billing' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SidebarSeparator"], {
                                     className: "my-1"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                    lineNumber: 136,
-                                    columnNumber: 18
+                                    lineNumber: 134,
+                                    columnNumber: 21
+                                }, this),
+                                item.separator && item.ownerOnly && isOwner && !isSettingsPage && item.href === '/blog' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SidebarSeparator"], {
+                                    className: "my-1"
+                                }, void 0, false, {
+                                    fileName: "[project]/src/components/layout/SidebarNav.tsx",
+                                    lineNumber: 139,
+                                    columnNumber: 20
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SidebarMenuItem"], {
                                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SidebarMenuButton"], {
@@ -1395,47 +1401,54 @@ function SidebarNav({ favoriteJobOpenings = [] }) {
                                             children: [
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(item.icon, {}, void 0, false, {
                                                     fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                                    lineNumber: 154,
+                                                    lineNumber: 159,
                                                     columnNumber: 21
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                     children: item.label
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                                    lineNumber: 155,
+                                                    lineNumber: 160,
                                                     columnNumber: 21
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                            lineNumber: 144,
+                                            lineNumber: 149,
                                             columnNumber: 21
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                        lineNumber: 138,
+                                        lineNumber: 143,
                                         columnNumber: 17
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                    lineNumber: 137,
+                                    lineNumber: 142,
                                     columnNumber: 17
+                                }, this),
+                                isSettingsPage && item.href === '/' && filteredItems.length > 1 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SidebarSeparator"], {
+                                    className: "my-1"
+                                }, void 0, false, {
+                                    fileName: "[project]/src/components/layout/SidebarNav.tsx",
+                                    lineNumber: 167,
+                                    columnNumber: 21
                                 }, this)
                             ]
                         }, item.label, true, {
                             fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                            lineNumber: 132,
+                            lineNumber: 131,
                             columnNumber: 13
                         }, this))
                 }, void 0, false, {
                     fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                    lineNumber: 130,
+                    lineNumber: 129,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/components/layout/SidebarNav.tsx",
-            lineNumber: 124,
+            lineNumber: 123,
             columnNumber: 9
         }, this);
     };
@@ -1451,25 +1464,25 @@ function SidebarNav({ favoriteJobOpenings = [] }) {
                             className: "h-5 w-5 rounded bg-muted"
                         }, void 0, false, {
                             fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                            lineNumber: 171,
+                            lineNumber: 181,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             className: "h-4 w-3/4 rounded bg-muted"
                         }, void 0, false, {
                             fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                            lineNumber: 172,
+                            lineNumber: 182,
                             columnNumber: 13
                         }, this)
                     ]
                 }, i, true, {
                     fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                    lineNumber: 170,
+                    lineNumber: 180,
                     columnNumber: 11
                 }, this))
         }, void 0, false, {
             fileName: "[project]/src/components/layout/SidebarNav.tsx",
-            lineNumber: 168,
+            lineNumber: 178,
             columnNumber: 7
         }, this);
     }
@@ -1483,14 +1496,14 @@ function SidebarNav({ favoriteJobOpenings = [] }) {
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                lineNumber: 182,
+                lineNumber: 192,
                 columnNumber: 7
             }, this),
             favoriteJobOpenings && favoriteJobOpenings.length > 0 && !isSettingsPage && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Fragment"], {
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SidebarSeparator"], {}, void 0, false, {
                         fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                        lineNumber: 189,
+                        lineNumber: 199,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SidebarGroup"], {
@@ -1501,7 +1514,7 @@ function SidebarNav({ favoriteJobOpenings = [] }) {
                                 children: "Favorites"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                lineNumber: 191,
+                                lineNumber: 201,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1532,7 +1545,7 @@ function SidebarNav({ favoriteJobOpenings = [] }) {
                                                                             className: "text-yellow-500 flex-shrink-0"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                                                            lineNumber: 209,
+                                                                            lineNumber: 219,
                                                                             columnNumber: 33
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1540,23 +1553,23 @@ function SidebarNav({ favoriteJobOpenings = [] }) {
                                                                             children: favoriteDisplayName
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                                                            lineNumber: 210,
+                                                                            lineNumber: 220,
                                                                             columnNumber: 33
                                                                         }, this)
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                                                    lineNumber: 208,
+                                                                    lineNumber: 218,
                                                                     columnNumber: 31
                                                                 }, this)
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                                                lineNumber: 203,
+                                                                lineNumber: 213,
                                                                 columnNumber: 29
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                                            lineNumber: 202,
+                                                            lineNumber: 212,
                                                             columnNumber: 27
                                                         }, this),
                                                         isExpandedDesktop && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$tooltip$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TooltipContent"], {
@@ -1567,40 +1580,40 @@ function SidebarNav({ favoriteJobOpenings = [] }) {
                                                             children: favoriteDisplayName
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                                            lineNumber: 217,
+                                                            lineNumber: 227,
                                                             columnNumber: 29
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                                    lineNumber: 201,
+                                                    lineNumber: 211,
                                                     columnNumber: 25
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                                lineNumber: 200,
+                                                lineNumber: 210,
                                                 columnNumber: 23
                                             }, this)
                                         }, opening.id, false, {
                                             fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                            lineNumber: 199,
+                                            lineNumber: 209,
                                             columnNumber: 21
                                         }, this);
                                     })
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                    lineNumber: 195,
+                                    lineNumber: 205,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                                lineNumber: 194,
+                                lineNumber: 204,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/layout/SidebarNav.tsx",
-                        lineNumber: 190,
+                        lineNumber: 200,
                         columnNumber: 11
                     }, this)
                 ]
@@ -1608,7 +1621,7 @@ function SidebarNav({ favoriteJobOpenings = [] }) {
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/layout/SidebarNav.tsx",
-        lineNumber: 181,
+        lineNumber: 191,
         columnNumber: 5
     }, this);
 }
