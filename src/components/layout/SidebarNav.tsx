@@ -12,13 +12,13 @@ import {
   Star,
   Edit3,
   Rss,
-  Settings, 
-  CreditCard, 
-  UserCircle, 
-  SlidersHorizontal, 
-  MailQuestion, 
+  Settings,
+  CreditCard,
+  UserCircle,
+  SlidersHorizontal,
+  MailQuestion,
   KeyRound,
-  LayoutDashboard, // Added for Dashboard icon
+  LayoutDashboard,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
@@ -46,7 +46,7 @@ interface NavItem {
 }
 
 const mainNavItems: NavItem[] = [
-  { href: '/', label: 'Dashboard', icon: LayoutDashboard }, // Changed Home to LayoutDashboard for consistency
+  { href: '/', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/job-openings', label: 'Job Openings', icon: Briefcase },
   { href: '/contacts', label: 'Contacts', icon: Users },
   { href: '/companies', label: 'Companies', icon: Building2 },
@@ -57,8 +57,14 @@ const settingsBaseNavItems: NavItem[] = [
   { href: '/settings/account#usage-preferences', label: 'Usage & Cadence', icon: SlidersHorizontal },
   { href: '/settings/account#email-customization', label: 'Email Customization', icon: MailQuestion },
   { href: '/settings/account#security', label: 'Password & Security', icon: KeyRound },
-  { href: '/settings/billing', label: 'Billing & Plan', icon: CreditCard, separator: true },
+  { href: '/settings/billing', label: 'Billing & Plan', icon: CreditCard, separator: true }, // Separator is for ABOVE this item
 ];
+
+const settingsNavItemsWithBack: NavItem[] = [
+  { href: '/', label: 'Back to Dashboard', icon: LayoutDashboard }, // Separator removed from here
+  ...settingsBaseNavItems,
+];
+
 
 const blogNavItems: NavItem[] = [
   { href: '/blog', label: 'View Blog', icon: Rss, separator: true, ownerOnly: true },
@@ -107,22 +113,15 @@ export function SidebarNav({ favoriteJobOpenings = [] }: SidebarNavProps) {
   const isExpandedDesktop = sidebarState === 'expanded' && !isMobile;
   const isSettingsPage = pathname.startsWith('/settings');
 
-  const settingsNavItemsWithBack: NavItem[] = [
-    { href: '/', label: 'Back to Dashboard', icon: LayoutDashboard, separator: true }, // Added back to dashboard link
-    ...settingsBaseNavItems,
-  ];
-
-
   const renderNavItems = (items: NavItem[], groupLabel?: string) => {
     const filteredItems = items.filter(item => !item.ownerOnly || (item.ownerOnly && isOwner));
 
     if (filteredItems.length === 0 && groupLabel && items.every(item => item.ownerOnly)) return null;
     if (filteredItems.length === 0 && !groupLabel) return null;
 
-
     return (
         <SidebarGroup>
-        {groupLabel && !isSettingsPage && ( 
+        {groupLabel && !isSettingsPage && (
             <SidebarGroupLabel className="group-data-[collapsible=icon]:sr-only">
             {groupLabel}
             </SidebarGroupLabel>
@@ -130,10 +129,16 @@ export function SidebarNav({ favoriteJobOpenings = [] }: SidebarNavProps) {
         <SidebarMenu>
             {filteredItems.map((item) => (
             <React.Fragment key={item.label}>
-                {item.separator && 
-                 ((isSettingsPage && (item.href === '/settings/billing' || item.href === '/')) || 
-                  (item.ownerOnly && isOwner && !isSettingsPage)) && 
-                 <SidebarSeparator className="my-1" />}
+                {/* Separator BEFORE "Billing & Plan" when on settings page */}
+                {item.separator && isSettingsPage && item.href === '/settings/billing' && (
+                    <SidebarSeparator className="my-1" />
+                )}
+
+                {/* Separator BEFORE "View Blog" if it's the first item in blogNavItems */}
+                {item.separator && item.ownerOnly && isOwner && !isSettingsPage && item.href === '/blog' && (
+                   <SidebarSeparator className="my-1" />
+                )}
+
                 <SidebarMenuItem>
                 <SidebarMenuButton
                     asChild
@@ -156,6 +161,11 @@ export function SidebarNav({ favoriteJobOpenings = [] }: SidebarNavProps) {
                     </Link>
                 </SidebarMenuButton>
                 </SidebarMenuItem>
+
+                {/* Separator AFTER "Back to Dashboard" when on settings page */}
+                {isSettingsPage && item.href === '/' && filteredItems.length > 1 && (
+                    <SidebarSeparator className="my-1" />
+                )}
             </React.Fragment>
             ))}
         </SidebarMenu>
